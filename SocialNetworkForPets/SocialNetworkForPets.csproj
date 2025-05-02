@@ -10,4 +10,16 @@
     <Folder Include="wwwroot\images\Avatar\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\css\tailwind.css" />
+    <None Include="wwwroot\js\script.js" />
+    <None Include="wwwroot\js\simplebar.js" />
+    <None Include="wwwroot\js\uikit.min.js" />
+    <None Include="wwwroot\syntax-highlighter\scripts\shBrushJScript.js" />
+    <None Include="wwwroot\syntax-highlighter\scripts\shBrushXml.js" />
+    <None Include="wwwroot\syntax-highlighter\scripts\shCore.js" />
+    <None Include="wwwroot\syntax-highlighter\styles\shCore.css" />
+    <None Include="wwwroot\syntax-highlighter\styles\shCoreMidnight.css" />
+  </ItemGroup>
+
 </Project>
