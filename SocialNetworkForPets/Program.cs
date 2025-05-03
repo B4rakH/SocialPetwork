@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using SocialNetworkForPets.Data;
+
 namespace SocialNetworkForPets
 {
     public class Program
@@ -8,6 +11,10 @@ namespace SocialNetworkForPets
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            //Database Configuraiton
+            string DbConnectionString = builder.Configuration.GetConnectionString("Default");
+            builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(DbConnectionString));
 
             var app = builder.Build();
 

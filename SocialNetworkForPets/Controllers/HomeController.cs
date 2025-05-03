@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using SocialNetworkForPets.Models;
 using System.Diagnostics;
 
 namespace SocialNetworkForPets.Controllers
