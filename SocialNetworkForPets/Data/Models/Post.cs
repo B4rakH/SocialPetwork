@@ -17,10 +17,10 @@ namespace TestApp.Data.Models
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         //Foreign Key
-        [ForeignKey("Person")]
+        [ForeignKey("User")]
         public int PosterId { get; set; }
 
-        public Person Poster { get; set; }
+        public User Poster { get; set; }
 
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();
     }

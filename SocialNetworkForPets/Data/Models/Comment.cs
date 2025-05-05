@@ -12,10 +12,10 @@ namespace TestApp.Data.Models
 
         //Foreign Key
 
-        [ForeignKey("Person")]
-        public int PersonId { get; set; }
+        [ForeignKey("User")]
+        public int UserId { get; set; }
 
-        public Person Person { get; set; }
+        public User User { get; set; }
 
         [ForeignKey("Post")]
         public int PostId { get; set; }

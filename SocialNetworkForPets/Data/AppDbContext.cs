@@ -9,7 +9,7 @@ namespace TestApp.Data
         {
 
         }
-        public DbSet<Person> Person { get; set; }
+        public DbSet<User> User { get; set; }
         public DbSet<Post> Post { get; set; }
         public DbSet<Pet> Pet { get; set; }
         public DbSet<PetOwner> PetOwner { get; set; }
@@ -26,18 +26,18 @@ namespace TestApp.Data
 
             //Friendship Key Adding & Relations
             modelBuilder.Entity<Friendship>()
-                .HasKey(f => new { f.Person1Id, f.Person2Id });
+                .HasKey(f => new { f.User1Id, f.User2Id });
 
             modelBuilder.Entity<Friendship>()
-                .HasOne(f => f.Person1)
+                .HasOne(f => f.User1)
                 .WithMany()
-                .HasForeignKey(f => f.Person1Id)
+                .HasForeignKey(f => f.User1Id)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Friendship>()
-                .HasOne(f => f.Person2)
+                .HasOne(f => f.User2)
                 .WithMany()
-                .HasForeignKey(f => f.Person2Id)
+                .HasForeignKey(f => f.User2Id)
                 .OnDelete(DeleteBehavior.ClientNoAction);
 
             //Admin Adding Key
@@ -48,25 +48,25 @@ namespace TestApp.Data
             modelBuilder.Entity<PetOwner>()
                 .HasKey(po => new { po.OwnerId });
 
-            //Person-Post Relation
-            modelBuilder.Entity<Person>()
+            //User-Post Relation
+            modelBuilder.Entity<User>()
                 .HasMany(pr => pr.Posts)
                 .WithOne(p => p.Poster)
                 .HasForeignKey(p => p.PosterId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            //Person-Pet Relation
-            modelBuilder.Entity<Person>()
+            //User-Pet Relation
+            modelBuilder.Entity<User>()
                 .HasMany(p => p.PetsOwned)
                 .WithOne(pt => pt.Owner)
                 .HasForeignKey(pt => pt.OwnerId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            //Person-Comment Relation
-            modelBuilder.Entity<Person>()
+            //User-Comment Relation
+            modelBuilder.Entity<User>()
                 .HasMany(p => p.Comments)
-                .WithOne(c => c.Person)
-                .HasForeignKey(c => c.PersonId);
+                .WithOne(c => c.User)
+                .HasForeignKey(c => c.UserId);
 
             //Post-Comment Relation
             modelBuilder.Entity<Post>()

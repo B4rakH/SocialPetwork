@@ -2,16 +2,16 @@
 
 namespace TestApp.Data.Models
 {
-    public class Person
+    public class User
     {
         [Key]
-        public int PerId { get; set; }
+        public int UserId { get; set; }
 
-        public string PerName { get; set; }
+        public string UserName { get; set; }
 
-        public string PerPassword { get; set; }
+        public string UserPassword { get; set; }
 
-        public string? PerImgUrl { get; set; }
+        public string? UserImgUrl { get; set; }
 
         public ICollection<Post> Posts { get; set; } = new List<Post>();
 

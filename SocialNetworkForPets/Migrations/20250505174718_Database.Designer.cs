@@ -9,11 +9,11 @@ using TestApp.Data;
 
 #nullable disable
 
-namespace TestApp.Migrations
+namespace SocialNetworkForPets.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250505172200_Data")]
-    partial class Data
+    [Migration("20250505174718_Database")]
+    partial class Database
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,12 +33,12 @@ namespace TestApp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AdminId"));
 
-                    b.Property<int>("AdminPerId")
+                    b.Property<int>("AdminUserId")
                         .HasColumnType("int");
 
                     b.HasKey("AdminId");
 
-                    b.HasIndex("AdminPerId");
+                    b.HasIndex("AdminUserId");
 
                     b.ToTable("Admin");
                 });
@@ -55,58 +55,34 @@ namespace TestApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PersonId")
+                    b.Property<int>("PostId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PostId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("CommentId");
 
-                    b.HasIndex("PersonId");
-
                     b.HasIndex("PostId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Comment");
                 });
 
             modelBuilder.Entity("TestApp.Data.Models.Friendship", b =>
                 {
-                    b.Property<int>("Person1Id")
+                    b.Property<int>("User1Id")
                         .HasColumnType("int");
 
-                    b.Property<int>("Person2Id")
+                    b.Property<int>("User2Id")
                         .HasColumnType("int");
 
-                    b.HasKey("Person1Id", "Person2Id");
+                    b.HasKey("User1Id", "User2Id");
 
-                    b.HasIndex("Person2Id");
+                    b.HasIndex("User2Id");
 
                     b.ToTable("Friendship");
-                });
-
-            modelBuilder.Entity("TestApp.Data.Models.Person", b =>
-                {
-                    b.Property<int>("PerId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PerId"));
-
-                    b.Property<string>("PerImgUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PerName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PerPassword")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("PerId");
-
-                    b.ToTable("Person");
                 });
 
             modelBuilder.Entity("TestApp.Data.Models.Pet", b =>
@@ -143,12 +119,12 @@ namespace TestApp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OwnerId"));
 
-                    b.Property<int>("OwnerPerId")
+                    b.Property<int>("OwnerUserId")
                         .HasColumnType("int");
 
                     b.HasKey("OwnerId");
 
-                    b.HasIndex("OwnerPerId");
+                    b.HasIndex("OwnerUserId");
 
                     b.ToTable("PetOwner");
                 });
@@ -185,11 +161,35 @@ namespace TestApp.Migrations
                     b.ToTable("Post");
                 });
 
+            modelBuilder.Entity("TestApp.Data.Models.User", b =>
+                {
+                    b.Property<int>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
+
+                    b.Property<string>("UserImgUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserPassword")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("User");
+                });
+
             modelBuilder.Entity("TestApp.Data.Models.Administrator", b =>
                 {
-                    b.HasOne("TestApp.Data.Models.Person", "Admin")
+                    b.HasOne("TestApp.Data.Models.User", "Admin")
                         .WithMany()
-                        .HasForeignKey("AdminPerId")
+                        .HasForeignKey("AdminUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -198,45 +198,45 @@ namespace TestApp.Migrations
 
             modelBuilder.Entity("TestApp.Data.Models.Comment", b =>
                 {
-                    b.HasOne("TestApp.Data.Models.Person", "Person")
-                        .WithMany("Comments")
-                        .HasForeignKey("PersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("TestApp.Data.Models.Post", "Post")
                         .WithMany("Comments")
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Person");
+                    b.HasOne("TestApp.Data.Models.User", "User")
+                        .WithMany("Comments")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Post");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TestApp.Data.Models.Friendship", b =>
                 {
-                    b.HasOne("TestApp.Data.Models.Person", "Person1")
+                    b.HasOne("TestApp.Data.Models.User", "User1")
                         .WithMany()
-                        .HasForeignKey("Person1Id")
+                        .HasForeignKey("User1Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TestApp.Data.Models.Person", "Person2")
+                    b.HasOne("TestApp.Data.Models.User", "User2")
                         .WithMany()
-                        .HasForeignKey("Person2Id")
+                        .HasForeignKey("User2Id")
                         .OnDelete(DeleteBehavior.ClientNoAction)
                         .IsRequired();
 
-                    b.Navigation("Person1");
+                    b.Navigation("User1");
 
-                    b.Navigation("Person2");
+                    b.Navigation("User2");
                 });
 
             modelBuilder.Entity("TestApp.Data.Models.Pet", b =>
                 {
-                    b.HasOne("TestApp.Data.Models.Person", "Owner")
+                    b.HasOne("TestApp.Data.Models.User", "Owner")
                         .WithMany("PetsOwned")
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -247,9 +247,9 @@ namespace TestApp.Migrations
 
             modelBuilder.Entity("TestApp.Data.Models.PetOwner", b =>
                 {
-                    b.HasOne("TestApp.Data.Models.Person", "Owner")
+                    b.HasOne("TestApp.Data.Models.User", "Owner")
                         .WithMany()
-                        .HasForeignKey("OwnerPerId")
+                        .HasForeignKey("OwnerUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -258,7 +258,7 @@ namespace TestApp.Migrations
 
             modelBuilder.Entity("TestApp.Data.Models.Post", b =>
                 {
-                    b.HasOne("TestApp.Data.Models.Person", "Poster")
+                    b.HasOne("TestApp.Data.Models.User", "Poster")
                         .WithMany("Posts")
                         .HasForeignKey("PosterId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -267,18 +267,18 @@ namespace TestApp.Migrations
                     b.Navigation("Poster");
                 });
 
-            modelBuilder.Entity("TestApp.Data.Models.Person", b =>
+            modelBuilder.Entity("TestApp.Data.Models.Post", b =>
+                {
+                    b.Navigation("Comments");
+                });
+
+            modelBuilder.Entity("TestApp.Data.Models.User", b =>
                 {
                     b.Navigation("Comments");
 
                     b.Navigation("PetsOwned");
 
                     b.Navigation("Posts");
-                });
-
-            modelBuilder.Entity("TestApp.Data.Models.Post", b =>
-                {
-                    b.Navigation("Comments");
                 });
 #pragma warning restore 612, 618
         }

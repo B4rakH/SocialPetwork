@@ -6,9 +6,9 @@ namespace TestApp.Data.Models
     public class Administrator
     {
         //Foreign Key
-        [ForeignKey("Person")]
+        [ForeignKey("User")]
         public int AdminId { get; set; }
 
-        public Person Admin { get; set; }
+        public User Admin { get; set; }
     }
 }

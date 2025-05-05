@@ -6,9 +6,9 @@ namespace TestApp.Data.Models
     public class PetOwner
     {
         //Foreign Key
-        [ForeignKey("Person")]
+        [ForeignKey("User")]
         public int OwnerId { get; set; }
 
-        public Person Owner { get; set; }
+        public User Owner { get; set; }
     }
 }
