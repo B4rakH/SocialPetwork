@@ -11,7 +11,9 @@ namespace SocialNetworkForPets.Helper
             {
                 var newUser = new User()
                 {
-                    UserName = "Hugo Martin"
+                    UserName = "Hugo Martin",
+                    UserImgUrl = "",
+                    UserPassword = ""
                 };
                 await context.User.AddAsync(newUser);
                 await context.SaveChangesAsync();
@@ -19,20 +21,12 @@ namespace SocialNetworkForPets.Helper
                 var newPostNoImg = new Post()
                 {
                     PostText = "Which brand of cat food has the best quality?",
-                    PostImgUrl = "",
                     CreatedAt = DateTime.UtcNow,
 
-                    PostId = newUser.UserId
+                    Poster = newUser
                 };
-                var newPost = new Post()
-                {
-                    PostText = "Give to Niyazi another tea!",
-                    PostImgUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsUTK3mAGMy2Y8trSIO45p4NV21YVHQBnrD5A2qrgeGI5fLeiD89jgiPALxsCuw0KU1Ig&usqp=CAU",
-                    CreatedAt = DateTime.UtcNow,
 
-                    PostId = newUser.UserId
-                };
-                await context.Post.AddRangeAsync(newPostNoImg,newPost);
+                await context.Post.AddRangeAsync(newPostNoImg);
                 await context.SaveChangesAsync();
             }
         }

@@ -10,7 +10,7 @@ namespace SocialNetworkForPets.Data.Models
 
         public string PostText { get; set; }
 
-        public string PostImgUrl { get; set; }
+        public string PostImgUrl { get; set; } = "";
 
         public int PostLikes { get; set; } = 0;
 

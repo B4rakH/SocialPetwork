@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace SocialNetworkForPets.Migrations
 {
     /// <inheritdoc />
-    public partial class Database : Migration
+    public partial class Datas : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -24,24 +24,6 @@ namespace SocialNetworkForPets.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_User", x => x.UserId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Admin",
-                columns: table => new
-                {
-                    AdminId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Admin", x => x.AdminId);
-                    table.ForeignKey(
-                        name: "FK_Admin_User_AdminId",
-                        column: x => x.AdminId,
-                        principalTable: "User",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -86,24 +68,6 @@ namespace SocialNetworkForPets.Migrations
                         principalTable: "User",
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PetOwner",
-                columns: table => new
-                {
-                    OwnerId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PetOwner", x => x.OwnerId);
-                    table.ForeignKey(
-                        name: "FK_PetOwner_User_OwnerId",
-                        column: x => x.OwnerId,
-                        principalTable: "User",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -156,11 +120,6 @@ namespace SocialNetworkForPets.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Admin_AdminId",
-                table: "Admin",
-                column: "AdminId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Comment_PostId",
                 table: "Comment",
                 column: "PostId");
@@ -190,9 +149,6 @@ namespace SocialNetworkForPets.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Admin");
-
-            migrationBuilder.DropTable(
                 name: "Comment");
 
             migrationBuilder.DropTable(
@@ -200,9 +156,6 @@ namespace SocialNetworkForPets.Migrations
 
             migrationBuilder.DropTable(
                 name: "Pet");
-
-            migrationBuilder.DropTable(
-                name: "PetOwner");
 
             migrationBuilder.DropTable(
                 name: "Post");
