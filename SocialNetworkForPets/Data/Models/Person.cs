@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TestApp.Data.Models
+namespace SocialNetworkForPets.Data.Models
 {
     public class User
     {

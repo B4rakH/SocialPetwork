@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace TestApp.Data.Models
+namespace SocialNetworkForPets.Data.Models
 {
     public class Pet
     {

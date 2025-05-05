@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using TestApp.Data;
+using SocialNetworkForPets.Data;
 
 #nullable disable
 
@@ -22,7 +22,7 @@ namespace SocialNetworkForPets.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("TestApp.Data.Models.Administrator", b =>
+            modelBuilder.Entity("SocialNetworkForPets.Data.Models.Administrator", b =>
                 {
                     b.Property<int>("AdminId")
                         .ValueGeneratedOnAdd()
@@ -40,7 +40,7 @@ namespace SocialNetworkForPets.Migrations
                     b.ToTable("Admin");
                 });
 
-            modelBuilder.Entity("TestApp.Data.Models.Comment", b =>
+            modelBuilder.Entity("SocialNetworkForPets.Data.Models.Comment", b =>
                 {
                     b.Property<int>("CommentId")
                         .ValueGeneratedOnAdd()
@@ -67,7 +67,7 @@ namespace SocialNetworkForPets.Migrations
                     b.ToTable("Comment");
                 });
 
-            modelBuilder.Entity("TestApp.Data.Models.Friendship", b =>
+            modelBuilder.Entity("SocialNetworkForPets.Data.Models.Friendship", b =>
                 {
                     b.Property<int>("User1Id")
                         .HasColumnType("int");
@@ -82,7 +82,7 @@ namespace SocialNetworkForPets.Migrations
                     b.ToTable("Friendship");
                 });
 
-            modelBuilder.Entity("TestApp.Data.Models.Pet", b =>
+            modelBuilder.Entity("SocialNetworkForPets.Data.Models.Pet", b =>
                 {
                     b.Property<int>("PetId")
                         .ValueGeneratedOnAdd()
@@ -108,7 +108,7 @@ namespace SocialNetworkForPets.Migrations
                     b.ToTable("Pet");
                 });
 
-            modelBuilder.Entity("TestApp.Data.Models.PetOwner", b =>
+            modelBuilder.Entity("SocialNetworkForPets.Data.Models.PetOwner", b =>
                 {
                     b.Property<int>("OwnerId")
                         .ValueGeneratedOnAdd()
@@ -126,7 +126,7 @@ namespace SocialNetworkForPets.Migrations
                     b.ToTable("PetOwner");
                 });
 
-            modelBuilder.Entity("TestApp.Data.Models.Post", b =>
+            modelBuilder.Entity("SocialNetworkForPets.Data.Models.Post", b =>
                 {
                     b.Property<int>("PostId")
                         .ValueGeneratedOnAdd()
@@ -158,7 +158,7 @@ namespace SocialNetworkForPets.Migrations
                     b.ToTable("Post");
                 });
 
-            modelBuilder.Entity("TestApp.Data.Models.User", b =>
+            modelBuilder.Entity("SocialNetworkForPets.Data.Models.User", b =>
                 {
                     b.Property<int>("UserId")
                         .ValueGeneratedOnAdd()
@@ -182,9 +182,9 @@ namespace SocialNetworkForPets.Migrations
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("TestApp.Data.Models.Administrator", b =>
+            modelBuilder.Entity("SocialNetworkForPets.Data.Models.Administrator", b =>
                 {
-                    b.HasOne("TestApp.Data.Models.User", "Admin")
+                    b.HasOne("SocialNetworkForPets.Data.Models.User", "Admin")
                         .WithMany()
                         .HasForeignKey("AdminUserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -193,15 +193,15 @@ namespace SocialNetworkForPets.Migrations
                     b.Navigation("Admin");
                 });
 
-            modelBuilder.Entity("TestApp.Data.Models.Comment", b =>
+            modelBuilder.Entity("SocialNetworkForPets.Data.Models.Comment", b =>
                 {
-                    b.HasOne("TestApp.Data.Models.Post", "Post")
+                    b.HasOne("SocialNetworkForPets.Data.Models.Post", "Post")
                         .WithMany("Comments")
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("TestApp.Data.Models.User", "User")
+                    b.HasOne("SocialNetworkForPets.Data.Models.User", "User")
                         .WithMany("Comments")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -212,15 +212,15 @@ namespace SocialNetworkForPets.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("TestApp.Data.Models.Friendship", b =>
+            modelBuilder.Entity("SocialNetworkForPets.Data.Models.Friendship", b =>
                 {
-                    b.HasOne("TestApp.Data.Models.User", "User1")
+                    b.HasOne("SocialNetworkForPets.Data.Models.User", "User1")
                         .WithMany()
                         .HasForeignKey("User1Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TestApp.Data.Models.User", "User2")
+                    b.HasOne("SocialNetworkForPets.Data.Models.User", "User2")
                         .WithMany()
                         .HasForeignKey("User2Id")
                         .OnDelete(DeleteBehavior.ClientNoAction)
@@ -231,9 +231,9 @@ namespace SocialNetworkForPets.Migrations
                     b.Navigation("User2");
                 });
 
-            modelBuilder.Entity("TestApp.Data.Models.Pet", b =>
+            modelBuilder.Entity("SocialNetworkForPets.Data.Models.Pet", b =>
                 {
-                    b.HasOne("TestApp.Data.Models.User", "Owner")
+                    b.HasOne("SocialNetworkForPets.Data.Models.User", "Owner")
                         .WithMany("PetsOwned")
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -242,9 +242,9 @@ namespace SocialNetworkForPets.Migrations
                     b.Navigation("Owner");
                 });
 
-            modelBuilder.Entity("TestApp.Data.Models.PetOwner", b =>
+            modelBuilder.Entity("SocialNetworkForPets.Data.Models.PetOwner", b =>
                 {
-                    b.HasOne("TestApp.Data.Models.User", "Owner")
+                    b.HasOne("SocialNetworkForPets.Data.Models.User", "Owner")
                         .WithMany()
                         .HasForeignKey("OwnerUserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -253,9 +253,9 @@ namespace SocialNetworkForPets.Migrations
                     b.Navigation("Owner");
                 });
 
-            modelBuilder.Entity("TestApp.Data.Models.Post", b =>
+            modelBuilder.Entity("SocialNetworkForPets.Data.Models.Post", b =>
                 {
-                    b.HasOne("TestApp.Data.Models.User", "Poster")
+                    b.HasOne("SocialNetworkForPets.Data.Models.User", "Poster")
                         .WithMany("Posts")
                         .HasForeignKey("PosterId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -264,12 +264,12 @@ namespace SocialNetworkForPets.Migrations
                     b.Navigation("Poster");
                 });
 
-            modelBuilder.Entity("TestApp.Data.Models.Post", b =>
+            modelBuilder.Entity("SocialNetworkForPets.Data.Models.Post", b =>
                 {
                     b.Navigation("Comments");
                 });
 
-            modelBuilder.Entity("TestApp.Data.Models.User", b =>
+            modelBuilder.Entity("SocialNetworkForPets.Data.Models.User", b =>
                 {
                     b.Navigation("Comments");
 

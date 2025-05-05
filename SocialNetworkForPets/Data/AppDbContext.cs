@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TestApp.Data.Models;
+using SocialNetworkForPets.Data.Models;
 
-namespace TestApp.Data
+namespace SocialNetworkForPets.Data
 {
     public class AppDbContext : DbContext
     {

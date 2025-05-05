@@ -1,11 +1,13 @@
 using Microsoft.EntityFrameworkCore;
-using TestApp.Data;
+using SocialNetworkForPets.Helper;
+using System.Threading.Tasks;
+using SocialNetworkForPets.Data;
 
 namespace SocialNetworkForPets
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +19,14 @@ namespace SocialNetworkForPets
             builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(DbConnectionString));
 
             var app = builder.Build();
+
+            //Seed database with initial data
+            using (var scope = app.Services.CreateScope()) 
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                await dbContext.Database.MigrateAsync();
+                await DbInitializer.SeedAsync(dbContext);
+            }
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
