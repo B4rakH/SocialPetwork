@@ -19,9 +19,12 @@ namespace SocialNetworkForPets.Data
         public DbSet<Comment> Comment { get; set; }
         public DbSet<Friendship> Friendship { get; set; }
 
+        public DbSet <Like> Like { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
+            
+            
             //Friendship Key Adding & Relations
             modelBuilder.Entity<Friendship>()
                 .HasKey(f => new { f.User1Id, f.User2Id });
@@ -72,6 +75,23 @@ namespace SocialNetworkForPets.Data
                 .WithOne(c => c.Post)
                 .HasForeignKey(c => c.PostId)
                 .OnDelete(DeleteBehavior.NoAction);
+            
+
+            //Like Relations
+            modelBuilder.Entity<Like>()
+                .HasKey(l => new { l.PostId, l.UserId });
+
+            modelBuilder.Entity<Like>()
+                .HasOne(p => p.User)
+                .WithMany(p => p.Likes)
+                .HasForeignKey(u => u.UserId);
+
+            modelBuilder.Entity<Like>()
+                .HasOne(p => p.Post)
+                .WithMany(p => p.Likes)
+                .HasForeignKey(u => u.PostId);
+
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

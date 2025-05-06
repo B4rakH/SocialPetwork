@@ -12,8 +12,6 @@ namespace SocialNetworkForPets.Data.Models
 
         public string PostImgUrl { get; set; } = "";
 
-        public int PostLikes { get; set; } = 0;
-
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         //Foreign Key
@@ -23,5 +21,7 @@ namespace SocialNetworkForPets.Data.Models
         public User Poster { get; set; }
 
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();
+
+        public ICollection<Like> Likes { get; set; } = new List<Like>();
     }
 }

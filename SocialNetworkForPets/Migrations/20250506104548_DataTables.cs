@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace SocialNetworkForPets.Migrations
 {
     /// <inheritdoc />
-    public partial class Datas : Migration
+    public partial class DataTables : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -119,6 +119,31 @@ namespace SocialNetworkForPets.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Like",
+                columns: table => new
+                {
+                    PostId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    LikeId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Like", x => new { x.PostId, x.UserId });
+                    table.ForeignKey(
+                        name: "FK_Like_Post_PostId",
+                        column: x => x.PostId,
+                        principalTable: "Post",
+                        principalColumn: "PostId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Like_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Comment_PostId",
                 table: "Comment",
@@ -133,6 +158,11 @@ namespace SocialNetworkForPets.Migrations
                 name: "IX_Friendship_User2Id",
                 table: "Friendship",
                 column: "User2Id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Like_UserId",
+                table: "Like",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Pet_OwnerId",
@@ -153,6 +183,9 @@ namespace SocialNetworkForPets.Migrations
 
             migrationBuilder.DropTable(
                 name: "Friendship");
+
+            migrationBuilder.DropTable(
+                name: "Like");
 
             migrationBuilder.DropTable(
                 name: "Pet");

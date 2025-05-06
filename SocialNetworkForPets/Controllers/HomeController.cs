@@ -11,6 +11,8 @@ namespace SocialNetworkForPets.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly AppDbContext _context;
+        //Get the logged by UserId
+        public int loggedInUser = 1;
 
         public HomeController(ILogger<HomeController> logger, AppDbContext context)
         {
@@ -23,6 +25,7 @@ namespace SocialNetworkForPets.Controllers
         {
             var allPosts = await _context.Post
                 .Include(u => u.Poster)
+                .Include(l => l.Likes)
                 .OrderByDescending(p => p.CreatedAt)
                 .ToListAsync();
 
@@ -35,8 +38,6 @@ namespace SocialNetworkForPets.Controllers
         //Creating New Post
         public async Task<IActionResult> CreatePost(PostVM post)
         {
-            //Get the logged by UserId
-            int loggedInUser = 8;
 
             //Setting variables
             var newPost = new Post
@@ -47,7 +48,6 @@ namespace SocialNetworkForPets.Controllers
             };
 
 
-            //TODO: Dosyayý images klasörüne atýp yolunu çýkararak PostImgUrl deðerine ata ve <img> ile açýlmasýný saðla
             //Checking The file Upload if exists
             if (post.Image != null && post.Image.Length > 0) 
             {
@@ -71,6 +71,32 @@ namespace SocialNetworkForPets.Controllers
 
             //Add to the database
             await _context.Post.AddAsync(newPost);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> TogglePostLike(PostLikeVM postLikes) 
+        {
+            var like = await _context.Like
+                .Where(l => l.PostId == postLikes.PostId && l.UserId == loggedInUser)
+                .FirstOrDefaultAsync();
+
+            if (like != null) 
+            {
+                _context.Like.Remove(like);
+            }
+            else
+            {
+                var newLike = new Like()
+                {
+                    PostId = postLikes.PostId,
+                    UserId = loggedInUser
+                };
+                
+                await _context.Like.AddAsync(newLike);
+            }
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Index");

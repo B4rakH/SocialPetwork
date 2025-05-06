@@ -12,8 +12,8 @@ using SocialNetworkForPets.Data;
 namespace SocialNetworkForPets.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250505193215_Datas")]
-    partial class Datas
+    [Migration("20250506104548_DataTables")]
+    partial class DataTables
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -65,6 +65,24 @@ namespace SocialNetworkForPets.Migrations
                     b.HasIndex("User2Id");
 
                     b.ToTable("Friendship");
+                });
+
+            modelBuilder.Entity("SocialNetworkForPets.Data.Models.Like", b =>
+                {
+                    b.Property<int>("PostId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LikeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PostId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Like");
                 });
 
             modelBuilder.Entity("SocialNetworkForPets.Data.Models.Pet", b =>
@@ -187,6 +205,25 @@ namespace SocialNetworkForPets.Migrations
                     b.Navigation("User2");
                 });
 
+            modelBuilder.Entity("SocialNetworkForPets.Data.Models.Like", b =>
+                {
+                    b.HasOne("SocialNetworkForPets.Data.Models.Post", "Post")
+                        .WithMany("Likes")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SocialNetworkForPets.Data.Models.User", "User")
+                        .WithMany("Likes")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("SocialNetworkForPets.Data.Models.Pet", b =>
                 {
                     b.HasOne("SocialNetworkForPets.Data.Models.User", "Owner")
@@ -212,11 +249,15 @@ namespace SocialNetworkForPets.Migrations
             modelBuilder.Entity("SocialNetworkForPets.Data.Models.Post", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("Likes");
                 });
 
             modelBuilder.Entity("SocialNetworkForPets.Data.Models.User", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("Likes");
 
                     b.Navigation("PetsOwned");
 
