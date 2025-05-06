@@ -12,7 +12,7 @@ namespace SocialNetworkForPets.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly AppDbContext _context;
         //Get the logged by UserId
-        public int loggedInUser = 1;
+        public int loggedInUserId = 1;
 
         public HomeController(ILogger<HomeController> logger, AppDbContext context)
         {
@@ -26,6 +26,7 @@ namespace SocialNetworkForPets.Controllers
             var allPosts = await _context.Post
                 .Include(p => p.Poster)
                 .Include(p => p.Likes)
+                .Include(p => p.Favorites)
                 .Include(p => p.Comments).ThenInclude(c => c.User)
                 .OrderByDescending(p => p.CreatedAt)
                 .ToListAsync();
@@ -45,7 +46,7 @@ namespace SocialNetworkForPets.Controllers
             {
                 PostText = post.PostText,
                 CreatedAt = DateTime.Now,
-                PosterId = loggedInUser,
+                PosterId = loggedInUserId,
             };
 
 
@@ -81,7 +82,7 @@ namespace SocialNetworkForPets.Controllers
         public async Task<IActionResult> TogglePostLike(PostLikeVM postLikes) 
         {
             var like = await _context.Like
-                .Where(l => l.PostId == postLikes.PostId && l.UserId == loggedInUser)
+                .Where(l => l.PostId == postLikes.PostId && l.UserId == loggedInUserId)
                 .FirstOrDefaultAsync();
 
             if (like != null) 
@@ -93,10 +94,36 @@ namespace SocialNetworkForPets.Controllers
                 var newLike = new Like()
                 {
                     PostId = postLikes.PostId,
-                    UserId = loggedInUser
+                    UserId = loggedInUserId
                 };
                 
                 await _context.Like.AddAsync(newLike);
+            }
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> TogglePostFavorite(PostFavoriteVM postFavorites)
+        {
+            var favorite = await _context.Favorite
+                .Where(l => l.PostId == postFavorites.PostId && l.UserId == loggedInUserId)
+                .FirstOrDefaultAsync();
+
+            if (favorite != null)
+            {
+                _context.Favorite.Remove(favorite);
+            }
+            else
+            {
+                var newFavorite = new Favorite()
+                {
+                    PostId = postFavorites.PostId,
+                    UserId = loggedInUserId
+                };
+
+                await _context.Favorite.AddAsync(newFavorite);
             }
             await _context.SaveChangesAsync();
 
@@ -109,7 +136,7 @@ namespace SocialNetworkForPets.Controllers
             var newComment = new Comment()
             {
                 PostId = commentVM.PostId,
-                UserId = loggedInUser,
+                UserId = loggedInUserId,
                 CommentText = commentVM.CommentText
             };
             await _context.Comment.AddAsync(newComment);
@@ -117,6 +144,7 @@ namespace SocialNetworkForPets.Controllers
 
             return RedirectToAction("Index");
         }
+
         [HttpPost]
         public async Task<IActionResult> DeleteComment (RemoveCommentVM commentVM)
         {
@@ -129,5 +157,21 @@ namespace SocialNetworkForPets.Controllers
             }
             return RedirectToAction("Index");
         }
+        [HttpPost]
+        public async Task<IActionResult> RemovePost(PostRemoveVM postVM)
+        {
+            var postDb = await _context.Post.FirstOrDefaultAsync(p => p.PostId == postVM.PostId);
+            
+            if (postDb != null)
+            {
+                //If post has comments, delete one by one first
+                foreach(var comment in _context.Comment.Where(c => c.PostId == postDb.PostId)) _context.Comment.Remove(comment);
+                
+                _context.Post.Remove(postDb);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction("Index");
+        }
+
     }
 }

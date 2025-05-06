@@ -10,6 +10,9 @@
         var t when t.TotalMinutes >= 1 => $"{(int)t.TotalMinutes} min ago",
         _ => "Just now"
     };
+
+    bool isLiked = Model.Likes.Any(u => u.UserId == 1);
+    bool isFavorited = Model.Favorites.Any(u => u.UserId == 1);
 }
 
 <div class="bg-white rounded-xl shadow-sm md:p-4 p-2 space-y-4 text-sm font-medium border1">
@@ -38,8 +41,9 @@
         <div class="-mr-1">
             <button type="button" class="button-icon w-8 h-8"> <ion-icon class="text-xl" name="ellipsis-horizontal"></ion-icon> </button>
             <div class="w-[245px] post-options-dropdown" uk-dropdown="pos: bottom-right; animation: uk-animation-scale-up uk-transform-origin-top-right; animate-out: true; mode: click">
-                <form>
-                    <button type="button" class="text-red-400 hover:!bg-red-50 delete-post-btn">
+                <form asp-controller="Home" asp-action="RemovePost">
+                    <input type="hidden" name="PostId" value="@Model.PostId" />
+                    <button type="submit" class="text-red-400 hover:!bg-red-50 delete-post-btn">
                         <ion-icon name="trash-bin-outline"></ion-icon>  Delete Post
                     </button>
                 </form>
@@ -70,8 +74,8 @@
             <div class="flex items-center gap-2.5">
                 <form asp-controller="Home" asp-action="TogglePostLike">
                     <input type="hidden" name="PostId" value="@Model.PostId" />
-                    <button type="submit" class="button-icon text-red-500">
-                        <ion-icon class="text-lg" name="@(Model.Likes.Any(u => u.UserId == 1) ? "heart" : "heart-outline" )"></ion-icon>
+                    <button type="submit" class="button-icon @(isLiked ? "text-red-500 bg-red-100" : "")">
+                        <ion-icon class="text-lg" name="@(isLiked ? "heart" : "heart-outline" )"></ion-icon>
                     </button>
                 </form>
                 <a href="#">@Model.Likes.Count</a>
@@ -83,6 +87,21 @@
                 <ion-icon class="text-lg" name="chatbubble-ellipses-outline"></ion-icon>
             </a>
             <a href="#">@Model.Comments.Count</a>
+        </div>
+
+        <div class="ml-auto"></div>
+
+        <div class="flex items-center gap-2">
+            <form asp-controller="Home" asp-action="TogglePostFavorite">
+                <input type="hidden" name="PostId" value="@Model.PostId" />
+                <button type="submit" class="button-icon ml-auto text-blue-500 bt-blue-100">
+                    <ion-icon class="text-lg" name="@(isFavorited ? "heart" : "heart-outline" )"></ion-icon>
+                </button>
+            </form>
+            @if (Model.Favorites.Count > 0)
+            {
+                <a href="#">@Model.Favorites.Count</a>
+            }
         </div>
     </div>
     @*Add Comment Sect*@

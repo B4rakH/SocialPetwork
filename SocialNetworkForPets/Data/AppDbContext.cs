@@ -17,8 +17,10 @@ namespace SocialNetworkForPets.Data
 
         //public DbSet<Administrator> Admin { get; set; }
         public DbSet<Comment> Comment { get; set; }
+
         public DbSet<Friendship> Friendship { get; set; }
 
+        public DbSet <Favorite> Favorite { get; set; }
         public DbSet <Like> Like { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -67,14 +69,15 @@ namespace SocialNetworkForPets.Data
             modelBuilder.Entity<User>()
                 .HasMany(p => p.Comments)
                 .WithOne(c => c.User)
-                .HasForeignKey(c => c.UserId);
+                .HasForeignKey(c => c.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             //Post-Comment Relation
             modelBuilder.Entity<Post>()
                 .HasMany(p => p.Comments)
                 .WithOne(c => c.Post)
                 .HasForeignKey(c => c.PostId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Cascade);
             
 
             //Like Relations
@@ -90,6 +93,22 @@ namespace SocialNetworkForPets.Data
                 .HasOne(p => p.Post)
                 .WithMany(p => p.Likes)
                 .HasForeignKey(u => u.PostId);
+
+            //Favorite Relations
+            modelBuilder.Entity<Favorite>()
+                .HasKey(l => new { l.PostId, l.UserId });
+
+            modelBuilder.Entity<Favorite>()
+                .HasOne(f => f.Post)
+                .WithMany(p => p.Favorites)
+                .HasForeignKey(f => f.PostId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Favorite>()
+                .HasOne(f => f.User)
+                .WithMany(u => u.Favorites)
+                .HasForeignKey(f => f.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             base.OnModelCreating(modelBuilder);
         }

@@ -13,6 +13,8 @@ namespace SocialNetworkForPets.Data.Models
 
         public string? UserImgUrl { get; set; }
 
+        //public bool IsDeleted { get; set; }
+
         public ICollection<Post> Posts { get; set; } = new List<Post>();
 
         public ICollection<Pet> PetsOwned { get; set; } = new List<Pet>();
@@ -20,5 +22,7 @@ namespace SocialNetworkForPets.Data.Models
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
         public ICollection<Like> Likes { get; set; } = new List<Like>();
+
+        public ICollection<Favorite> Favorites { get; set; } = new List<Favorite>();
     }
 }
