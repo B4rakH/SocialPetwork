@@ -24,8 +24,9 @@ namespace SocialNetworkForPets.Controllers
         public async Task<IActionResult> Index()
         {
             var allPosts = await _context.Post
-                .Include(u => u.Poster)
-                .Include(l => l.Likes)
+                .Include(p => p.Poster)
+                .Include(p => p.Likes)
+                .Include(p => p.Comments).ThenInclude(c => c.User)
                 .OrderByDescending(p => p.CreatedAt)
                 .ToListAsync();
 
@@ -99,6 +100,33 @@ namespace SocialNetworkForPets.Controllers
             }
             await _context.SaveChangesAsync();
 
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task <IActionResult> AddComment (CommentVM commentVM)
+        {
+            var newComment = new Comment()
+            {
+                PostId = commentVM.PostId,
+                UserId = loggedInUser,
+                CommentText = commentVM.CommentText
+            };
+            await _context.Comment.AddAsync(newComment);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index");
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteComment (RemoveCommentVM commentVM)
+        {
+            var commentDb = await _context.Comment
+                .FirstOrDefaultAsync(c => c.CommentId == commentVM.CommentId);
+            if (commentDb != null) 
+            {
+                _context.Comment.Remove(commentDb);
+                await _context.SaveChangesAsync();
+            }
             return RedirectToAction("Index");
         }
     }
