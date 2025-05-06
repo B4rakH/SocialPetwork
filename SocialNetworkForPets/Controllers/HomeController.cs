@@ -35,40 +35,41 @@ namespace SocialNetworkForPets.Controllers
         //Creating New Post
         public async Task<IActionResult> CreatePost(PostVM post)
         {
-            int loogedInUser = 1;
+            //Get the logged by UserId
+            int loggedInUser = 8;
 
             //Setting variables
             var newPost = new Post
             {
                 PostText = post.PostText,
                 CreatedAt = DateTime.Now,
-                PosterId = loogedInUser,
+                PosterId = loggedInUser,
             };
 
+
+            //TODO: Dosyayý images klasörüne atýp yolunu çýkararak PostImgUrl deðerine ata ve <img> ile açýlmasýný saðla
             //Checking The file Upload if exists
             if (post.Image != null && post.Image.Length > 0) 
             {
-                var rootFolderPath = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot");
+                string rootFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
 
                 if (post.Image.ContentType.Contains("image"))
                 {
-                    var rootFolderPathImages = Path.Combine(rootFolderPath, "images");
+                    string rootFolderPathImages = Path.Combine(rootFolderPath, "images/uploaded");
                     Directory.CreateDirectory(rootFolderPathImages);
                     
-                    var imgFileName = $"{Guid.NewGuid().ToString()}{Path.GetExtension(post.Image.FileName)}";
-                    var imgFilePath = Path.Combine(rootFolderPathImages, imgFileName);
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(post.Image.FileName);
+                    string filePath = Path.Combine(rootFolderPathImages, fileName);
 
-                    using (var stream = new FileStream(imgFilePath, FileMode.Create)) 
+                    using (var stream = new FileStream(filePath, FileMode.Create)) 
                         await post.Image.CopyToAsync(stream);
 
-                    //Set the URL to the newPost object
-                    newPost.PostImgUrl = $"/images/{imgFilePath}";
-                    
+                    newPost.PostImgUrl = "/images/uploaded/" + fileName;
                 }
 
             }
 
-
+            //Add to the database
             await _context.Post.AddAsync(newPost);
             await _context.SaveChangesAsync();
 
