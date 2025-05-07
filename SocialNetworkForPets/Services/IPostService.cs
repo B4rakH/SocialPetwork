@@ -1,0 +1,21 @@
+﻿using SocialNetworkForPets.Data.Models;
+
+namespace SocialNetworkForPets.Services
+{
+    public interface IPostService
+    {
+        Task<List<Post>> GetAllPostsAsync(int UserId);
+
+        Task<Post> CreatePostAsync(Post post, IFormFile image);
+
+        Task AddPostCommentAsync(Comment comment);
+
+        Task RemovePostCommentAsync(int CommentId);
+
+        Task<Post> RemovePostAsync(int PostId);
+
+        Task TogglePostLikeAsync(int PostId,int UserId);
+
+        Task TogglePostFavoriteAsync(int PostId, int UserId);
+    }
+}

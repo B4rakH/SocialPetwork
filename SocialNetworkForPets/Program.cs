@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using SocialNetworkForPets.Helper;
 using System.Threading.Tasks;
 using SocialNetworkForPets.Data;
+using SocialNetworkForPets.Services;
 
 namespace SocialNetworkForPets
 {
@@ -14,9 +15,13 @@ namespace SocialNetworkForPets
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
-            //Database Configuraiton
+            //Database Configuration
             string DbConnectionString = builder.Configuration.GetConnectionString("Default");
             builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(DbConnectionString));
+
+            //Configuration of services
+            builder.Services.AddScoped<IPostService, PostService>();
+            builder.Services.AddScoped<IHashtagService, HashtagService>();
 
             var app = builder.Build();
 
