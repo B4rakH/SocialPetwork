@@ -9,7 +9,8 @@
   <ItemGroup>
     <Folder Include="Migrations\" />
     <Folder Include="wwwroot\images\Avatar\" />
-    <Folder Include="wwwroot\images\uploaded\" />
+    <Folder Include="wwwroot\images\uploaded\cover\" />
+    <Folder Include="wwwroot\images\uploaded\profile\" />
   </ItemGroup>
 
   <ItemGroup>

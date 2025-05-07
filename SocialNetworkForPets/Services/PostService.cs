@@ -2,6 +2,7 @@
 using SocialNetworkForPets.Data;
 using SocialNetworkForPets.Data.Models;
 using SocialNetworkForPets.Helper;
+using SocialNetworkForPets.Helper.Enums;
 using SocialNetworkForPets.ViewModels.Home;
 
 namespace SocialNetworkForPets.Services
@@ -32,28 +33,8 @@ namespace SocialNetworkForPets.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Post> CreatePostAsync(Post post, IFormFile image)
+        public async Task<Post> CreatePostAsync(Post post)
         {
-            //Checking The file Upload if exists
-            if (image != null && image.Length > 0)
-            {
-                string rootFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-
-                if (image.ContentType.Contains("image"))
-                {
-                    string rootFolderPathImages = Path.Combine(rootFolderPath, "images/uploaded");
-                    Directory.CreateDirectory(rootFolderPathImages);
-
-                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
-                    string filePath = Path.Combine(rootFolderPathImages, fileName);
-
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                        await image.CopyToAsync(stream);
-
-                    post.PostImgUrl = "/images/uploaded/" + fileName;
-                }
-
-            }
             await _context.Post.AddAsync(post);
             await _context.SaveChangesAsync();
 

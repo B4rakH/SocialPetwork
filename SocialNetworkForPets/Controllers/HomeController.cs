@@ -6,6 +6,7 @@ using SocialNetworkForPets.Data.Models;
 using SocialNetworkForPets.ViewModels.Home;
 using SocialNetworkForPets.Helper;
 using SocialNetworkForPets.Services;
+using SocialNetworkForPets.Helper.Enums;
 
 namespace SocialNetworkForPets.Controllers
 {
@@ -15,6 +16,7 @@ namespace SocialNetworkForPets.Controllers
         private readonly AppDbContext _context;
         private readonly IPostService _postService;
         private readonly IHashtagService _hashtagService;
+        private readonly IFileService _fileService;
 
         //Get the logged by UserId
         public int loggedInUserId = 1;
@@ -23,12 +25,14 @@ namespace SocialNetworkForPets.Controllers
             (ILogger<HomeController> logger,
                 AppDbContext context,
                     IPostService postService,
-                        IHashtagService hashtagService)
+                        IHashtagService hashtagService,
+                            IFileService fileService)
         {
             _logger = logger;
             _context = context;
             _postService = postService;
             _hashtagService = hashtagService;
+            _fileService = fileService;
         }
 
         //Listing All Posts 
@@ -45,16 +49,17 @@ namespace SocialNetworkForPets.Controllers
         //Creating New Post
         public async Task<IActionResult> CreatePost(PostVM post)
         {
-
+            var imageUploadPath = await _fileService.UploadImageAsync(post.Image, ImageFileType.PostImage);
             //Setting variables
             var newPost = new Post
             {
                 PostText = post.PostText,
                 CreatedAt = DateTime.Now,
                 PosterId = loggedInUserId,
+                PostImgUrl = imageUploadPath
             };
 
-            await _postService.CreatePostAsync(newPost, post.Image);
+            await _postService.CreatePostAsync(newPost);
             await _hashtagService.HashtagsInNewPostAsync(post.PostText);
 
             return RedirectToAction("Index");

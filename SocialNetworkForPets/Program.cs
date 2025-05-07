@@ -22,6 +22,7 @@ namespace SocialNetworkForPets
             //Configuration of services
             builder.Services.AddScoped<IPostService, PostService>();
             builder.Services.AddScoped<IHashtagService, HashtagService>();
+            builder.Services.AddScoped<IFileService, FileService>();
 
             var app = builder.Build();
 

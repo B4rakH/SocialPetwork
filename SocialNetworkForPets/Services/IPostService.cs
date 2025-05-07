@@ -6,7 +6,7 @@ namespace SocialNetworkForPets.Services
     {
         Task<List<Post>> GetAllPostsAsync(int UserId);
 
-        Task<Post> CreatePostAsync(Post post, IFormFile image);
+        Task<Post> CreatePostAsync(Post post);
 
         Task AddPostCommentAsync(Comment comment);
 

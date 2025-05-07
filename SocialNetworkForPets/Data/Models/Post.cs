@@ -14,8 +14,6 @@ namespace SocialNetworkForPets.Data.Models
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
-        //public bool IsDeleted { get; set; }
-
         //Foreign Key
         [ForeignKey("User")]
         public int PosterId { get; set; }
