@@ -23,6 +23,7 @@ namespace SocialNetworkForPets.Data
         public DbSet <Favorite> Favorite { get; set; }
         public DbSet <Like> Like { get; set; }
 
+        public DbSet<Hashtag> Hashtag { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             

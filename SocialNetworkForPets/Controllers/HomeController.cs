@@ -4,6 +4,7 @@ using System.Diagnostics;
 using SocialNetworkForPets.Data;
 using SocialNetworkForPets.Data.Models;
 using SocialNetworkForPets.ViewModels.Home;
+using SocialNetworkForPets.Helper;
 
 namespace SocialNetworkForPets.Controllers
 {
@@ -74,6 +75,27 @@ namespace SocialNetworkForPets.Controllers
             //Add to the database
             await _context.Post.AddAsync(newPost);
             await _context.SaveChangesAsync();
+
+            //Finding and storing tags
+            var postHashTags = HashtagHelper.GetHashtags(post.PostText);
+            foreach (var tag in postHashTags) 
+            {
+                var hashtagDb = await _context.Hashtag.FirstOrDefaultAsync(t => t.TagText == tag);
+                if(hashtagDb != null)
+                {
+                    hashtagDb.TagCount++;
+                }
+                else
+                {
+                    var newHashtag = new Hashtag()
+                    {
+                        TagText = tag,
+                        TagCount = 1
+                    };
+                    await _context.Hashtag.AddAsync(newHashtag);
+                }
+                await _context.SaveChangesAsync();
+            }
 
             return RedirectToAction("Index");
         }
