@@ -17,5 +17,17 @@ namespace SocialNetworkForPets.Services
         {
             return await _context.User.FirstOrDefaultAsync(u => u.UserId == UserId) ?? new User();
         }
+
+        public async Task UpdateProfilePicture(int UserId, string pictureUrl)
+        {
+            var userDb = await _context.User.FirstOrDefaultAsync(u => u.UserId == UserId);
+            if (userDb != null) 
+            {
+                userDb.UserImgUrl = pictureUrl;
+                _context.User.Update(userDb);
+                await _context.SaveChangesAsync();
+            }
+
+        }
     }
 }
