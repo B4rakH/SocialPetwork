@@ -27,6 +27,23 @@ namespace SocialNetworkForPets.Services
             return allPosts;
         }
 
+        public async Task<List<Post>> GetAllFavoritePostsAsync(int UserId)
+        {
+            var allFavoritedPosts = await _context.Favorite
+                .Include(f => f.Post.Poster)
+                .Include(f => f.Post.Comments)
+                    .ThenInclude(c => c.User)
+                .Include(f => f.Post.Likes)
+                .Include(f => f.Post.Favorites)
+                .Where(n => n.UserId == UserId)
+                .OrderByDescending(f => f.Post.CreatedAt)
+                .Select(n => n.Post)
+                .ToListAsync();
+
+            return allFavoritedPosts;
+
+        }
+
         public async Task AddPostCommentAsync(Comment comment)
         {
             await _context.Comment.AddAsync(comment);

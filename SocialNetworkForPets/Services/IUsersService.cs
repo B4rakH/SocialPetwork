@@ -1,0 +1,11 @@
+﻿using SocialNetworkForPets.Data.Models;
+
+namespace SocialNetworkForPets.Services
+{
+    public interface IUsersService
+    {
+        Task<User> GetUserAsync(int UserId);
+
+
+    }
+}

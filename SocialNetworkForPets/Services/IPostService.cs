@@ -6,6 +6,8 @@ namespace SocialNetworkForPets.Services
     {
         Task<List<Post>> GetAllPostsAsync(int UserId);
 
+        Task<List<Post>> GetAllFavoritePostsAsync(int UserId);
+
         Task<Post> CreatePostAsync(Post post);
 
         Task AddPostCommentAsync(Comment comment);
@@ -17,5 +19,6 @@ namespace SocialNetworkForPets.Services
         Task TogglePostLikeAsync(int PostId,int UserId);
 
         Task TogglePostFavoriteAsync(int PostId, int UserId);
+
     }
 }

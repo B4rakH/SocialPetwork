@@ -65,17 +65,18 @@
                         <div class="p-4 py-5 flex items-center gap-4">
                             <img src="~/images/avatar/user.png" class="w-10 h-10 rounded-full" />
                             <div class="flex-1">
-                                <h4 class="text-sm font-medium text-black">User Name</h4>
-                                <div class="text-sm mt-1 text-blue-600 font-light/70">user_name</div>
+                                <h4 class="text-sm font-medium text-black">Full Name</h4>
+                               <div class="text-sm mt-1 text-blue-600 font-light/70">user_name</div>
                             </div>
                         </div>
                     </a>
                     <hr />
                     <nav>
-                        <a class="flex items-center gap-2.5 hover:bg-secondery p-2 px-2.5 rounded-md">
+                        <a asp-controller="Settings" asp-action="Index">
+                        <div class="flex items-center gap-2.5 hover:bg-secondery p-2 px-2.5 rounded-md">
                             <ion-icon name="settings-outline" class="text-lg"></ion-icon> My Account
+                        </div>
                         </a>
-                        <hr />
                         <a class="flex items-center gap-2.5 hover:bg-secondery p-2 px-2.5 rounded-md">
                             <ion-icon name="exit-outline" class="text-lg"></ion-icon> Log Out
                         </a>

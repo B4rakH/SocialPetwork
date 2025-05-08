@@ -33,7 +33,7 @@
         @*Post Date*@
         <div class="flex-1">
             <a>
-                <h4 class="text-black">@Model.Poster.UserName</h4>
+                <h4 class="text-black">@Model.Poster.UserFullName</h4>
                 <div class="text-xs text-gray-500/80">@displayTime</div>
             </a>
         </div>
@@ -123,7 +123,7 @@
                     <div class="flex-1">
                         <div class="flex justify-content-between">
                             <a class="text-black font-medium inline-block flex-grow">
-                                @comment.User.UserName
+                                @comment.User.UserFullName
                             </a>
                         </div>
                         <div class="flex items-center justify-between">
