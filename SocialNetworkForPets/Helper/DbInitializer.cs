@@ -11,9 +11,11 @@ namespace SocialNetworkForPets.Helper
             {
                 var newUser = new User()
                 {
-                    UserName = "Hugo Martin",
+                    UserFullName = "Hugo Martin",
+                    UserMail = "hugo@mail.com",
                     UserImgUrl = "",
-                    UserPassword = ""
+                    UserPassword = "",
+                    UserRole = "Person"
                 };
                 await context.User.AddAsync(newUser);
                 await context.SaveChangesAsync();

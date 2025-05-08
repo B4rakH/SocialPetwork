@@ -12,8 +12,8 @@ using SocialNetworkForPets.Data;
 namespace SocialNetworkForPets.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250506195527_Post")]
-    partial class Post
+    [Migration("20250508232152_Data")]
+    partial class Data
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -83,6 +83,26 @@ namespace SocialNetworkForPets.Migrations
                     b.HasIndex("User2Id");
 
                     b.ToTable("Friendship");
+                });
+
+            modelBuilder.Entity("SocialNetworkForPets.Data.Models.Hashtag", b =>
+                {
+                    b.Property<int>("HashtagId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("HashtagId"));
+
+                    b.Property<int>("TagCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TagText")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("HashtagId");
+
+                    b.ToTable("Hashtag");
                 });
 
             modelBuilder.Entity("SocialNetworkForPets.Data.Models.Like", b =>
@@ -166,14 +186,22 @@ namespace SocialNetworkForPets.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
 
+                    b.Property<string>("UserFullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("UserImgUrl")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserName")
+                    b.Property<string>("UserMail")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserPassword")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserRole")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

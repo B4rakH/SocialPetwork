@@ -13,9 +13,6 @@ namespace SocialNetworkForPets.Data
         public DbSet<Post> Post { get; set; }
         public DbSet<Pet> Pet { get; set; }
 
-        //public DbSet<PetOwner> PetOwner { get; set; }
-
-        //public DbSet<Administrator> Admin { get; set; }
         public DbSet<Comment> Comment { get; set; }
 
         public DbSet<Friendship> Friendship { get; set; }
@@ -43,14 +40,6 @@ namespace SocialNetworkForPets.Data
                 .WithMany()
                 .HasForeignKey(f => f.User2Id)
                 .OnDelete(DeleteBehavior.ClientNoAction);
-
-            ////Admin Adding Key
-            //modelBuilder.Entity<Administrator>()
-            //    .HasKey(ad => new { ad.AdminId });
-
-            ////PetOwner Adding Key
-            //modelBuilder.Entity<PetOwner>()
-            //    .HasKey(po => new { po.OwnerId });
 
             //User-Post Relation
             modelBuilder.Entity<User>()

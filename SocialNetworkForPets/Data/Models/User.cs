@@ -9,13 +9,13 @@ namespace SocialNetworkForPets.Data.Models
 
         public string UserFullName { get; set; }
 
-        public string UserName { get; set; }
+        public string UserMail { get; set; }
 
         public string UserPassword { get; set; }
 
         public string? UserImgUrl { get; set; }
 
-        //public bool IsDeleted { get; set; }
+        public string UserRole { get; set; }
 
         public ICollection<Post> Posts { get; set; } = new List<Post>();
 

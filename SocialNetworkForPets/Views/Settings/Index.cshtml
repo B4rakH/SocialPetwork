@@ -37,7 +37,7 @@
 
                     <div>
                         <h3 class="text-base font-semibold text-black">@Model.UserFullName</h3>
-                        <p class="text-sm text-blue-600 mt-1 font-normal">@Model.UserName</p>
+                        <p class="text-sm text-blue-600 mt-1 font-normal">@Model.UserMail</p>
                     </div>
 
                     <button type="submit" id="btnSave"
@@ -73,15 +73,15 @@
                             } *@
 
                             <div class="flex items-center gap-10">
-                                <label class="w-32 text-right">User Name</label>
+                                <label class="w-32 text-right">Full Name</label>
                                 <div class="flex-1">
-                                    <input value="@Model.UserFullName" type="text" name="FullName" placeholder="Enter your full name" class="w-full" />
+                                    <input value="@Model.UserFullName" type="text" name="UserFullName" placeholder="Enter your full name" class="w-full" />
                                 </div>
                             </div>
                             <div class="flex items-center gap-10">
-                                <label class="w-32 text-right">Username</label>
+                                <label class="w-32 text-right">Mail</label>
                                 <div class="flex-1">
-                                    <input value="@Model.UserName" type="text" name="UserName" placeholder="Enter your username" class="w-full" />
+                                    <input value="@Model.UserMail" type="text" name="UserMail" placeholder="Enter your mail" class="w-full" />
                                 </div>
                             </div>
                             <div class="flex items-center gap-4 mt-16 pl-[10.5rem]">
