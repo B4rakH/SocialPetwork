@@ -8,8 +8,8 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
-    <Folder Include="wwwroot\images\avatar\" />
     <Folder Include="wwwroot\images\uploaded\cover\" />
+    <Folder Include="wwwroot\images\uploaded\post\" />
     <Folder Include="wwwroot\images\uploaded\profile\" />
     <Folder Include="wwwroot\post\" />
   </ItemGroup>

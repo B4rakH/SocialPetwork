@@ -12,8 +12,8 @@ using SocialNetworkForPets.Data;
 namespace SocialNetworkForPets.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250508232152_Data")]
-    partial class Data
+    [Migration("20250509141414_Database")]
+    partial class Database
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -123,32 +123,6 @@ namespace SocialNetworkForPets.Migrations
                     b.ToTable("Like");
                 });
 
-            modelBuilder.Entity("SocialNetworkForPets.Data.Models.Pet", b =>
-                {
-                    b.Property<int>("PetId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PetId"));
-
-                    b.Property<int>("OwnerId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("PetBreed")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PetName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("PetId");
-
-                    b.HasIndex("OwnerId");
-
-                    b.ToTable("Pet");
-                });
-
             modelBuilder.Entity("SocialNetworkForPets.Data.Models.Post", b =>
                 {
                     b.Property<int>("PostId")
@@ -193,7 +167,7 @@ namespace SocialNetworkForPets.Migrations
                     b.Property<string>("UserImgUrl")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserMail")
+                    b.Property<string>("UserName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -201,7 +175,7 @@ namespace SocialNetworkForPets.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserRole")
+                    b.Property<string>("UserRank")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -278,23 +252,12 @@ namespace SocialNetworkForPets.Migrations
                     b.HasOne("SocialNetworkForPets.Data.Models.User", "User")
                         .WithMany("Likes")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Post");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("SocialNetworkForPets.Data.Models.Pet", b =>
-                {
-                    b.HasOne("SocialNetworkForPets.Data.Models.User", "Owner")
-                        .WithMany("PetsOwned")
-                        .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Owner");
                 });
 
             modelBuilder.Entity("SocialNetworkForPets.Data.Models.Post", b =>
@@ -324,8 +287,6 @@ namespace SocialNetworkForPets.Migrations
                     b.Navigation("Favorites");
 
                     b.Navigation("Likes");
-
-                    b.Navigation("PetsOwned");
 
                     b.Navigation("Posts");
                 });

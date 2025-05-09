@@ -10,17 +10,19 @@ namespace SocialNetworkForPets.Data
 
         }
         public DbSet<User> User { get; set; }
+
         public DbSet<Post> Post { get; set; }
-        public DbSet<Pet> Pet { get; set; }
 
         public DbSet<Comment> Comment { get; set; }
 
         public DbSet<Friendship> Friendship { get; set; }
 
         public DbSet <Favorite> Favorite { get; set; }
+
         public DbSet <Like> Like { get; set; }
 
         public DbSet<Hashtag> Hashtag { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             
@@ -48,13 +50,6 @@ namespace SocialNetworkForPets.Data
                 .HasForeignKey(p => p.PosterId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            //User-Pet Relation
-            modelBuilder.Entity<User>()
-                .HasMany(p => p.PetsOwned)
-                .WithOne(pt => pt.Owner)
-                .HasForeignKey(pt => pt.OwnerId)
-                .OnDelete(DeleteBehavior.Cascade);
-
             //User-Comment Relation
             modelBuilder.Entity<User>()
                 .HasMany(p => p.Comments)
@@ -77,12 +72,14 @@ namespace SocialNetworkForPets.Data
             modelBuilder.Entity<Like>()
                 .HasOne(p => p.User)
                 .WithMany(p => p.Likes)
-                .HasForeignKey(u => u.UserId);
+                .HasForeignKey(u => u.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Like>()
                 .HasOne(p => p.Post)
                 .WithMany(p => p.Likes)
-                .HasForeignKey(u => u.PostId);
+                .HasForeignKey(u => u.PostId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             //Favorite Relations
             modelBuilder.Entity<Favorite>()

@@ -11,18 +11,17 @@ namespace SocialNetworkForPets.Helper
             {
                 var newUser = new User()
                 {
-                    UserFullName = "Hugo Martin",
-                    UserMail = "hugo@mail.com",
+                    UserFullName = "Garfield",
+                    UserName = "garfield_cat",
                     UserImgUrl = "",
                     UserPassword = "",
-                    UserRole = "Person"
                 };
                 await context.User.AddAsync(newUser);
                 await context.SaveChangesAsync();
 
                 var newPostNoImg = new Post()
                 {
-                    PostText = "Which brand of cat food has the best quality?",
+                    PostText = "Where is my lasagna, John?",
                     CreatedAt = DateTime.UtcNow,
 
                     Poster = newUser

@@ -14,7 +14,7 @@
                             @if (string.IsNullOrEmpty(Model.UserImgUrl))
                             {
                                 <img id="imagePreview"
-                                     src="~/images/avatar/user.png"
+                                     src="~/images/avatar/avatar.png"
                                      class="object-cover w-full h-full rounded-full" alt="Profile Picture Placeholder" />
                             }
                             else
@@ -37,7 +37,7 @@
 
                     <div>
                         <h3 class="text-base font-semibold text-black">@Model.UserFullName</h3>
-                        <p class="text-sm text-blue-600 mt-1 font-normal">@Model.UserMail</p>
+                        <p class="text-sm text-blue-600 mt-1 font-normal">@Model.UserName</p>
                     </div>
 
                     <button type="submit" id="btnSave"
@@ -79,9 +79,9 @@
                                 </div>
                             </div>
                             <div class="flex items-center gap-10">
-                                <label class="w-32 text-right">Mail</label>
+                                <label class="w-32 text-right">User Name</label>
                                 <div class="flex-1">
-                                    <input value="@Model.UserMail" type="text" name="UserMail" placeholder="Enter your mail" class="w-full" />
+                                    <input value="@Model.UserName" type="text" name="UserName" placeholder="Enter your username" class="w-full" />
                                 </div>
                             </div>
                             <div class="flex items-center gap-4 mt-16 pl-[10.5rem]">

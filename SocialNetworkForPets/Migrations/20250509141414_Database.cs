@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace SocialNetworkForPets.Migrations
 {
     /// <inheritdoc />
-    public partial class Data : Migration
+    public partial class Database : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -32,10 +32,10 @@ namespace SocialNetworkForPets.Migrations
                     UserId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserFullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserMail = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserPassword = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserImgUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserRole = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    UserRank = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -63,27 +63,6 @@ namespace SocialNetworkForPets.Migrations
                         column: x => x.User2Id,
                         principalTable: "User",
                         principalColumn: "UserId");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Pet",
-                columns: table => new
-                {
-                    PetId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PetName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PetBreed = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OwnerId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Pet", x => x.PetId);
-                    table.ForeignKey(
-                        name: "FK_Pet_User_OwnerId",
-                        column: x => x.OwnerId,
-                        principalTable: "User",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -211,11 +190,6 @@ namespace SocialNetworkForPets.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Pet_OwnerId",
-                table: "Pet",
-                column: "OwnerId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Post_PosterId",
                 table: "Post",
                 column: "PosterId");
@@ -238,9 +212,6 @@ namespace SocialNetworkForPets.Migrations
 
             migrationBuilder.DropTable(
                 name: "Like");
-
-            migrationBuilder.DropTable(
-                name: "Pet");
 
             migrationBuilder.DropTable(
                 name: "Post");
