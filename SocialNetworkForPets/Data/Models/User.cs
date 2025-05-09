@@ -13,7 +13,7 @@ namespace SocialNetworkForPets.Data.Models
 
         public string UserPassword { get; set; }
 
-        public string? UserImgUrl { get; set; }
+        public string? UserImgUrl { get; set; } = "";
 
         public string UserRank { get; set; } = "Default";
 

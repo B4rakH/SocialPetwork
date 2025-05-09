@@ -13,7 +13,6 @@ namespace SocialNetworkForPets.Helper
                 {
                     UserFullName = "Garfield",
                     UserName = "garfield_cat",
-                    UserImgUrl = "",
                     UserPassword = "",
                 };
                 await context.User.AddAsync(newUser);
