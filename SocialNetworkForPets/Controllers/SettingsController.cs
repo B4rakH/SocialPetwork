@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SocialNetworkForPets.Helper.Enums;
 using SocialNetworkForPets.Services;
 using SocialNetworkForPets.ViewModels.Settings;
 
 namespace SocialNetworkForPets.Controllers
 {
+    [Authorize]
     public class SettingsController : Controller
     {
         private readonly IUsersService _usersService;

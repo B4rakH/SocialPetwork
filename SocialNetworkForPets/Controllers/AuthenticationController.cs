@@ -5,6 +5,9 @@ using SocialNetworkForPets.Data;
 using SocialNetworkForPets.Data.Models;
 using SocialNetworkForPets.ViewModels.Authentication;
 using System.Reflection.Metadata;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Security.Claims;
 
 namespace SocialNetworkForPets.Controllers
 {
@@ -42,19 +45,19 @@ namespace SocialNetworkForPets.Controllers
                 ModelState.AddModelError("UserName", "Username already exists");
                 return View(registerVM);
             }
-            else if (existingAdmin != null) 
+            else if (existingAdmin != null)
             {
                 ModelState.AddModelError("UserName", "Admin has already exists");
                 return View(registerVM);
             }
 
-                var newUser = new User()
-                {
-                    UserFullName = $"{registerVM.FirstName} {registerVM.LastName}",
-                    UserName = registerVM.UserName,
-                    UserPassword = registerVM.Password,
-                    UserRank = userRank
-                };
+            var newUser = new User()
+            {
+                UserFullName = $"{registerVM.FirstName} {registerVM.LastName}",
+                UserName = registerVM.UserName,
+                UserPassword = registerVM.Password,
+                UserRank = userRank
+            };
 
             await _context.User.AddAsync(newUser);
             await _context.SaveChangesAsync();
@@ -65,22 +68,37 @@ namespace SocialNetworkForPets.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginVM loginVM)
         {
+
+
             if (!ModelState.IsValid) return View(loginVM);
 
             var existingUser = await _context.User.FirstOrDefaultAsync(u => (u.UserName == loginVM.UserName));
 
-            if (existingUser == null) 
+            if (existingUser == null)
             {
-                ModelState.AddModelError("UserName","Username cannot found");
+                ModelState.AddModelError("UserName", "Username cannot found");
                 return View(loginVM);
             }
-            else if(existingUser.UserPassword != loginVM.Password)
+            else if (existingUser.UserPassword != loginVM.Password)
             {
-                ModelState.AddModelError("Password","Incorrect password");
+                ModelState.AddModelError("Password", "Incorrect password");
                 return View(loginVM);
             }
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, existingUser.UserName),
+                new Claim(ClaimTypes.NameIdentifier, existingUser.UserId.ToString()),
+                // For roles
+                // new Claim(ClaimTypes.Role, "Admin")
+            };
 
-                return RedirectToAction("Index", "Home");
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
+            return RedirectToAction("Index", "Home");
+
         }
         private string GetUserRank(string username)
         {

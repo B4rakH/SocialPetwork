@@ -3,6 +3,9 @@ using SocialNetworkForPets.Helper;
 using System.Threading.Tasks;
 using SocialNetworkForPets.Data;
 using SocialNetworkForPets.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using SocialNetworkForPets.Data.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace SocialNetworkForPets
 {
@@ -24,6 +27,15 @@ namespace SocialNetworkForPets
             builder.Services.AddScoped<IHashtagService, HashtagService>();
             builder.Services.AddScoped<IFileService, FileService>();
             builder.Services.AddScoped<IUsersService, UsersService>();
+
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/Authentication/Login";
+                    options.AccessDeniedPath = "/Authentication/AccessDenied";
+                });
+
+            builder.Services.AddAuthorization();
 
             var app = builder.Build();
 

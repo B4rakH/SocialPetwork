@@ -7,9 +7,11 @@ using SocialNetworkForPets.ViewModels.Home;
 using SocialNetworkForPets.Helper;
 using SocialNetworkForPets.Services;
 using SocialNetworkForPets.Helper.Enums;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SocialNetworkForPets.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

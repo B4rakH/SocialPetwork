@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SocialNetworkForPets.Data;
 using SocialNetworkForPets.Services;
 
 namespace SocialNetworkForPets.Controllers
 {
+    [Authorize]
     public class FavoriteController : Controller
     {
         private readonly IPostService _postService;
