@@ -164,6 +164,31 @@ namespace SocialNetworkForPets.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Report",
+                columns: table => new
+                {
+                    PostId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    ReportId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Report", x => new { x.PostId, x.UserId });
+                    table.ForeignKey(
+                        name: "FK_Report_Post_PostId",
+                        column: x => x.PostId,
+                        principalTable: "Post",
+                        principalColumn: "PostId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Report_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Comment_PostId",
                 table: "Comment",
@@ -193,6 +218,11 @@ namespace SocialNetworkForPets.Migrations
                 name: "IX_Post_PosterId",
                 table: "Post",
                 column: "PosterId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Report_UserId",
+                table: "Report",
+                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -212,6 +242,9 @@ namespace SocialNetworkForPets.Migrations
 
             migrationBuilder.DropTable(
                 name: "Like");
+
+            migrationBuilder.DropTable(
+                name: "Report");
 
             migrationBuilder.DropTable(
                 name: "Post");

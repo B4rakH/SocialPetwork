@@ -13,6 +13,8 @@ namespace SocialNetworkForPets.Data
 
         public DbSet<Post> Post { get; set; }
 
+        public DbSet<Report> Report { get; set; }
+
         public DbSet<Comment> Comment { get; set; }
 
         public DbSet<Friendship> Friendship { get; set; }
@@ -94,6 +96,22 @@ namespace SocialNetworkForPets.Data
             modelBuilder.Entity<Favorite>()
                 .HasOne(f => f.User)
                 .WithMany(u => u.Favorites)
+                .HasForeignKey(f => f.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            //Report Relations
+            modelBuilder.Entity<Report>()
+                .HasKey(l => new { l.PostId, l.UserId });
+
+            modelBuilder.Entity<Report>()
+                .HasOne(f => f.Post)
+                .WithMany(p => p.Reports)
+                .HasForeignKey(f => f.PostId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Report>()
+                .HasOne(f => f.User)
+                .WithMany(u => u.Reports)
                 .HasForeignKey(f => f.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 

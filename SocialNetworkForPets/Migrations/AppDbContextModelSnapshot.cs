@@ -149,6 +149,24 @@ namespace SocialNetworkForPets.Migrations
                     b.ToTable("Post");
                 });
 
+            modelBuilder.Entity("SocialNetworkForPets.Data.Models.Report", b =>
+                {
+                    b.Property<int>("PostId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ReportId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PostId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Report");
+                });
+
             modelBuilder.Entity("SocialNetworkForPets.Data.Models.User", b =>
                 {
                     b.Property<int>("UserId")
@@ -268,6 +286,25 @@ namespace SocialNetworkForPets.Migrations
                     b.Navigation("Poster");
                 });
 
+            modelBuilder.Entity("SocialNetworkForPets.Data.Models.Report", b =>
+                {
+                    b.HasOne("SocialNetworkForPets.Data.Models.Post", "Post")
+                        .WithMany("Reports")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SocialNetworkForPets.Data.Models.User", "User")
+                        .WithMany("Reports")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("SocialNetworkForPets.Data.Models.Post", b =>
                 {
                     b.Navigation("Comments");
@@ -275,6 +312,8 @@ namespace SocialNetworkForPets.Migrations
                     b.Navigation("Favorites");
 
                     b.Navigation("Likes");
+
+                    b.Navigation("Reports");
                 });
 
             modelBuilder.Entity("SocialNetworkForPets.Data.Models.User", b =>
@@ -286,6 +325,8 @@ namespace SocialNetworkForPets.Migrations
                     b.Navigation("Likes");
 
                     b.Navigation("Posts");
+
+                    b.Navigation("Reports");
                 });
 #pragma warning restore 612, 618
         }

@@ -94,6 +94,17 @@ namespace SocialNetworkForPets.Controllers
 
             return RedirectToAction("Index");
         }
+        [HttpPost]
+        public async Task<IActionResult> AddPostReport(PostReportVM postReportVM)
+        {
+            var newReport = new Report()
+            {
+                PostId = postReportVM.PostId,
+                UserId = loggedInUserId
+            };
+            await _postService.AddPostReportAsync(newReport);
+            return RedirectToAction("Index");
+        }
 
         [HttpPost]
         public async Task<IActionResult> DeleteComment (RemoveCommentVM commentVM)

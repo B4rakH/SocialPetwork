@@ -12,6 +12,8 @@ namespace SocialNetworkForPets.Services
 
         Task AddPostCommentAsync(Comment comment);
 
+        Task AddPostReportAsync(Report report);
+
         Task RemovePostCommentAsync(int CommentId);
 
         Task<Post> RemovePostAsync(int PostId);

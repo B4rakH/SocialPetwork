@@ -21,9 +21,9 @@ namespace SocialNetworkForPets.Helper
 
                 var newPostNoImg = new Post()
                 {
-                    PostText = "Where is my lasagna, John?",
+                    PostText = "Get me a lasagna John, with tea.",
                     CreatedAt = DateTime.UtcNow,
-
+                    PostImgUrl = "/images/uploaded/post/2c26b4ee-1784-4b89-93f1-8e77b4f88177.jpg",
                     Poster = newUser
                 };
 

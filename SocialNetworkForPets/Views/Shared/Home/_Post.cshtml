@@ -13,6 +13,7 @@
 
     bool isLiked = Model.Likes.Any(u => u.UserId == 1);
     bool isFavorited = Model.Favorites.Any(u => u.UserId == 1);
+    bool isReported = Model.Reports.Any(n => n.UserId == 1);
 }
 
 <div class="bg-white rounded-xl shadow-sm md:p-4 p-2 space-y-4 text-sm font-medium border1">
@@ -47,6 +48,14 @@
                         <ion-icon name="trash-bin-outline"></ion-icon>  Delete Post
                     </button>
                 </form>
+            @if (!isReported) {
+                <form asp-controller="Home" asp-action="AddPostReport">
+                    <input type="hidden" name="PostId" value="@Model.PostId" />
+                <button type="submit" class="hover:!bg-red-50 icon-link">
+                    <ion-icon class="text-xl shrink-0" name="flag"></ion-icon>Report
+                </button>
+            </form>
+            }
             </div>
         </div>
     </div>

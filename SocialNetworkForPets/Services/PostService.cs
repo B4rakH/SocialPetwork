@@ -130,5 +130,11 @@ namespace SocialNetworkForPets.Services
             }
             await _context.SaveChangesAsync();
         }
+
+        public async Task AddPostReportAsync(Report report)
+        {
+            await _context.Report.AddAsync(report);
+            await _context.SaveChangesAsync();
+        }
     }
 }

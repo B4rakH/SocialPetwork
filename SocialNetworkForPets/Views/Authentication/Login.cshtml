@@ -15,9 +15,9 @@
             <form asp-controller="Authentication" asp-action="Login" method="post" class="space-y-7 text-sm text-black font-medium">
                 <div class="col-span-2 text-red-500" asp-validation-summary="ModelOnly"></div>
                 <div>
-                    <label for="email">Email address</label>
+                    <label for="username">UserName</label>
                     <div class="mt-2.5">
-                        <input id="email" name="email" type="email" placeholder="Email" required="" class="!w-full" />
+                        <input id="username" name="username" placeholder="UserName" required="" class="!w-full" />
                     </div>
                 </div>
                 <div>
@@ -30,7 +30,7 @@
                     <button type="submit" class="button bg-primary text-white w-full">Sign in</button>
                 </div>
             </form>
-        </div>n
+        </div>
     </div>
 
     @*TODO: Change texts and images of slide as more appropriate for app scheme*@
@@ -46,7 +46,7 @@
                     <div class="absolute bottom-0 w-full uk-transition-slide-bottom-small z-10">
                         <div class="max-w-xl w-full mx-auto pb-32 px-5 z-30 relative">
                             <h4 class="!text-white text-2xl font-semibold mt-7" uk-slideshow-parallax="y: 600,0,0">Connect With Pet Lovers</h4>
-                            <p class="!text-white text-lg mt-7 leading-8" uk-slideshow-parallax="y: 800,0,0;">Bridge the gap between miles and moments—connect with friends and weave memories together, one click at a time.</p>
+                            <p class="!text-white text-lg mt-7 leading-8" uk-slideshow-parallax="y: 800,0,0;">Tired of playing with your owner? Enter and connect with other pets!</p>
                         </div>
                     </div>
                     <div class="w-full h-96 bg-gradient-to-t from-black absolute bottom-0 left-0"></div>
@@ -55,7 +55,7 @@
                     <img src="~/images/welcome/welcome-02.png" alt="" class="w-full h-full object-cover uk-animation-kenburns uk-animation-reverse uk-transform-origin-center-left">
                     <div class="absolute bottom-0 w-full uk-tr ansition-slide-bottom-small z-10">
                         <div class="max-w-xl w-full mx-auto pb-32 px-5 z-30 relative">
-                            <h4 class="!text-white text-2xl font-semibold mt-7" uk-slideshow-parallax="y: 800,0,0">  Connect With Pet Lovers </h4>
+                            <h4 class="!text-white text-2xl font-semibold mt-7" uk-slideshow-parallax="y: 800,0,0">  Connect With Other Pets </h4>
                             <p class="!text-white text-lg mt-7 leading-8" uk-slideshow-parallax="y: 800,0,0;"> Rekindle old ties and spark new ones—your next 'Remember when...' moment is just a friend request away.</p>
                         </div>
                     </div>

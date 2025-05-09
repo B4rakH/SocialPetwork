@@ -25,5 +25,7 @@ namespace SocialNetworkForPets.Data.Models
         public ICollection<Like> Likes { get; set; } = new List<Like>();
 
         public ICollection<Favorite> Favorites { get; set; } = new List<Favorite>();
+
+        public ICollection<Report> Reports { get; set; } = new List<Report>();
     }
 }
