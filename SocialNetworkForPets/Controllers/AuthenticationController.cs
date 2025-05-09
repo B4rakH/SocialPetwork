@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
 using SocialNetworkForPets.Helper.Constants;
+using SocialNetworkForPets.ViewModels.Settings;
 
 namespace SocialNetworkForPets.Controllers
 {
@@ -103,11 +104,45 @@ namespace SocialNetworkForPets.Controllers
             return RedirectToAction("Index", "Home");
 
         }
+
         [Authorize]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Login");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdatePassword(PasswordVM passwordVM)
+        {
+            var loggedUser = await _context.User.FirstAsync(u => (u.UserId == passwordVM.UserId));
+            
+            if (passwordVM.currentPassword != loggedUser.UserPassword)
+            {
+                TempData["PasswordError"] = "Current password has entered wrong";
+                TempData["ActiveTab"] = "Password";
+
+                return RedirectToAction("Index", "Settings");
+            }
+            else if(passwordVM.currentPassword == passwordVM.newPassword)
+            {
+                TempData["PasswordError"] = "New password should be different";
+                TempData["ActiveTab"] = "Password";
+
+                return RedirectToAction("Index", "Settings");
+            }
+            else if(passwordVM.newPassword != passwordVM.confirmPassword)
+            {
+                TempData["PasswordError"] = "Passwords do not match";
+                TempData["ActiveTab"] = "Password";
+
+                return RedirectToAction("Index", "Settings");
+            }
+                loggedUser.UserPassword = passwordVM.newPassword;
+                _context.User.Update(loggedUser);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("Logout");
         }
 
         private string GetUserRank(string username)

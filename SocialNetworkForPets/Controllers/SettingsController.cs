@@ -38,10 +38,5 @@ namespace SocialNetworkForPets.Controllers
         {
             return RedirectToAction("Index");
         }
-        [HttpPost]
-        public async Task<IActionResult> UpdatePassword(PasswordVM passwordVM)
-        {
-            return RedirectToAction("Index");
-        }
     }
 }
