@@ -8,6 +8,7 @@ using System.Reflection.Metadata;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
+using SocialNetworkForPets.Helper.Constants;
 
 namespace SocialNetworkForPets.Controllers
 {
@@ -86,10 +87,11 @@ namespace SocialNetworkForPets.Controllers
             }
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, existingUser.UserName),
                 new Claim(ClaimTypes.NameIdentifier, existingUser.UserId.ToString()),
-                // For roles
-                // new Claim(ClaimTypes.Role, "Admin")
+                new Claim(CustomClaim.FullName, existingUser.UserFullName),
+                new Claim(ClaimTypes.Name, existingUser.UserName),
+                new Claim(CustomClaim.UserImgUrl, existingUser.UserImgUrl),
+                new Claim(ClaimTypes.Role, existingUser.UserRank)
             };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -97,6 +99,7 @@ namespace SocialNetworkForPets.Controllers
             var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
+            
             return RedirectToAction("Index", "Home");
 
         }
