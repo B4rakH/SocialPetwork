@@ -100,6 +100,13 @@ namespace SocialNetworkForPets.Controllers
             return RedirectToAction("Index", "Home");
 
         }
+        [Authorize]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login");
+        }
+
         private string GetUserRank(string username)
         {
             if (username.EndsWith("@admin")) return "Catmin";
