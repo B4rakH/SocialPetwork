@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
 using SocialNetworkForPets.Helper.Constants;
 using SocialNetworkForPets.ViewModels.Settings;
+using System.Text.RegularExpressions;
 
 namespace SocialNetworkForPets.Controllers
 {
@@ -70,8 +71,6 @@ namespace SocialNetworkForPets.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginVM loginVM)
         {
-
-
             if (!ModelState.IsValid) return View(loginVM);
 
             var existingUser = await _context.User.FirstOrDefaultAsync(u => (u.UserName == loginVM.UserName));
@@ -113,7 +112,7 @@ namespace SocialNetworkForPets.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdatePassword(PasswordVM passwordVM)
+        public async Task<IActionResult> UpdatePassword(UpdatePasswordVM passwordVM)
         {
             var loggedUser = await _context.User.FirstAsync(u => (u.UserId == passwordVM.UserId));
             
@@ -144,6 +143,41 @@ namespace SocialNetworkForPets.Controllers
 
                 return RedirectToAction("Logout");
         }
+        [HttpPost]
+        public async Task<IActionResult> UpdateProfile(UpdateProfileVM profileVM) 
+        {
+            var validErrorCheck = await UpdateProfileHelper(profileVM);
+
+            if(validErrorCheck != null)
+            {
+                TempData["UpdateError"] = validErrorCheck;
+                TempData["ActiveTab"] = "Profile";
+
+                return RedirectToAction("Index", "Settings");
+            }
+
+            var loggedUser = await _context.User.FirstAsync(u => u.UserId == profileVM.UserId);
+
+            if ((loggedUser.UserRank == "Catmin" && !profileVM.UserName.Contains("@admin"))
+                ||(loggedUser.UserRank == "Moderadog" && profileVM.UserName.Contains("@moderator")))
+            {
+                TempData["UpdateError"] = "Username must contain the tag of user rank (@rank)";
+                TempData["ActiveTab"] = "Profile";
+
+                return RedirectToAction("Index", "Settings");
+            }
+
+            loggedUser.UserFullName = profileVM.UserFullName;
+            loggedUser.UserName = profileVM.UserName;
+
+            _context.User.Update(loggedUser);
+            await _context.SaveChangesAsync();
+
+            TempData["UpdateSuccess"] = "Informations Updated successfully";
+            TempData["ActiveTab"] = "Profile";
+
+            return RedirectToAction("Index", "Settings");
+        }
 
         private string GetUserRank(string username)
         {
@@ -152,6 +186,40 @@ namespace SocialNetworkForPets.Controllers
             else if (username.EndsWith("@moderator")) return "Moderadog";
 
             else return "Default";
+        }
+
+        private async Task<string> UpdateProfileHelper(UpdateProfileVM profileVM)
+        {
+            if (profileVM.UserFullName == null || profileVM.UserName == null)
+            {
+                return "Please fill the required areas";
+            }
+
+            else if (profileVM.UserFullName.Count(c => c != ' ') < 3 || profileVM.UserFullName.Length > 100)
+            {
+                return "Full name length must be between 3-100 characters";
+
+            }
+            else if (!Regex.IsMatch(profileVM.UserFullName, @"^[a-zA-Z\s]+$"))
+            {
+                return "Full name must contain letters and white-spaces only";
+
+            }
+            else if (profileVM.UserName.Length < 2 || profileVM.UserName.Length > 50)
+            {
+                return "Username must be between 2-50 characters";
+            }
+            else if (!Regex.IsMatch(profileVM.UserName, @"^[a-z0-9@._\-]+$"))
+            {
+                return "Username must contain only numbers, lowercase letters and ('@' '.' '_' '-') symbols";
+            }
+            var isUserNameExist = await _context.User.CountAsync(u => u.UserName == profileVM.UserName);
+
+            if (isUserNameExist > 1)
+            {
+                return "The username is already exists";
+            }
+            return null;
         }
     }
 }

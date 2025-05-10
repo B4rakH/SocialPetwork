@@ -33,10 +33,5 @@ namespace SocialNetworkForPets.Controllers
 
             return RedirectToAction("Index");
         }
-        [HttpPost]
-        public async Task<IActionResult> UpdateProfile(ProfileVM profileVM)
-        {
-            return RedirectToAction("Index");
-        }
     }
 }

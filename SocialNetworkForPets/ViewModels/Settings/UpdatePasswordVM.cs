@@ -1,6 +1,6 @@
 ﻿namespace SocialNetworkForPets.ViewModels.Settings
 {
-    public class PasswordVM
+    public class UpdatePasswordVM
     {
 
         public int UserId { get; set; }
