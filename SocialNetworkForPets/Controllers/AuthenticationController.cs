@@ -41,8 +41,8 @@ namespace SocialNetworkForPets.Controllers
 
             var userRank = GetUserRank(registerVM.UserName);
 
-            var existingAdmin = (userRank == "Catmin") ?
-                await _context.User.FirstOrDefaultAsync(u => (u.UserRank == "Catmin")) : null;
+            var existingAdmin = (userRank == UserRank.Admin) ?
+                await _context.User.FirstOrDefaultAsync(u => (u.UserRank == UserRank.Admin)) : null;
 
             if (existingUser != null)
             {
@@ -159,8 +159,8 @@ namespace SocialNetworkForPets.Controllers
 
             var loggedUser = await _context.User.FirstAsync(u => u.UserId == profileVM.UserId);
 
-            if ((loggedUser.UserRank == "Catmin" && !profileVM.UserName.Contains("@admin"))
-                ||(loggedUser.UserRank == "Moderadog" && profileVM.UserName.Contains("@moderator")))
+            if ((loggedUser.UserRank == UserRank.Admin && !profileVM.UserName.Contains("@admin"))
+                ||(loggedUser.UserRank == UserRank.Moderator && profileVM.UserName.Contains("@moderator")))
             {
                 TempData["UpdateError"] = "Username must contain the tag of user rank (@rank)";
                 TempData["ActiveTab"] = "Profile";
@@ -187,11 +187,11 @@ namespace SocialNetworkForPets.Controllers
 
         private string GetUserRank(string username)
         {
-            if (username.EndsWith("@admin")) return "Catmin";
+            if (username.EndsWith("@admin")) return UserRank.Admin;
 
-            else if (username.EndsWith("@moderator")) return "Moderadog";
+            else if (username.EndsWith("@moderator")) return UserRank.Moderator;
 
-            else return "Default";
+            else return UserRank.Default;
         }
 
         private async Task<string> UpdateProfileHelper(UpdateProfileVM profileVM)

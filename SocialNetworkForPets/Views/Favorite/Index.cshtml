@@ -37,7 +37,7 @@
                 {
                     <div class="bg-white rounded-xl shadow-sm md:p-4 p-2 space-y-4 text-sm font-medium border1" style="width: 580px;">
 
-                        Currently, there are no posts available. Would you like to create the first one?
+                        Currently, there are no posts available. Would you like to favorite the first one?
 
                     </div>
                 }
@@ -57,7 +57,7 @@
             <div class="lg:space-y-4 lg:pb-8 max-lg:grid sm:grid-cols-2 max-lg:gap-6">
                 @*Reccomended People*@
                 <div class="box p-5 px-6">
-                    <partial name="Sidebar/_SuggestedPets" />
+                    @await Component.InvokeAsync("SuggestedPets")
                 </div>
                 @*Trend Topics*@
                 <div class="box p-5 px-6 border1">

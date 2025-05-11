@@ -19,6 +19,8 @@ namespace SocialNetworkForPets.Data
 
         public DbSet<Friendship> Friendship { get; set; }
 
+        public DbSet <FriendshipRequest> FriendRequests  { get; set; }
+
         public DbSet <Favorite> Favorite { get; set; }
 
         public DbSet <Like> Like { get; set; }
@@ -28,23 +30,6 @@ namespace SocialNetworkForPets.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             
-            
-            //Friendship Key Adding & Relations
-            modelBuilder.Entity<Friendship>()
-                .HasKey(f => new { f.User1Id, f.User2Id });
-
-            modelBuilder.Entity<Friendship>()
-                .HasOne(f => f.User1)
-                .WithMany()
-                .HasForeignKey(f => f.User1Id)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<Friendship>()
-                .HasOne(f => f.User2)
-                .WithMany()
-                .HasForeignKey(f => f.User2Id)
-                .OnDelete(DeleteBehavior.ClientNoAction);
-
             //User-Post Relation
             modelBuilder.Entity<User>()
                 .HasMany(pr => pr.Posts)
@@ -114,6 +99,34 @@ namespace SocialNetworkForPets.Data
                 .WithMany(u => u.Reports)
                 .HasForeignKey(f => f.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            //Friendship Relations
+            modelBuilder.Entity<Friendship>()
+                .HasOne(f => f.User1)
+                .WithMany()
+                .HasForeignKey(f => f.User1Id)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Friendship>()
+                .HasOne(f => f.User2)
+                .WithMany()
+                .HasForeignKey(f => f.User2Id)
+                .OnDelete(DeleteBehavior.ClientNoAction);
+
+            //Friendship Request Relations
+            modelBuilder.Entity<FriendshipRequest>()
+                .HasOne(r => r.User1)
+                .WithMany()
+                .HasForeignKey(r => r.User1Id)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<FriendshipRequest>()
+                .HasOne(r => r.User2)
+                .WithMany()
+                .HasForeignKey(r => r.User2Id)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
 
             base.OnModelCreating(modelBuilder);
         }

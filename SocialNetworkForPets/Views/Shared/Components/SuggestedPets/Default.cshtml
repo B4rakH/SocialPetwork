@@ -1,0 +1,42 @@
+﻿@model List<(User,bool)>
+
+<div class="flex items-baseline justify-between text-black">
+
+    <h3 class="font-bold text-base">Most followed Pets</h3>
+</div>
+<div class="side-list">
+
+    @foreach (var (pet, isValid) in Model)
+    {
+        <div class="side-list-item">
+            <a asp-controller="Users" asp-action="Details" asp-route-userId="@pet.UserId">
+                @if (string.IsNullOrEmpty(pet.UserImgUrl))
+                {
+                    <img src="@Url.Content("~/images/avatar/avatar.png")" class="side-list-image rounded-full" />
+                }
+                else
+                {
+                    <img src="@Url.Content(pet.UserImgUrl)" class="side-list-image rounded-full" />
+                }
+            </a>
+            <div class="flex-1">
+                <a>
+                    <h4 class="side-list-title">
+                        @pet.UserFullName
+                    </h4>
+                </a>
+                <div class="side-list-info">
+                    @(pet.Friends.Count()) Friends
+                </div>
+            </div>
+            @if (isValid)
+            {
+                <form asp-controller="Friends" asp-action="SendFriendRequest" method="post">
+                    <input type="hidden" name="receiverId" value="@pet.UserId" />
+                    <button type="submit" class="button bg-primary-soft text-primary">Add Friend</button>
+                </form>
+            }
+        </div>
+    }
+
+</div>
