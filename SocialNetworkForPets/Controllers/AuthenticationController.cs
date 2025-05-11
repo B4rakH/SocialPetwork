@@ -11,10 +11,11 @@ using System.Security.Claims;
 using SocialNetworkForPets.Helper.Constants;
 using SocialNetworkForPets.ViewModels.Settings;
 using System.Text.RegularExpressions;
+using SocialNetworkForPets.Controllers.Base;
 
 namespace SocialNetworkForPets.Controllers
 {
-    public class AuthenticationController : Controller
+    public class AuthenticationController : BaseController
     {
         private readonly AppDbContext _context;
         public AuthenticationController(AppDbContext context)
@@ -173,6 +174,11 @@ namespace SocialNetworkForPets.Controllers
             _context.User.Update(loggedUser);
             await _context.SaveChangesAsync();
 
+            var cookiesUpdated = await UpdateCookiesAsync();
+
+            if (!cookiesUpdated) return RedirectToLogin();
+            
+
             TempData["UpdateSuccess"] = "Informations Updated successfully";
             TempData["ActiveTab"] = "Profile";
 
@@ -220,6 +226,33 @@ namespace SocialNetworkForPets.Controllers
                 return "The username is already exists";
             }
             return null;
+        }
+
+        private async Task<bool> UpdateCookiesAsync()
+        {
+            var userId = GetUserId();
+            if (userId == null) return false;
+
+            var user = await _context.User.FindAsync(userId);
+
+            var newClaims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+                new Claim(CustomClaim.FullName, user.UserFullName),
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(CustomClaim.UserImgUrl, user.UserImgUrl),
+                new Claim(ClaimTypes.Role, user.UserRank)
+            };
+
+            var identity = new ClaimsIdentity(newClaims, CookieAuthenticationDefaults.AuthenticationScheme);
+            
+            var principal = new ClaimsPrincipal(identity);
+
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+            return true;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿@model Post
+﻿@using System.Security.Claims 
+@model Post
 
 @{
     TimeSpan timeSpanSincePosted = DateTime.UtcNow.Subtract(Model.CreatedAt);
@@ -10,10 +11,12 @@
         var t when t.TotalMinutes >= 1 => $"{(int)t.TotalMinutes} min ago",
         _ => "Just now"
     };
+    var UserId = int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int Id)
+        ? Id : 0;
 
-    bool isLiked = Model.Likes.Any(u => u.UserId == 1);
-    bool isFavorited = Model.Favorites.Any(u => u.UserId == 1);
-    bool isReported = Model.Reports.Any(n => n.UserId == 1);
+    bool isLiked = Model.Likes.Any(u => u.UserId == UserId);
+    bool isFavorited = Model.Favorites.Any(u => u.UserId == UserId);
+    bool isReported = Model.Reports.Any(n => n.UserId == UserId);
 }
 
 <div class="bg-white rounded-xl shadow-sm md:p-4 p-2 space-y-4 text-sm font-medium border1">

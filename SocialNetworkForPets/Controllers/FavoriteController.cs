@@ -1,15 +1,16 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SocialNetworkForPets.Data;
+using SocialNetworkForPets.Controllers.Base;
 using SocialNetworkForPets.Services;
+using System.Security.Claims;
 
 namespace SocialNetworkForPets.Controllers
 {
     [Authorize]
-    public class FavoriteController : Controller
+    public class FavoriteController : BaseController
     {
         private readonly IPostService _postService;
-        int loggedInUser = 1;
+
 
         public FavoriteController(IPostService postService)
         {
@@ -17,7 +18,10 @@ namespace SocialNetworkForPets.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var myFavoritePosts = await _postService.GetAllFavoritePostsAsync(loggedInUser);
+            var UserId = GetUserId();
+            if (UserId == null) return RedirectToLogin();
+
+            var myFavoritePosts = await _postService.GetAllFavoritePostsAsync(UserId.Value);
 
             return View(myFavoritePosts);
         }

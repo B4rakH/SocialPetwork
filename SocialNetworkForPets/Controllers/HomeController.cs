@@ -1,27 +1,22 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
 using SocialNetworkForPets.Data;
 using SocialNetworkForPets.Data.Models;
 using SocialNetworkForPets.ViewModels.Home;
-using SocialNetworkForPets.Helper;
 using SocialNetworkForPets.Services;
 using SocialNetworkForPets.Helper.Enums;
 using Microsoft.AspNetCore.Authorization;
+using SocialNetworkForPets.Controllers.Base;
 
 namespace SocialNetworkForPets.Controllers
 {
     [Authorize]
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         private readonly ILogger<HomeController> _logger;
         private readonly AppDbContext _context;
         private readonly IPostService _postService;
         private readonly IHashtagService _hashtagService;
         private readonly IFileService _fileService;
-
-        //Get the logged by UserId
-        public int loggedInUserId = 1;
 
         public HomeController
             (ILogger<HomeController> logger,
@@ -40,7 +35,10 @@ namespace SocialNetworkForPets.Controllers
         //Listing All Posts 
         public async Task<IActionResult> Index()
         {
-            var allPosts = await _postService.GetAllPostsAsync(loggedInUserId);
+            var UserId = GetUserId();
+            if (UserId == null) return RedirectToLogin();
+            
+            var allPosts = await _postService.GetAllPostsAsync(UserId.Value);
 
             return View(allPosts);
         }        
@@ -51,13 +49,16 @@ namespace SocialNetworkForPets.Controllers
         //Creating New Post
         public async Task<IActionResult> CreatePost(PostVM post)
         {
+            var UserId = GetUserId();
+            if (UserId == null) return RedirectToLogin();
+
             var imageUploadPath = await _fileService.UploadImageAsync(post.Image, ImageFileType.PostImage);
             //Setting variables
             var newPost = new Post
             {
                 PostText = post.PostText,
                 CreatedAt = DateTime.Now,
-                PosterId = loggedInUserId,
+                PosterId = UserId.Value,
                 PostImgUrl = imageUploadPath
             };
 
@@ -70,7 +71,10 @@ namespace SocialNetworkForPets.Controllers
         [HttpPost]
         public async Task<IActionResult> TogglePostLike(PostLikeVM postLikes) 
         {
-            await _postService.TogglePostLikeAsync(postLikes.PostId, loggedInUserId);
+            var UserId = GetUserId();
+            if (UserId == null) return RedirectToLogin();
+
+            await _postService.TogglePostLikeAsync(postLikes.PostId, UserId.Value);
 
             return RedirectToAction("Index");
         }
@@ -78,7 +82,11 @@ namespace SocialNetworkForPets.Controllers
         [HttpPost]
         public async Task<IActionResult> TogglePostFavorite(PostFavoriteVM postFavorites)
         {
-            await _postService.TogglePostFavoriteAsync(postFavorites.PostId, loggedInUserId);
+
+            var UserId = GetUserId();
+            if (UserId == null) return RedirectToLogin();
+
+            await _postService.TogglePostFavoriteAsync(postFavorites.PostId, UserId.Value);
 
             return RedirectToAction("Index");
         }
@@ -86,10 +94,13 @@ namespace SocialNetworkForPets.Controllers
         [HttpPost]
         public async Task <IActionResult> AddComment (CommentVM commentVM)
         {
+            var UserId = GetUserId();
+            if (UserId == null) return RedirectToLogin();
+
             var newComment = new Comment()
             {
                 PostId = commentVM.PostId,
-                UserId = loggedInUserId,
+                UserId = UserId.Value,
                 CommentText = commentVM.CommentText
             };
             await _postService.AddPostCommentAsync(newComment);
@@ -99,10 +110,13 @@ namespace SocialNetworkForPets.Controllers
         [HttpPost]
         public async Task<IActionResult> AddPostReport(PostReportVM postReportVM)
         {
+            var UserId = GetUserId();
+            if (UserId == null) return RedirectToLogin();
+
             var newReport = new Report()
             {
                 PostId = postReportVM.PostId,
-                UserId = loggedInUserId
+                UserId = UserId.Value
             };
             await _postService.AddPostReportAsync(newReport);
             return RedirectToAction("Index");
