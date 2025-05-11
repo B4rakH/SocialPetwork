@@ -21,6 +21,7 @@ namespace SocialNetworkForPets.Services
                 .Include(p => p.Likes)
                 .Include(p => p.Favorites)
                 .Include(p => p.Comments).ThenInclude(c => c.User)
+                .Include(p => p.Reports)
                 .OrderByDescending(p => p.CreatedAt)
                 .ToListAsync();
 

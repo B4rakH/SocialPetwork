@@ -7,5 +7,7 @@ namespace SocialNetworkForPets.Services
         Task<User> GetUserAsync(int UserId);
 
         Task UpdateProfilePicture(int UserId, string pictureUrl);
+
+        Task<List<Post>> GetUserPostsAsync(int UserId);
     }
 }

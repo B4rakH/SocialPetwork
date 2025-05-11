@@ -29,5 +29,21 @@ namespace SocialNetworkForPets.Services
             }
 
         }
+
+        public async Task<List<Post>> GetUserPostsAsync(int UserId)
+        {
+            var allPosts = await _context.Post
+                .Where(p => p.PosterId == UserId)
+                .Include(p => p.Poster)
+                .Include(p => p.Likes)
+                .Include(p => p.Favorites)
+                .Include(p => p.Comments).ThenInclude(c => c.User)
+                .Include(p => p.Reports)
+                .OrderByDescending(p => p.CreatedAt)
+                .ToListAsync();
+
+            return allPosts;
+
+        }
     }
 }

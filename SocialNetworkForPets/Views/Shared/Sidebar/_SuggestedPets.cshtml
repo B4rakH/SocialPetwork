@@ -4,8 +4,8 @@
 </div>
 <div class="side-list">
     <div class="side-list-item">
-        <a>
-            <img src="~/images/avatar/avatar.png" class="side-list-image rounded-full" />
+        <a asp-controller="Users" asp-action="Details" asp-route-userId="1">
+            <img src="@Url.Content("~/images/avatar/avatar.png")" class="side-list-image rounded-full" />
         </a>
         <div class="flex-1">
             <a>
@@ -24,7 +24,7 @@
     </div>
     <div class="side-list-item">
         <a>
-            <img src="~/images/avatar/avatar.png" class="side-list-image rounded-full" />
+            <img src="@Url.Content("~/images/avatar/avatar.png")" class="side-list-image rounded-full" />
         </a>
         <div class="flex-1">
             <a>
@@ -43,7 +43,7 @@
     </div>
     <div class="side-list-item">
         <a>
-            <img src="~/images/avatar/avatar.png" class="side-list-image rounded-full" />
+            <img src="@Url.Content("~/images/avatar/avatar.png")" class="side-list-image rounded-full" />
         </a>
         <div class="flex-1">
             <a>

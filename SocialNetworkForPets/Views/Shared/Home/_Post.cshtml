@@ -1,4 +1,4 @@
-﻿@using System.Security.Claims 
+﻿@using System.Security.Claims
 @model Post
 
 @{
@@ -17,6 +17,9 @@
     bool isLiked = Model.Likes.Any(u => u.UserId == UserId);
     bool isFavorited = Model.Favorites.Any(u => u.UserId == UserId);
     bool isReported = Model.Reports.Any(n => n.UserId == UserId);
+
+    bool showAllComments = ViewData["ShowAllComment"] as bool? ?? false;
+    bool showDetails = ViewData["ShowDetails"] as bool? ?? true;
 }
 
 <div class="bg-white rounded-xl shadow-sm md:p-4 p-2 space-y-4 text-sm font-medium border1">
@@ -24,19 +27,19 @@
     @*Post Heading*@
     <div class="flex gap-3 sm:p-4 p-2.5 text-sm font-medium">
         @*User Profile Pic*@
-        <a>
+        <a asp-controller="Users" asp-action="Details" asp-route-userId=@Model.PosterId>
             @if (string.IsNullOrEmpty(Model.Poster.UserImgUrl))
             {
-                <img src="~/images/avatar/avatar.png" class="w-9 h-9 rounded-full" />
+                <img src="@Url.Content("~/images/avatar/avatar.png")" class="w-10 h-10 rounded-full" />
             }
             else
             {
-                <img src=@Model.Poster.UserImgUrl class="w-9 h-9 rounded-full" />
+                <img src=@Model.Poster.UserImgUrl class="w-10 h-10 rounded-full" />
             }
         </a>
         @*Post Date*@
         <div class="flex-1">
-            <a>
+            <a asp-controller="Users" asp-action="Details" asp-route-userId=@Model.PosterId>
                 <h4 class="text-black">@Model.Poster.UserFullName</h4>
                 <div class="text-xs text-gray-500/80">@displayTime</div>
             </a>
@@ -51,14 +54,15 @@
                         <ion-icon name="trash-bin-outline"></ion-icon>  Delete Post
                     </button>
                 </form>
-            @if (!isReported) {
-                <form asp-controller="Home" asp-action="AddPostReport">
-                    <input type="hidden" name="PostId" value="@Model.PostId" />
-                <button type="submit" class="hover:!bg-red-50 icon-link">
-                    <ion-icon class="text-xl shrink-0" name="flag"></ion-icon>Report
-                </button>
-            </form>
-            }
+                @if (!isReported)
+                {
+                    <form asp-controller="Home" asp-action="AddPostReport">
+                        <input type="hidden" name="PostId" value="@Model.PostId" />
+                        <button type="submit" class="hover:!bg-red-50 icon-link">
+                            <ion-icon class="text-xl shrink-0" name="flag"></ion-icon>Report
+                        </button>
+                    </form>
+                }
             </div>
         </div>
     </div>
@@ -116,66 +120,81 @@
             }
         </div>
     </div>
-    @*Add Comment Sect*@
-    <div>
-        <div class="p-2.5 border-t border-gray-100 font-normal space-y-3 relative">
-            @foreach (var comment in Model.Comments)
-            {
-                <div class="flex items-start gap-3 relative">
-                    <a>
-                        @if (string.IsNullOrEmpty(comment.User.UserImgUrl))
+
+
+    @if (showDetails)
+    {
+        @*Add Comment Sect*@
+        <div>
+            <div class="p-2.5 border-t border-gray-100 font-normal space-y-3 relative">
+                @foreach (var comment in (showAllComments ? Model.Comments : Model.Comments.Take(3)))
+                {
+                    <div class="flex items-start gap-3 relative">
+                        <a asp-controller="Users" asp-action="Details" asp-route-userId=@comment.User.UserId>
+                            @if (string.IsNullOrEmpty(comment.User.UserImgUrl))
+                            {
+                                <img src="@Url.Content("~/images/avatar/avatar.png")" class="w-6 h-6 mt-1 rounded-full" />
+                            }
+                            else
+                            {
+                                <img src="@comment.User.UserImgUrl" class="w-6 h-6 mt-1 rounded-full" />
+                            }
+                        </a>
+                        <div class="flex-1">
+                            <div class="flex justify-content-between">
+                                <a asp-controller="Users" asp-action="Details" asp-route-userId=@comment.User.UserId class="text-black font-medium inline-block flex-grow">
+                                    @comment.User.UserFullName
+                                </a>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <p class="mt-0.5">
+                                    @comment.CommentText
+                                </p>
+
+                                <form asp-controller="Home" asp-action="DeleteComment">
+                                    <input type="hidden" name="CommentId" value="@comment.CommentId" />
+                                    <button type="submit" class="text-red-500 text-xs ml-2" title="Remove post comment">
+                                        <ion-icon name="trash-outline"></ion-icon>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                }
+                @if (Model.Comments.Count > 3)
+                {
+                    <div class="p-1.5">
+                        <a asp-controller="Home" asp-action="Details" asp-route-postId="@Model.PostId">
+                            Show All Comments
+                        </a>
+                    </div>
+                }
+            </div>
+
+            <form asp-controller="Home" asp-action="AddComment">
+                <div class="sm:px-4 sm:py-3 p-2.5 border-t border-gray-100 flex items-center gap-1">
+
+                    <a asp-controller="Users" asp-action="Details" asp-route-userId=@Model.PosterId>
+                        @if (string.IsNullOrEmpty(Model.Poster.UserImgUrl))
                         {
-                            <img src="~/images/avatar/avatar.png" class="w-6 h-6 mt-1 rounded-full" />
+                            <img src="@Url.Content("~/images/avatar/user.png")" class="w-6 h-6 rounded-full" />
                         }
                         else
                         {
-                            <img src=@Model.Poster.UserImgUrl class="w-6 h-6 mt-1 rounded-full" />
+                            <img src=@Model.Poster.UserImgUrl class="w-6 h-6 rounded-full" />
                         }
                     </a>
-                    <div class="flex-1">
-                        <div class="flex justify-content-between">
-                            <a class="text-black font-medium inline-block flex-grow">
-                                @comment.User.UserFullName
-                            </a>
-                        </div>
-                        <div class="flex items-center justify-between">
-                        <p class="mt-0.5">
-                            @comment.CommentText
-                        </p>
 
-                        <form asp-controller="Home" asp-action="DeleteComment">
-                            <input type="hidden" name="CommentId" value="@comment.CommentId" />
-                            <button type="submit" class="text-red-500 text-xs ml-2" title="Remove post comment">
-                                <ion-icon name="trash-outline"></ion-icon>
-                            </button>
-                        </form>
-                        </div>
+                    <input type="hidden" name="PostId" value="@Model.PostId" />
+
+                    <div class="flex-1 relative overflow-hidden h-10">
+                        <textarea name="CommentText" placeholder="Add Comment..."
+                                  rows="1"
+                                  class="w-full resize-none !bg-transparent px-4 py-2 focus:!border-transparent focus:!ring-transparent"></textarea>
                     </div>
+                    <button type="submit" class="text-sm rounded-full py-1.5 px-3.5 bg-secondery">Comment</button>
                 </div>
-            }
-            @if (Model.Comments.Count > 3)
-            {
-                <div class="p-1.5">
-                    <a>
-                        Show All Comments
-                    </a>
-                </div>
-            }
+            </form>
         </div>
-
-        <form asp-controller="Home" asp-action="AddComment">
-            <div class="sm:px-4 sm:py-3 p-2.5 border-t border-gray-100 flex items-center gap-1">
-                <img src="../images/avatar/user.png" class="w-6 h-6 rounded-full" />
-
-                <input type="hidden" name="PostId" value="@Model.PostId" />
-
-                <div class="flex-1 relative overflow-hidden h-10">
-                    <textarea name="CommentText" placeholder="Add Comment..."
-                              rows="1"
-                              class="w-full resize-none !bg-transparent px-4 py-2 focus:!border-transparent focus:!ring-transparent"></textarea>
-                </div>
-                <button type="submit" class="text-sm rounded-full py-1.5 px-3.5 bg-secondery">Comment</button>
-            </div>
-        </form>
-    </div>
+    }
 </div>
