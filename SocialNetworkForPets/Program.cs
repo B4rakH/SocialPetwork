@@ -1,11 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using SocialNetworkForPets.Helper;
-using System.Threading.Tasks;
 using SocialNetworkForPets.Data;
 using SocialNetworkForPets.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using SocialNetworkForPets.Data.Models;
-using Microsoft.AspNetCore.Identity;
+using SocialNetworkForPets.Hubs;
 
 namespace SocialNetworkForPets
 {
@@ -28,6 +26,7 @@ namespace SocialNetworkForPets
             builder.Services.AddScoped<IFileService, FileService>();
             builder.Services.AddScoped<IUsersService, UsersService>();
             builder.Services.AddScoped<IFriendsService, FriendsService>();
+            builder.Services.AddScoped<INotificationService, NotificationService>();
 
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
@@ -37,6 +36,8 @@ namespace SocialNetworkForPets
                 });
 
             builder.Services.AddAuthorization();
+
+            builder.Services.AddSignalR();
 
             var app = builder.Build();
 
@@ -66,6 +67,8 @@ namespace SocialNetworkForPets
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+
+            app.MapHub<NotificationHub>("/notificationHub");
 
             app.Run();
         }

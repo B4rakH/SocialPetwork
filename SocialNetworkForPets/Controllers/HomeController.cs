@@ -6,6 +6,7 @@ using SocialNetworkForPets.Services;
 using SocialNetworkForPets.Helper.Enums;
 using Microsoft.AspNetCore.Authorization;
 using SocialNetworkForPets.Controllers.Base;
+using Microsoft.AspNetCore.SignalR;
 
 namespace SocialNetworkForPets.Controllers
 {
@@ -17,19 +18,23 @@ namespace SocialNetworkForPets.Controllers
         private readonly IPostService _postService;
         private readonly IHashtagService _hashtagService;
         private readonly IFileService _fileService;
+        private readonly INotificationService _notificationService;
 
+        //HomeController is the main controller that contains and uses all services
         public HomeController
             (ILogger<HomeController> logger,
                 AppDbContext context,
                     IPostService postService,
                         IHashtagService hashtagService,
-                            IFileService fileService)
+                            IFileService fileService,
+                                INotificationService notificationService)
         {
             _logger = logger;
             _context = context;
             _postService = postService;
             _hashtagService = hashtagService;
             _fileService = fileService;
+            _notificationService = notificationService;
         }
 
         //Listing All Posts 
@@ -75,7 +80,10 @@ namespace SocialNetworkForPets.Controllers
             var UserId = GetUserId();
             if (UserId == null) return RedirectToLogin();
 
-            await _postService.TogglePostLikeAsync(postLikes.PostId, UserId.Value);
+            var result = await _postService.TogglePostLikeAsync(postLikes.PostId, UserId.Value);
+
+            if (result.SendNotification)
+                await _notificationService.AddNewNotificationAsync(UserId.Value, "Someone liked your post", "Like");
 
             var post = await _postService.GetPostByIdAsync(postLikes.PostId);
 

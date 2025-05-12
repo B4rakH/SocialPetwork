@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SocialNetworkForPets.Data;
 using SocialNetworkForPets.Data.Models;
+using SocialNetworkForPets.Dtos;
 using SocialNetworkForPets.Helper;
 using SocialNetworkForPets.Helper.Enums;
 using SocialNetworkForPets.ViewModels.Home;
@@ -10,9 +11,11 @@ namespace SocialNetworkForPets.Services
     public class PostService: IPostService
     {
         private readonly AppDbContext _context;
-        public PostService(AppDbContext context) 
+        private readonly INotificationService _notificationService;
+        public PostService(AppDbContext context, INotificationService notificationService) 
         {
             _context = context;
+            _notificationService = notificationService;
         }
         public async Task<List<Post>> GetAllPostsAsync(int UserId)
         {
@@ -109,8 +112,14 @@ namespace SocialNetworkForPets.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task TogglePostLikeAsync(int PostId, int UserId)
+        public async Task<GetNotificationDto> TogglePostLikeAsync(int PostId, int UserId)
         {
+            var response = new GetNotificationDto()
+            {
+                IsSuccess = false,
+                SendNotification = false
+            };
+
             var like = await _context.Like
                 .Where(l => l.PostId == PostId && l.UserId == UserId)
                 .FirstOrDefaultAsync();
@@ -128,8 +137,14 @@ namespace SocialNetworkForPets.Services
                 };
 
                 await _context.Like.AddAsync(newLike);
+
+                response.SendNotification = true;
             }
+            response.IsSuccess = true;
+
             await _context.SaveChangesAsync();
+
+            return response;
         }
 
         public async Task AddPostReportAsync(Report report)

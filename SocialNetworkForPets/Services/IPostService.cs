@@ -1,4 +1,5 @@
 ﻿using SocialNetworkForPets.Data.Models;
+using SocialNetworkForPets.Dtos;
 
 namespace SocialNetworkForPets.Services
 {
@@ -18,7 +19,7 @@ namespace SocialNetworkForPets.Services
 
         Task<Post> RemovePostAsync(int PostId);
 
-        Task TogglePostLikeAsync(int PostId,int UserId);
+        Task<GetNotificationDto> TogglePostLikeAsync(int PostId,int UserId);
 
         Task TogglePostFavoriteAsync(int PostId, int UserId);
 
