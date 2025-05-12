@@ -20,6 +20,7 @@ namespace SocialNetworkForPets.ViewComponents
 
             var suggestedPets = await _friendsService.GetSuggestedPetsAsync(UserId);
 
+
             return View(suggestedPets);
         }
     }

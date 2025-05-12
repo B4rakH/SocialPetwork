@@ -1,9 +1,6 @@
-﻿
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SocialNetworkForPets.Data;
 using SocialNetworkForPets.Data.Models;
-using SocialNetworkForPets.Helper.Constants;
 
 namespace SocialNetworkForPets.Services
 {
@@ -68,7 +65,7 @@ namespace SocialNetworkForPets.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task RemoveFriendshipAsync(int friendshipId)
+        public async Task RemoveFriendAsync(int friendshipId)
         {
             var friendship = await _context.Friendship.FirstOrDefaultAsync(f => f.Id == friendshipId);
 
@@ -92,11 +89,12 @@ namespace SocialNetworkForPets.Services
             var suggestedPets = new List<(User, bool)>();
 
             foreach (var pet in _context.User.OrderBy(u => u.Friends.Count).Take(5).ToList())
+
                 suggestedPets.Add((pet, (pet.UserId != UserId)
-                    && (!user.Friends.Contains(pet))
-                        && (_context.FriendRequests
-                            .Where(u => u.User1Id == UserId))
-                                .FirstOrDefault(u => u.User2Id == pet.UserId) == null));
+                            && (!user.Friends.Contains(pet))
+                                && (_context.FriendRequests
+                                    .FirstOrDefault(u => (u.User1Id == pet.UserId && u.User2Id == UserId)
+                                        || (u.User1Id == UserId && u.User2Id == pet.UserId)) == null)));
 
             return suggestedPets;
         }
@@ -109,6 +107,28 @@ namespace SocialNetworkForPets.Services
                 .Where(f => f.User1Id == userId).ToListAsync();
 
             return friendRequestsSent;
+        }
+
+        public async Task<List<FriendshipRequest>> GetReceivedFriendRequestAsync(int userId)
+        {
+            var friendRequestsSent = await _context.FriendRequests
+                .Include(u => u.User1)
+                .Include(u => u.User2)
+                .Where(f => f.User2Id == userId).ToListAsync();
+
+            return friendRequestsSent;
+        }
+
+        public async Task<List<Friendship>> GetFriendsAsync(int userId)
+        {
+            var friends = await _context.Friendship
+                .Include(n => n.User1)
+                .Include(n => n.User2)
+                .Where(n => n.User1Id == userId || n.User2Id == userId)
+                .ToListAsync();
+
+            return friends;
+            
         }
     }
 }

@@ -10,10 +10,14 @@ namespace SocialNetworkForPets.Services
 
         Task RejectRequestAsync(int requestId);
 
-        Task RemoveFriendshipAsync(int friendshipId);
+        Task RemoveFriendAsync(int friendshipId);
 
         Task<List<(User,bool)>> GetSuggestedPetsAsync(int UserId);
 
         Task<List<FriendshipRequest>> GetSentFriendRequestAsync(int userId);
+
+        Task<List<FriendshipRequest>> GetReceivedFriendRequestAsync(int userId);
+
+        Task<List<Friendship>> GetFriendsAsync(int userId);
     }
 }

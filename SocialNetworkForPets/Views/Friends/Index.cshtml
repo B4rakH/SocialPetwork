@@ -6,7 +6,8 @@
 
     <div class="2xl:max-w-[1220px] max-w-[1065px] mx-auto">
 
-        @if (Model.FriendRequestsSent.Count > 0)
+
+        @if (Model.Friends.Count > 0)
         {
             <div class="sm:my-6 my-3 flex items-center justify-between">
                 <div>
@@ -16,28 +17,32 @@
             </div>
 
             <div class="grid grid-cols-2 gap-2">
-                @foreach (var request in Model.FriendRequestsSent)
+                @foreach (var _friendship in Model.Friends)
                 {
+                    var friend = _friendship.User1Id == int.Parse(User.FindFirstValue(System.Security.Claims.ClaimTypes.NameIdentifier)) ?
+                        _friendship.User2 :
+                        _friendship.User1;
+
 
                     <div class="flex md:items-center space-x-4 p-4 rounded-md box">
 
                         <div class="w-14 h-14 flex-shrink-0 rounded-lg relative">
-                            @if(string.IsNullOrEmpty(request.User2.UserImgUrl))
+                            @if(string.IsNullOrEmpty(friend.UserImgUrl))
                             {
-                                <img src="@Url.Content("~/images/avatar/user.png")" class="absolute w-full h-full inset-0 rounded-md object-cover shadow-sm" />
+                                <img src="@Url.Content("~/images/avatar/avatar.png")" class="absolute w-full h-full inset-0 rounded-md object-cover shadow-sm" />
                             }
                             else
                             {
-                                <img src="@Url.Content(request.User2.UserImgUrl)" class="absolute w-full h-full inset-0 rounded-md object-cover shadow-sm" />
+                                <img src="@Url.Content(friend.UserImgUrl)" class="absolute w-full h-full inset-0 rounded-md object-cover shadow-sm" />
                             }
                         </div>
 
                         <div class="flex-1">
-                            <a asp-controller="Users" asp-action="Details" asp-route-userId="@request.User2Id" class="text-base font-semibold capitalize text-black">@request.User2.UserFullName</a>
+                            <a asp-controller="Users" asp-action="Details" asp-route-userId="@friend.UserId" class="text-base font-semibold capitalize text-black">@friend.UserFullName</a>
                         </div>
 
                         <form asp-controller="Friends" asp-action="RemoveFriend" method="post">
-                            <input type="hidden" name="friendshipId" />
+                            <input type="hidden" name="friendshipId" value="@_friendship.Id" />
                             <button type="submit" class="button bg-red-soft text-red gap-1 max-md:hidden">
                                 <ion-icon name="remove-circle-outline" class="text-xl -ml-1"></ion-icon> Remove
                             </button>
@@ -47,7 +52,7 @@
             </div>
         }
 
-@*         @if (Model.FriendRequestsReceived.Count > 0)
+        @if (Model.FriendRequestsReceived.Count > 0)
         {
             <div class="sm:my-6 my-3 flex items-center justify-between">
                 <div>
@@ -62,26 +67,31 @@
                     <div class="flex md:items-center space-x-4 p-4 rounded-md box">
 
                         <div class="w-14 h-14 flex-shrink-0 rounded-lg relative">
-                            <img src="@(string.IsNullOrEmpty(request.Sender.ProfilePictureUrl) ? Url.Content("~/images/avatar/user.png") :
-                     request.Sender.ProfilePictureUrl)"
-                                 class="absolute w-full h-full inset-0 rounded-md object-cover shadow-sm" />
+                            <div class="w-14 h-14 flex-shrink-0 rounded-lg relative">
+                                @if (string.IsNullOrEmpty(request.User1.UserImgUrl))
+                                {
+                                    <img src="@Url.Content("~/images/avatar/avatar.png")" class="absolute w-full h-full inset-0 rounded-md object-cover shadow-sm" />
+                                }
+                                else
+                                {
+                                    <img src="@Url.Content(request.User1.UserImgUrl)" class="absolute w-full h-full inset-0 rounded-md object-cover shadow-sm" />
+                                }
+                            </div>
                         </div>
 
                         <div class="flex-1">
-                            <a asp-controller="Users" asp-action="Details" asp-route-userId="@request.Sender.Id" class="text-base font-semibold capitalize text-black">@request.Sender.FullName</a>
+                            <a asp-controller="Users" asp-action="Details" asp-route-userId="@request.User1Id" class="text-base font-semibold capitalize text-black">@request.User1.UserFullName</a>
                         </div>
 
-                        <form asp-controller="Friends" asp-action="UpdateFriendRequest" method="post">
-                            <input type="hidden" name="requestId" value="@request.Id" />
-                            <input type="hidden" name="status" value="@FriendshipStatus.Rejected" />
+                        <form asp-controller="Friends" asp-action="RejectFriendRequest" method="post">
+                            <input type="hidden" name="requestId" value="@request.RequestId" />
                             <button type="submit" class="button bg-red-soft text-red gap-1 max-md:hidden">
                                 <ion-icon name="remove-circle-outline" class="text-xl -ml-1"></ion-icon> Reject
                             </button>
                         </form>
 
-                        <form asp-controller="Friends" asp-action="UpdateFriendRequest" method="post">
-                            <input type="hidden" name="requestId" value="@request.Id" />
-                            <input type="hidden" name="status" value="@FriendshipStatus.Accepted" />
+                        <form asp-controller="Friends" asp-action="AcceptFriendRequest" method="post">
+                            <input type="hidden" name="requestId" value="@request.RequestId" />
                             <button type="submit" class="button bg-primary-soft text-primary gap-1 max-md:hidden">
                                 <ion-icon name="checkbox-outline" class="text-xl -ml-1"></ion-icon> Accept
                             </button>
@@ -107,18 +117,22 @@
                     <div class="flex md:items-center space-x-4 p-4 rounded-md box">
 
                         <div class="w-14 h-14 flex-shrink-0 rounded-lg relative">
-                            <img src="@(string.IsNullOrEmpty(request.Receiver.ProfilePictureUrl) ? Url.Content("~/images/avatar/user.png") :
-                            request.Receiver.ProfilePictureUrl)"
-                                 class="absolute w-full h-full inset-0 rounded-md object-cover shadow-sm" />
+                            @if (string.IsNullOrEmpty(request.User2.UserImgUrl))
+                            {
+                                <img src="@Url.Content("~/images/avatar/avatar.png")" class="absolute w-full h-full inset-0 rounded-md object-cover shadow-sm" />
+                            }
+                            else
+                            {
+                                <img src="@Url.Content(request.User2.UserImgUrl)" class="absolute w-full h-full inset-0 rounded-md object-cover shadow-sm" />
+                            }
                         </div>
 
                         <div class="flex-1">
-                            <a asp-controller="Users" asp-action="Details" asp-route-userId="@request.Receiver.Id" class="text-base font-semibold capitalize text-black">@request.Receiver.FullName</a>
+                            <a asp-controller="Users" asp-action="Details" asp-route-userId="@request.User2Id" class="text-base font-semibold capitalize text-black">@request.User2.UserFullName</a>
                         </div>
 
-                        <form asp-controller="Friends" asp-action="UpdateFriendRequest" method="post">
-                            <input type="hidden" name="requestId" value="@request.Id" />
-                            <input type="hidden" name="status" value="@FriendshipStatus.Canceled" />
+                        <form asp-controller="Friends" asp-action="RemoveFriendRequest" method="post">
+                            <input type="hidden" name="requestId" value="@request.RequestId" />
                             <button type="submit" class="button text-primary gap-1 max-md:hidden">
                                 <ion-icon name="remove-circle-outline" class="text-xl -ml-1"></ion-icon> Cancel
                             </button>
@@ -126,8 +140,8 @@
                     </div>
                 }
             </div>
-        } *@
+        }
 
-
+ 
     </div>
 </main>

@@ -21,7 +21,9 @@ namespace SocialNetworkForPets.Controllers
 
             var friendRequestData = new FriendshipVM()
             {
-                FriendRequestsSent = await _friendsService.GetSentFriendRequestAsync(userId.Value)
+                Friends = await _friendsService.GetFriendsAsync(userId.Value),
+                FriendRequestsSent = await _friendsService.GetSentFriendRequestAsync(userId.Value),
+                FriendRequestsReceived = await _friendsService.GetReceivedFriendRequestAsync(userId.Value),
             };
 
             return View(friendRequestData);
@@ -35,6 +37,31 @@ namespace SocialNetworkForPets.Controllers
             await _friendsService.SendRequestAsync(userId.Value, receiverId);
 
             return RedirectToAction("Index","Home");
+        }
+        [HttpPost]
+
+        public async Task<IActionResult> RejectFriendRequest(int requestId)
+        {
+            await _friendsService.RejectRequestAsync(requestId);
+
+            return RedirectToAction("Index");
+        }
+        [HttpPost]
+
+        public async Task<IActionResult> AcceptFriendRequest(int requestId)
+        {
+            await _friendsService.AcceptRequestAsync(requestId);
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+
+        public async Task<IActionResult> RemoveFriend(int friendshipId)
+        {
+            await _friendsService.RemoveFriendAsync(friendshipId);
+
+            return RedirectToAction("Index");
         }
     }
 }
