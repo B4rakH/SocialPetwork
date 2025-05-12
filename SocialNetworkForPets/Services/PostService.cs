@@ -137,5 +137,17 @@ namespace SocialNetworkForPets.Services
             await _context.Report.AddAsync(report);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<Post> GetPostByIdAsync(int postId)
+        {
+            var postDb = await _context.Post
+               .Include(n => n.Poster)
+               .Include(n => n.Likes)
+               .Include(n => n.Favorites)
+               .Include(n => n.Comments).ThenInclude(n => n.User)
+               .FirstOrDefaultAsync(n => n.PostId == postId);
+
+            return postDb;
+        }
     }
 }

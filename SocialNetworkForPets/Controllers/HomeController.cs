@@ -69,6 +69,7 @@ namespace SocialNetworkForPets.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> TogglePostLike(PostLikeVM postLikes) 
         {
             var UserId = GetUserId();
@@ -76,10 +77,13 @@ namespace SocialNetworkForPets.Controllers
 
             await _postService.TogglePostLikeAsync(postLikes.PostId, UserId.Value);
 
-            return RedirectToAction("Index");
+            var post = await _postService.GetPostByIdAsync(postLikes.PostId);
+
+            return PartialView("Home/_Post", post);
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> TogglePostFavorite(PostFavoriteVM postFavorites)
         {
 
@@ -88,10 +92,13 @@ namespace SocialNetworkForPets.Controllers
 
             await _postService.TogglePostFavoriteAsync(postFavorites.PostId, UserId.Value);
 
-            return RedirectToAction("Index");
+            var post = await _postService.GetPostByIdAsync(postFavorites.PostId);
+
+            return PartialView("Home/_Post", post);
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task <IActionResult> AddComment (CommentVM commentVM)
         {
             var UserId = GetUserId();
@@ -105,7 +112,9 @@ namespace SocialNetworkForPets.Controllers
             };
             await _postService.AddPostCommentAsync(newComment);
 
-            return RedirectToAction("Index");
+            var post = await _postService.GetPostByIdAsync(commentVM.PostId);
+
+            return PartialView("Home/_Post", post);
         }
         [HttpPost]
         public async Task<IActionResult> AddPostReport(PostReportVM postReportVM)
@@ -123,10 +132,14 @@ namespace SocialNetworkForPets.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteComment (RemoveCommentVM commentVM)
         {
             await _postService.RemovePostCommentAsync(commentVM.CommentId);
-            return RedirectToAction("Index");
+
+            var post = await _postService.GetPostByIdAsync(commentVM.PostId);
+
+            return PartialView("Home/_Post", post);
         }
         [HttpPost]
         public async Task<IActionResult> RemovePost(PostRemoveVM postVM)

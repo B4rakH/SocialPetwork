@@ -22,5 +22,7 @@ namespace SocialNetworkForPets.Services
 
         Task TogglePostFavoriteAsync(int PostId, int UserId);
 
+        Task<Post> GetPostByIdAsync(int PostId);
+
     }
 }
