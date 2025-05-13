@@ -7,6 +7,8 @@ using SocialNetworkForPets.Helper.Enums;
 using Microsoft.AspNetCore.Authorization;
 using SocialNetworkForPets.Controllers.Base;
 using Microsoft.AspNetCore.SignalR;
+using SocialNetworkForPets.Helper.Constants;
+using Microsoft.EntityFrameworkCore;
 
 namespace SocialNetworkForPets.Controllers
 {
@@ -46,7 +48,14 @@ namespace SocialNetworkForPets.Controllers
             var allPosts = await _postService.GetAllPostsAsync(UserId.Value);
 
             return View(allPosts);
-        }        
+        }  
+        
+        public async Task<IActionResult> Details(int postId)
+        {
+            var post = await _postService.GetPostByIdAsync(postId);
+
+            return View(post);
+        }
 
 
         [HttpPost]
@@ -78,14 +87,17 @@ namespace SocialNetworkForPets.Controllers
         public async Task<IActionResult> TogglePostLike(PostLikeVM postLikes) 
         {
             var UserId = GetUserId();
+            var fullname = GetUserFullName();
             if (UserId == null) return RedirectToLogin();
 
             var result = await _postService.TogglePostLikeAsync(postLikes.PostId, UserId.Value);
 
-            if (result.SendNotification)
-                await _notificationService.AddNewNotificationAsync(UserId.Value, "Someone liked your post", "Like");
-
             var post = await _postService.GetPostByIdAsync(postLikes.PostId);
+            
+            if (result.SendNotification && post.PosterId != UserId.Value)
+                await _notificationService.AddNewNotificationAsync
+                    (post.PosterId, NotificationType.Like, fullname, postLikes.PostId);
+
 
             return PartialView("Home/_Post", post);
         }
@@ -96,11 +108,16 @@ namespace SocialNetworkForPets.Controllers
         {
 
             var UserId = GetUserId();
+            var fullname = GetUserFullName();
             if (UserId == null) return RedirectToLogin();
 
-            await _postService.TogglePostFavoriteAsync(postFavorites.PostId, UserId.Value);
+            var result = await _postService.TogglePostFavoriteAsync(postFavorites.PostId, UserId.Value);
 
             var post = await _postService.GetPostByIdAsync(postFavorites.PostId);
+
+            if (result.SendNotification && post.PosterId != UserId.Value)
+                await _notificationService.AddNewNotificationAsync
+                    (post.PosterId, NotificationType.Favorite, fullname, postFavorites.PostId);
 
             return PartialView("Home/_Post", post);
         }
@@ -110,6 +127,7 @@ namespace SocialNetworkForPets.Controllers
         public async Task <IActionResult> AddComment (CommentVM commentVM)
         {
             var UserId = GetUserId();
+            var fullname = GetUserFullName();
             if (UserId == null) return RedirectToLogin();
 
             var newComment = new Comment()
@@ -118,9 +136,11 @@ namespace SocialNetworkForPets.Controllers
                 UserId = UserId.Value,
                 CommentText = commentVM.CommentText
             };
-            await _postService.AddPostCommentAsync(newComment);
 
             var post = await _postService.GetPostByIdAsync(commentVM.PostId);
+
+            await _notificationService.AddNewNotificationAsync
+                    (post.PosterId, NotificationType.Favorite, fullname, commentVM.PostId);
 
             return PartialView("Home/_Post", post);
         }

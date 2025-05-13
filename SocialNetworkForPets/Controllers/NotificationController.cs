@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SocialNetworkForPets.Controllers.Base;
+using SocialNetworkForPets.Data.Models;
 using SocialNetworkForPets.Services;
 
 namespace SocialNetworkForPets.Controllers
@@ -26,6 +27,27 @@ namespace SocialNetworkForPets.Controllers
 
             //Will redirect count data to the JS of Home/Index for reviewing with signalR
             return Json(count);
+        }
+        public async Task<IActionResult> GetNotifications()
+        {
+            var UserId = GetUserId();
+            if (UserId == null) return RedirectToLogin();
+
+            var notifications = await _notificationService.GetNotifications(UserId.Value);
+            
+            return PartialView("Notifications/_Notifications", notifications);
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteNotification(int notificationId)
+        {
+            var UserId = GetUserId();
+            if (UserId == null) return RedirectToLogin();
+
+            await _notificationService.DeleteNotification(notificationId);
+
+            var notifications = await _notificationService.GetNotifications(UserId.Value);
+            
+            return PartialView("Notifications/_Notifications", notifications);
         }
     }
 }

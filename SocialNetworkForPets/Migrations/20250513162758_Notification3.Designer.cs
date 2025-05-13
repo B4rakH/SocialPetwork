@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SocialNetworkForPets.Data;
 
@@ -11,9 +12,11 @@ using SocialNetworkForPets.Data;
 namespace SocialNetworkForPets.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250513162758_Notification3")]
+    partial class Notification3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -240,6 +243,9 @@ namespace SocialNetworkForPets.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("UserId1")
+                        .HasColumnType("int");
+
                     b.Property<string>("UserImgUrl")
                         .HasColumnType("nvarchar(max)");
 
@@ -256,6 +262,8 @@ namespace SocialNetworkForPets.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UserId");
+
+                    b.HasIndex("UserId1");
 
                     b.ToTable("User");
                 });
@@ -385,6 +393,13 @@ namespace SocialNetworkForPets.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("SocialNetworkForPets.Data.Models.User", b =>
+                {
+                    b.HasOne("SocialNetworkForPets.Data.Models.User", null)
+                        .WithMany("Friends")
+                        .HasForeignKey("UserId1");
+                });
+
             modelBuilder.Entity("SocialNetworkForPets.Data.Models.Post", b =>
                 {
                     b.Navigation("Comments");
@@ -401,6 +416,8 @@ namespace SocialNetworkForPets.Migrations
                     b.Navigation("Comments");
 
                     b.Navigation("Favorites");
+
+                    b.Navigation("Friends");
 
                     b.Navigation("Likes");
 

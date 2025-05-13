@@ -89,8 +89,14 @@ namespace SocialNetworkForPets.Services
             }
         }
 
-        public async Task TogglePostFavoriteAsync(int PostId, int UserId)
+        public async Task<GetNotificationDto> TogglePostFavoriteAsync(int PostId, int UserId)
         {
+            var response = new GetNotificationDto()
+            {
+                IsSuccess = true,
+                SendNotification = false
+            };
+
             var favorite = await _context.Favorite
                 .Where(l => l.PostId == PostId && l.UserId == UserId)
                 .FirstOrDefaultAsync();
@@ -108,15 +114,19 @@ namespace SocialNetworkForPets.Services
                 };
 
                 await _context.Favorite.AddAsync(newFavorite);
+                response.SendNotification = true;
             }
+
             await _context.SaveChangesAsync();
+
+            return response;
         }
 
         public async Task<GetNotificationDto> TogglePostLikeAsync(int PostId, int UserId)
         {
             var response = new GetNotificationDto()
             {
-                IsSuccess = false,
+                IsSuccess = true,
                 SendNotification = false
             };
 
@@ -140,7 +150,6 @@ namespace SocialNetworkForPets.Services
 
                 response.SendNotification = true;
             }
-            response.IsSuccess = true;
 
             await _context.SaveChangesAsync();
 

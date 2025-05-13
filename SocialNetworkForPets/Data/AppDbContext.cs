@@ -128,6 +128,9 @@ namespace SocialNetworkForPets.Data
                 .HasForeignKey(r => r.User2Id)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<Notification>()
+                .HasKey(o => o.Id);
+
 
 
             base.OnModelCreating(modelBuilder);

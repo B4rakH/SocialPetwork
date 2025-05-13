@@ -21,7 +21,7 @@ namespace SocialNetworkForPets.Services
 
         Task<GetNotificationDto> TogglePostLikeAsync(int PostId,int UserId);
 
-        Task TogglePostFavoriteAsync(int PostId, int UserId);
+        Task<GetNotificationDto> TogglePostFavoriteAsync(int PostId, int UserId);
 
         Task<Post> GetPostByIdAsync(int PostId);
 

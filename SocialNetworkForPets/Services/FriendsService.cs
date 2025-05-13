@@ -37,18 +37,6 @@ namespace SocialNetworkForPets.Services
 
                 _context.FriendRequests.Remove(request);
 
-                var user1 = await _context.User.FindAsync(request.User1Id);
-
-                var user2 = await _context.User.FindAsync(request.User2Id);
-
-                user1.Friends.Add(user2);
-
-                user2.Friends.Add(user1);
-
-                _context.User.Update(user1);
-
-                _context.User.Update(user2);
-
                 await _context.Friendship.AddAsync(newFriendship);
 
                 await _context.SaveChangesAsync();
@@ -69,32 +57,29 @@ namespace SocialNetworkForPets.Services
         {
             var friendship = await _context.Friendship.FirstOrDefaultAsync(f => f.Id == friendshipId);
 
-            var user1 = await _context.User.FindAsync(friendship.User1Id);
-
-            var user2 = await _context.User.FindAsync(friendship.User2Id);
-
-            user1.Friends.Remove(user2);
-
-            user2.Friends.Remove(user1);
-
             _context.Friendship.Remove(friendship);
 
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<(User, bool)>> GetSuggestedPetsAsync(int UserId)
+        public async Task<List<(User,int,bool)>> GetSuggestedPetsAsync(int UserId)
         {
             var user = await _context.User.FindAsync(UserId);
 
-            var suggestedPets = new List<(User, bool)>();
+            var suggestedPets = new List<(User, int ,bool)>();
 
-            foreach (var pet in _context.User.OrderBy(u => u.Friends.Count).Take(5).ToList())
+            var top5Users = _context.User
+                .Select(u => new
+                {
+                    User = u,
+                    FriendCount = _context.Friendship.Count(f => f.User1Id == u.UserId || f.User2Id == u.UserId)
+                })
+                .OrderByDescending(u => u.FriendCount)
+                .Take(5)
+                .ToList();
 
-                suggestedPets.Add((pet, (pet.UserId != UserId)
-                            && (!user.Friends.Contains(pet))
-                                && (_context.FriendRequests
-                                    .FirstOrDefault(u => (u.User1Id == pet.UserId && u.User2Id == UserId)
-                                        || (u.User1Id == UserId && u.User2Id == pet.UserId)) == null)));
+            foreach (var element in top5Users)
+                suggestedPets.Add((element.User, element.FriendCount, IsFriend(UserId, element.User.UserId)));
 
             return suggestedPets;
         }
@@ -129,6 +114,15 @@ namespace SocialNetworkForPets.Services
 
             return friends;
             
+        }
+        private bool IsFriend(int User1Id, int User2Id)
+        {
+            return (User1Id == User2Id) || (_context.Friendship.Any(u => (u.User1Id == User1Id && u.User2Id == User2Id)
+                                        || (u.User1Id == User2Id && u.User2Id == User1Id)))
+                                        || (_context.FriendRequests
+                                    .Any(u => (u.User1Id == User1Id && u.User2Id == User2Id)
+                                        || (u.User1Id == User2Id && u.User2Id == User1Id)));
+
         }
     }
 }

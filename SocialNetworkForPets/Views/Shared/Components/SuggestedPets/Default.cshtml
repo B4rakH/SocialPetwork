@@ -1,4 +1,4 @@
-﻿@model List<(User,bool)>
+﻿@model List<(User,int,bool)>
 
 <div class="flex items-baseline justify-between text-black">
 
@@ -6,7 +6,7 @@
 </div>
 <div class="side-list">
 
-    @foreach (var (pet, isValid) in Model)
+    @foreach (var (pet,friendCount ,isFriend) in Model)
     {
         <div class="side-list-item">
             <a asp-controller="Users" asp-action="Details" asp-route-userId="@pet.UserId">
@@ -26,10 +26,10 @@
                     </h4>
                 </a>
                 <div class="side-list-info">
-                    @(pet.Friends.Count()) Friends
+                    @(friendCount) Friends
                 </div>
             </div>
-            @if (isValid)
+            @if (!isFriend)
             {
                 <form asp-controller="Friends" asp-action="SendFriendRequest" method="post">
                     <input type="hidden" name="receiverId" value="@pet.UserId" />

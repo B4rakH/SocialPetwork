@@ -8,5 +8,7 @@ namespace SocialNetworkForPets.ViewModels.Users
         public User User { get; set; }
         public List<Post> Posts { get; set; }
 
+        public bool RequestedOrAdded { get; set; }
+
     }
 }

@@ -118,7 +118,7 @@
     document.addEventListener("DOMContentLoaded", () => {
 
         //Getting notification count when page loaded
-        fetch("Notifications/GetCount", {
+        fetch("Notification/GetCount", {
             method: 'GET',
             headers: {
                 'Content-Type':'application/json'
@@ -135,7 +135,7 @@
 
 
         document.getElementById('notificationsBtn').addEventListener('click', () => {
-            fetch('Notifications/GetNotifications')
+            fetch('Notification/GetNotifications')
                 .then(resp => resp.text())
                 .then(html => {
                     document.getElementById('notification-dropdown').innerHTML = html;
@@ -158,12 +158,12 @@
             .then(() => console.log("SignalR connected"))
             .catch((err) => console.log("SignalR connection error: ", err))
 
-    })
+    });
 
-    function setNotificationAsRead(notificationId) {
-        console.log('Mark as read => notification => ', notificationId);
+    function deleteNotification(notificationId) {
+        console.log('delete => notification => ', notificationId);
 
-        fetch(`Notifications/SetNotificationAsRead?notificationId=${notificationId}`, {
+        fetch(`Notification/DeleteNotification?notificationId=${notificationId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -173,5 +173,11 @@
             .then(html => {
                 document.getElementById('notification-dropdown').innerHTML = html;
             })
+
+         const notificationsCountElement = document.getElementById('notificationsCount');
+
+        let currentCount = parseInt(notificationsCountElement.innerText) - 1;
+
+        notificationsCountElement.innerText = currentCount;
     }
 </script>
