@@ -67,7 +67,7 @@
         </div>
     </div>
     @*Post Content*@
-    <a asp-controller="Home" asp-action="Details" asp-route-postId="@Model.PostId">
+    <a>
         <div class="sm:px-4 p-2.5 pt-0 w-full">
             <p class="font-normal">
                 @Model.PostText
@@ -100,7 +100,7 @@
         </div>
         @*Comment İcon*@
         <div class="flex items-center gap-3">
-            <a class="button-icon">
+            <a class="button-icon" asp-controller="Home" asp-action="Details" asp-route-postId="@Model.PostId">
                 <ion-icon class="text-lg" name="chatbubble-ellipses-outline"></ion-icon>
             </a>
             <a href="#">@Model.Comments.Count</a>
