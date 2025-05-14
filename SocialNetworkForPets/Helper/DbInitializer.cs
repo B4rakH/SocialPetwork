@@ -15,10 +15,8 @@ namespace SocialNetworkForPets.Helper
                     UserName = "garfield_cat",
                     UserPassword = "",
                 };
-                await context.User.AddAsync(newUser);
-                await context.SaveChangesAsync();
 
-                var newPostNoImg = new Post()
+                var newPost = new Post()
                 {
                     PostText = "Get me a lasagna John, with tea.",
                     CreatedAt = DateTime.UtcNow,
@@ -26,7 +24,10 @@ namespace SocialNetworkForPets.Helper
                     Poster = newUser
                 };
 
-                await context.Post.AddRangeAsync(newPostNoImg);
+                await context.User.AddAsync(newUser);
+
+                await context.Post.AddRangeAsync(newPost);
+
                 await context.SaveChangesAsync();
             }
         }
