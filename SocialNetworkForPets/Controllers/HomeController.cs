@@ -137,10 +137,13 @@ namespace SocialNetworkForPets.Controllers
                 CommentText = commentVM.CommentText
             };
 
+            await _postService.AddPostCommentAsync(newComment);
+
             var post = await _postService.GetPostByIdAsync(commentVM.PostId);
 
+            if(UserId != post.PosterId)
             await _notificationService.AddNewNotificationAsync
-                    (post.PosterId, NotificationType.Favorite, fullname, commentVM.PostId);
+                    (post.PosterId, NotificationType.Comment, fullname, commentVM.PostId);
 
             return PartialView("Home/_Post", post);
         }
@@ -150,12 +153,18 @@ namespace SocialNetworkForPets.Controllers
             var UserId = GetUserId();
             if (UserId == null) return RedirectToLogin();
 
-            var newReport = new Report()
+            var isReported = await _context.Report
+                .AnyAsync(r => r.UserId == UserId && r.PostId == postReportVM.PostId);
+
+            if (!isReported)
             {
-                PostId = postReportVM.PostId,
-                UserId = UserId.Value
-            };
-            await _postService.AddPostReportAsync(newReport);
+                var newReport = new Report()
+                {
+                    PostId = postReportVM.PostId,
+                    UserId = UserId.Value
+                };
+                await _postService.AddPostReportAsync(newReport);
+            }
             return RedirectToAction("Index");
         }
 

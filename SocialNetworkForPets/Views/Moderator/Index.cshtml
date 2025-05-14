@@ -1,0 +1,54 @@
+﻿@model List<Post>
+<main id="site__main" class="2xl:ml-[--w-side]  xl:ml-[--w-side-sm] p-2.5 h-[calc(100vh-var(--m-top))] mt-[--m-top]">
+
+    <h3>Reported Posts</h3>
+    <hr />
+
+    @foreach (var post in Model)
+    {
+        TimeSpan timeSpanSincePosted = DateTime.UtcNow.Subtract(post.CreatedAt);
+
+        string displayTime = timeSpanSincePosted switch
+        {
+            var t when t.TotalDays >= 1 => $"{(int)t.TotalDays} day ago",
+            var t when t.TotalHours >= 1 => $"{(int)t.TotalHours} hour ago",
+            var t when t.TotalMinutes >= 1 => $"{(int)t.TotalMinutes} min ago",
+            _ => "Just now"
+        };
+
+        @*Post Heading*@
+        <div class="flex gap-3 sm:p-4 p-2.5 text-sm font-medium">
+            @*User Profile Pic*@
+                @if (string.IsNullOrEmpty(post.Poster.UserImgUrl))
+                {
+                    <img src="@Url.Content("~/images/avatar/avatar.png")" class="w-10 h-10 rounded-full" />
+                }
+                else
+                {
+                    <img src=@post.Poster.UserImgUrl class="w-10 h-10 rounded-full" />
+                }
+            @*Post Date*@
+            <div class="flex-1">
+                    <h4 class="text-black">@post.Poster.UserFullName</h4>
+                    <div class="text-xs text-gray-500/80">@displayTime</div>
+            </div>
+        </div>
+        @*Post Content*@
+        <a>
+            <div class="sm:px-4 p-2.5 pt-0 w-full">
+                <p class="font-normal">
+                    @post.PostText
+                </p>
+            </div>
+        </a>
+        @if (!string.IsNullOrEmpty(post.PostImgUrl))
+        {
+            <a>
+                <div class="w-full lg\:h-96 h-full sm:px-4">
+                    <img src="@post.PostImgUrl"
+                         class="sm:rounded-lg w-full h-full object-cover" />
+                </div>
+            </a>
+        }
+    }
+</main>

@@ -1,7 +1,10 @@
-﻿namespace SocialNetworkForPets.Data.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SocialNetworkForPets.Data.Models
 {
     public class Report
     {
+        [Key]
         public int ReportId { get; set; }
 
         public int PostId { get; set; }

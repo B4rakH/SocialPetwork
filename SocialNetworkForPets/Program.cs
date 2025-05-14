@@ -27,6 +27,7 @@ namespace SocialNetworkForPets
             builder.Services.AddScoped<IUsersService, UsersService>();
             builder.Services.AddScoped<IFriendsService, FriendsService>();
             builder.Services.AddScoped<INotificationService, NotificationService>();
+            builder.Services.AddScoped<IModeratorService, ModeratorService>();
 
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>

@@ -3,7 +3,8 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] SocialPetwork
+    <title>
+        @ViewData["Title"] SocialPetwork
     </title>
     <link href="~/images/favico.png" rel="icon" type="image/svg" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -19,8 +20,17 @@
             @*TopBar*@
             <partial name="Navigation/_TopBar" />
 
-            @*SİdeBar*@
-            <partial name="Navigation/_SideBar" />
+            if (User.IsInRole(UserRank.Moderator) || User.IsInRole(UserRank.Admin))
+            {
+                @*Moderator SideBar*@
+                <partial name="Navigation/_SideBarModerator" />
+            }
+
+            else if (User.IsInRole(UserRank.Default))
+            {
+                @*Default SideBar*@
+                <partial name="Navigation/_SideBar" />
+            }
         }
 
         @RenderBody()
