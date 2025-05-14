@@ -1,4 +1,6 @@
 ﻿@{
+
+    //int userId = int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int result) ? result : 0;
     var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
     var userFullName = User.Claims.FirstOrDefault(u => u.Type == CustomClaim.FullName)?.Value;
     var username = User.Identity.Name;

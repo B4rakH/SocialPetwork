@@ -11,8 +11,9 @@
         var t when t.TotalMinutes >= 1 => $"{(int)t.TotalMinutes} min ago",
         _ => "Just now"
     };
-    var UserId = int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int Id)
-        ? Id : 0;
+    var UserId = int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int Id) ? Id : 0;
+
+    var isAdmin = User.IsInRole(UserRank.Admin);
 
     bool isLiked = Model.Likes.Any(u => u.UserId == UserId);
     bool isFavorited = Model.Favorites.Any(u => u.UserId == UserId);
@@ -48,12 +49,16 @@
         <div class="-mr-1">
             <button type="button" class="button-icon w-8 h-8"> <ion-icon class="text-xl" name="ellipsis-horizontal"></ion-icon> </button>
             <div class="w-[245px] post-options-dropdown" uk-dropdown="pos: bottom-right; animation: uk-animation-scale-up uk-transform-origin-top-right; animate-out: true; mode: click">
-                <form asp-controller="Home" asp-action="RemovePost">
-                    <input type="hidden" name="PostId" value="@Model.PostId" />
-                    <button type="submit" class="text-red-400 hover:!bg-red-50 delete-post-btn">
-                        <ion-icon name="trash-bin-outline"></ion-icon>  Delete Post
-                    </button>
-                </form>
+
+                @if (Model.PosterId == UserId || isAdmin)
+                {
+                    <form asp-controller="Home" asp-action="RemovePost">
+                        <input type="hidden" name="PostId" value="@Model.PostId" />
+                        <button type="submit" class="text-red-400 hover:!bg-red-50 delete-post-btn">
+                            <ion-icon name="trash-bin-outline"></ion-icon>  Delete Post
+                        </button>
+                    </form>
+                }
                 @if (!isReported)
                 {
                     <form asp-controller="Home" asp-action="AddPostReport">
@@ -152,14 +157,17 @@
                                     @comment.CommentText
                                 </p>
 
-                                <form asp-controller="Home" asp-action="DeleteComment" class="remove-comment-form">
-                                    @Html.AntiForgeryToken()
-                                    <input type="hidden" name="CommentId" value="@comment.CommentId" />
-                                    <input type="hidden" name="PostId" value="@Model.PostId" />
-                                    <button type="submit" class="text-red-500 text-xs ml-2" title="Remove post comment">
-                                        <ion-icon name="trash-outline"></ion-icon>
-                                    </button>
-                                </form>
+                                @if (Model.PosterId == UserId || isAdmin)
+                                {
+                                    <form asp-controller="Home" asp-action="DeleteComment" class="remove-comment-form">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="CommentId" value="@comment.CommentId" />
+                                        <input type="hidden" name="PostId" value="@Model.PostId" />
+                                        <button type="submit" class="text-red-500 text-xs ml-2" title="Remove post comment">
+                                            <ion-icon name="trash-outline"></ion-icon>
+                                        </button>
+                                    </form>
+                                }
                             </div>
                         </div>
                     </div>

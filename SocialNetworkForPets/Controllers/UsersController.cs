@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SocialNetworkForPets.Controllers.Base;
 using SocialNetworkForPets.Data;
-using SocialNetworkForPets.Data.Models;
 using SocialNetworkForPets.Services;
 using SocialNetworkForPets.ViewModels.Users;
 
