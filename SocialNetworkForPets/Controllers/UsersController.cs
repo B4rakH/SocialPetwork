@@ -11,11 +11,13 @@ namespace SocialNetworkForPets.Controllers
     {
         private readonly AppDbContext _context;
         private readonly IUsersService _usersService;
+        private readonly IFriendsService _friendsService;
 
-        public UsersController(IUsersService usersService, AppDbContext context)
+        public UsersController(IUsersService usersService, AppDbContext context, IFriendsService friendsService)
         {
             _usersService = usersService;
             _context = context;
+            _friendsService = friendsService;
         }
         public IActionResult Index()
         {
@@ -26,6 +28,7 @@ namespace SocialNetworkForPets.Controllers
         {
             var user = await _context.User.FindAsync(userId);
             var userPosts = await _usersService.GetUserPostsAsync(userId);
+            var friendships = await _friendsService.GetFriendsAsync(userId);
 
             var IsRequestedOrAdded = IsFriend(userId);
 
@@ -33,7 +36,8 @@ namespace SocialNetworkForPets.Controllers
             {
                 Posts = userPosts,
                 User = user,
-                RequestedOrAdded = IsRequestedOrAdded
+                RequestedOrAdded = IsRequestedOrAdded,
+                Friendships = friendships
             };
 
             return View(userProfileVM);

@@ -26,7 +26,7 @@
                 </div>
                 @if (!Model.RequestedOrAdded)
                 {
-                        <div class="p-6">
+                    <div class="p-6">
                         <form asp-controller="Friends" asp-action="SendFriendRequest" method="post">
                             <input type="hidden" name="receiverId" value="@Model.User.UserId" />
                             <button type="submit" class="button bg-primary-soft text-primary">Add Friend</button>
@@ -40,7 +40,7 @@
                 @foreach (var post in Model.Posts)
                 {
                     <partial name="Home/_Post" model="post"
-                             view-data='new ViewDataDictionary(ViewData)
+                    view-data='new ViewDataDictionary(ViewData)
                             {
                                 { "ShowAllComment", false },
                                 {"ShowDetails", false }
@@ -49,34 +49,41 @@
             </div>
             <div class="lg:w-[400px]">
                 <div class="lg:space-y-4 lg:pb-8 max-lg:grid sm:grid-cols-2 max-lg:gap-6"
-                     uk-sticky="media: 1024; end: #js-oversized; offset: 80">
+                uk-sticky="media: 1024; end: #js-oversized; offset: 80">
                     <div class="box p-5 px-6">
                         <div class="flex items-ce justify-between text-black">
 
                             <h3 class="font-bold text-lg">
                                 Friends
-                                <span class="block text-sm text-gray-500 mt-0. font-normal"> 20 friends </span>
+                                <span class="block text-sm text-gray-500 mt-0. font-normal"> @(Model.Friendships.Count) friends </span>
                             </h3>
-
                         </div>
 
-                        <div class="grid grid-cols-3 gap-2 gap-y-5 text-center text-sm mt-4 mb-2">
-                            <div>
-                                <div class="relative w-full aspect-square rounded-lg overflow-hidden">
-                                    <img src="@Url.Content("~/images/avatar/avatar.png")" class="object-cover w-full h-full inset-0" />
+                        @foreach (var friendship in Model.Friendships)
+                        {
+                            var friend = (friendship.User1Id == Model.User.UserId) ? friendship.User2 : friendship.User1;
+
+                            <div class="grid grid-cols-3 gap-2 gap-y-5 text-center text-sm mt-4 mb-2">
+                                <div>
+                                    <div class="relative w-full aspect-square rounded-lg overflow-hidden">
+
+                                        @if (string.IsNullOrEmpty(friend.UserImgUrl))
+                                        {
+
+                                            <img src="@Url.Content("~/images/avatar/avatar.png")" class="object-cover w-full h-full inset-0" />
+
+                                        }
+                                        else
+                                        {
+                                            <img src="@Url.Content(friend.UserImgUrl)" class="object-cover w-full h-full inset-0" />
+                                        }
+
+                                    </div>
+
+                                    <div class="mt-2 line-clamp-1">@friend.UserFullName</div>
                                 </div>
-
-                                <div class="mt-2 line-clamp-1">Ervis Trupja</div>
                             </div>
-
-                            <div>
-                                <div class="relative w-full aspect-square rounded-lg overflow-hidden">
-                                    <img src="@Url.Content("~/images/avatar/avatar.png")" class="object-cover w-full h-full inset-0" />
-                                </div>
-
-                                <div class="mt-2 line-clamp-1">Ervis Trupja</div>
-                            </div>
-                        </div>
+                        }
                     </div>
                 </div>
             </div>
