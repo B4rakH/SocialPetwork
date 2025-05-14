@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using SocialNetworkForPets.Data;
 using SocialNetworkForPets.Data.Models;
 using SocialNetworkForPets.ViewModels.Authentication;
-using System.Reflection.Metadata;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;

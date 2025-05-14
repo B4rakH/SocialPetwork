@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SocialNetworkForPets.Controllers.Base;
-using SocialNetworkForPets.Data.Models;
 using SocialNetworkForPets.Services;
 
 namespace SocialNetworkForPets.Controllers

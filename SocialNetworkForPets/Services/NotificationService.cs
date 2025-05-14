@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
 using SocialNetworkForPets.Data;
 using SocialNetworkForPets.Data.Models;
 using SocialNetworkForPets.Helper.Constants;

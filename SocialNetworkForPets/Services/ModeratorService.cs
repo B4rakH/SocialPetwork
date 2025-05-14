@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SocialNetworkForPets.Data;
 using SocialNetworkForPets.Data.Models;
-using SocialNetworkForPets.ViewModels.Home;
 
 namespace SocialNetworkForPets.Services
 {

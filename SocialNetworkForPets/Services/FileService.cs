@@ -1,6 +1,5 @@
 ﻿using SocialNetworkForPets.Data;
 using SocialNetworkForPets.Helper.Enums;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace SocialNetworkForPets.Services
 {

@@ -2,9 +2,6 @@
 using SocialNetworkForPets.Data;
 using SocialNetworkForPets.Data.Models;
 using SocialNetworkForPets.Dtos;
-using SocialNetworkForPets.Helper;
-using SocialNetworkForPets.Helper.Enums;
-using SocialNetworkForPets.ViewModels.Home;
 
 namespace SocialNetworkForPets.Services
 {

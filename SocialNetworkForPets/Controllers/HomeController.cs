@@ -6,7 +6,6 @@ using SocialNetworkForPets.Services;
 using SocialNetworkForPets.Helper.Enums;
 using Microsoft.AspNetCore.Authorization;
 using SocialNetworkForPets.Controllers.Base;
-using Microsoft.AspNetCore.SignalR;
 using SocialNetworkForPets.Helper.Constants;
 using Microsoft.EntityFrameworkCore;
 

@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using SocialNetworkForPets.Controllers.Base;
 using SocialNetworkForPets.Services;
-using System.Security.Claims;
 
 namespace SocialNetworkForPets.Controllers
 {

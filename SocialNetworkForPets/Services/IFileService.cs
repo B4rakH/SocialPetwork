@@ -1,5 +1,4 @@
-﻿using SocialNetworkForPets.Data;
-using SocialNetworkForPets.Helper.Enums;
+﻿using SocialNetworkForPets.Helper.Enums;
 
 namespace SocialNetworkForPets.Services
 {

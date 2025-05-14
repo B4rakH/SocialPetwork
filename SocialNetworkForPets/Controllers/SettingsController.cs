@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using SocialNetworkForPets.Helper.Constants;
 using SocialNetworkForPets.Helper.Enums;
 using SocialNetworkForPets.Services;
