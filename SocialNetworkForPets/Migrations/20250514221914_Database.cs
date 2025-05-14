@@ -26,6 +26,23 @@ namespace SocialNetworkForPets.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Notification",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PostId = table.Column<int>(type: "int", nullable: true),
+                    Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notification", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "User",
                 columns: table => new
                 {
@@ -43,15 +60,42 @@ namespace SocialNetworkForPets.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Friendship",
+                name: "FriendRequests",
                 columns: table => new
                 {
+                    RequestId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     User1Id = table.Column<int>(type: "int", nullable: false),
                     User2Id = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Friendship", x => new { x.User1Id, x.User2Id });
+                    table.PrimaryKey("PK_FriendRequests", x => x.RequestId);
+                    table.ForeignKey(
+                        name: "FK_FriendRequests_User_User1Id",
+                        column: x => x.User1Id,
+                        principalTable: "User",
+                        principalColumn: "UserId");
+                    table.ForeignKey(
+                        name: "FK_FriendRequests_User_User2Id",
+                        column: x => x.User2Id,
+                        principalTable: "User",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Friendship",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    User1Id = table.Column<int>(type: "int", nullable: false),
+                    User2Id = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Friendship", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Friendship_User_User1Id",
                         column: x => x.User1Id,
@@ -168,13 +212,14 @@ namespace SocialNetworkForPets.Migrations
                 name: "Report",
                 columns: table => new
                 {
-                    PostId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false),
                     ReportId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PostId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Report", x => new { x.PostId, x.UserId });
+                    table.PrimaryKey("PK_Report", x => x.ReportId);
                     table.ForeignKey(
                         name: "FK_Report_Post_PostId",
                         column: x => x.PostId,
@@ -205,6 +250,21 @@ namespace SocialNetworkForPets.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_FriendRequests_User1Id",
+                table: "FriendRequests",
+                column: "User1Id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FriendRequests_User2Id",
+                table: "FriendRequests",
+                column: "User2Id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Friendship_User1Id",
+                table: "Friendship",
+                column: "User1Id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Friendship_User2Id",
                 table: "Friendship",
                 column: "User2Id");
@@ -218,6 +278,11 @@ namespace SocialNetworkForPets.Migrations
                 name: "IX_Post_PosterId",
                 table: "Post",
                 column: "PosterId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Report_PostId",
+                table: "Report",
+                column: "PostId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Report_UserId",
@@ -235,6 +300,9 @@ namespace SocialNetworkForPets.Migrations
                 name: "Favorite");
 
             migrationBuilder.DropTable(
+                name: "FriendRequests");
+
+            migrationBuilder.DropTable(
                 name: "Friendship");
 
             migrationBuilder.DropTable(
@@ -242,6 +310,9 @@ namespace SocialNetworkForPets.Migrations
 
             migrationBuilder.DropTable(
                 name: "Like");
+
+            migrationBuilder.DropTable(
+                name: "Notification");
 
             migrationBuilder.DropTable(
                 name: "Report");

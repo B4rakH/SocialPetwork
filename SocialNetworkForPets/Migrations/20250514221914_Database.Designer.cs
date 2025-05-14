@@ -12,8 +12,8 @@ using SocialNetworkForPets.Data;
 namespace SocialNetworkForPets.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250513162758_Notification3")]
-    partial class Notification3
+    [Migration("20250514221914_Database")]
+    partial class Database
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -215,16 +215,21 @@ namespace SocialNetworkForPets.Migrations
 
             modelBuilder.Entity("SocialNetworkForPets.Data.Models.Report", b =>
                 {
+                    b.Property<int>("ReportId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReportId"));
+
                     b.Property<int>("PostId")
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ReportId")
-                        .HasColumnType("int");
+                    b.HasKey("ReportId");
 
-                    b.HasKey("PostId", "UserId");
+                    b.HasIndex("PostId");
 
                     b.HasIndex("UserId");
 
@@ -243,9 +248,6 @@ namespace SocialNetworkForPets.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UserId1")
-                        .HasColumnType("int");
-
                     b.Property<string>("UserImgUrl")
                         .HasColumnType("nvarchar(max)");
 
@@ -262,8 +264,6 @@ namespace SocialNetworkForPets.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UserId");
-
-                    b.HasIndex("UserId1");
 
                     b.ToTable("User");
                 });
@@ -393,13 +393,6 @@ namespace SocialNetworkForPets.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("SocialNetworkForPets.Data.Models.User", b =>
-                {
-                    b.HasOne("SocialNetworkForPets.Data.Models.User", null)
-                        .WithMany("Friends")
-                        .HasForeignKey("UserId1");
-                });
-
             modelBuilder.Entity("SocialNetworkForPets.Data.Models.Post", b =>
                 {
                     b.Navigation("Comments");
@@ -416,8 +409,6 @@ namespace SocialNetworkForPets.Migrations
                     b.Navigation("Comments");
 
                     b.Navigation("Favorites");
-
-                    b.Navigation("Friends");
 
                     b.Navigation("Likes");
 
