@@ -5,5 +5,9 @@ namespace SocialNetworkForPets.Services
     public interface IModeratorService
     {
         public Task<List<Post>> GetReportedPostsAsync();
+
+        public Task ApproveReport(int postId);
+
+        public Task RejectReport(int postId);
     }
 }

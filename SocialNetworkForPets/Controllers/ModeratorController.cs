@@ -21,5 +21,20 @@ namespace SocialNetworkForPets.Controllers
 
             return View(reportedPosts);
         }
+        [HttpPost]
+        public async Task<IActionResult> ApproveReportAsync(int postId)
+        {
+            await _moderatorService.ApproveReport(postId);
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RejectReportAsync(int postId)
+        {
+            await _moderatorService.RejectReport(postId);
+
+            return RedirectToAction("Index");
+        }
     }
 }
