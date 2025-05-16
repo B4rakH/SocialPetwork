@@ -12,7 +12,7 @@ using SocialNetworkForPets.Data;
 namespace SocialNetworkForPets.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250514221914_Database")]
+    [Migration("20250516152024_Database")]
     partial class Database
     {
         /// <inheritdoc />
@@ -54,16 +54,21 @@ namespace SocialNetworkForPets.Migrations
 
             modelBuilder.Entity("SocialNetworkForPets.Data.Models.Favorite", b =>
                 {
+                    b.Property<int>("FavId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FavId"));
+
                     b.Property<int>("PostId")
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("FavId")
-                        .HasColumnType("int");
+                    b.HasKey("FavId");
 
-                    b.HasKey("PostId", "UserId");
+                    b.HasIndex("PostId");
 
                     b.HasIndex("UserId");
 

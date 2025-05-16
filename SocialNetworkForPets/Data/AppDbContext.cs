@@ -72,7 +72,7 @@ namespace SocialNetworkForPets.Data
 
             //Favorite Relations
             modelBuilder.Entity<Favorite>()
-                .HasKey(l => new { l.PostId, l.UserId });
+                .HasKey(l => l.FavId);
 
             modelBuilder.Entity<Favorite>()
                 .HasOne(f => f.Post)
@@ -88,7 +88,7 @@ namespace SocialNetworkForPets.Data
 
             //Report Relations
             modelBuilder.Entity<Report>()
-                .HasKey(l => new { l.PostId, l.UserId });
+                .HasKey(r => r.ReportId);
 
             modelBuilder.Entity<Report>()
                 .HasOne(f => f.Post)
@@ -131,12 +131,6 @@ namespace SocialNetworkForPets.Data
             //Add Primary Key To Notification
             modelBuilder.Entity<Notification>()
                 .HasKey(o => o.Id);
-
-            //Add Primary Key To Report
-            modelBuilder.Entity<Report>()
-                .HasKey(r => r.ReportId);
-
-
 
             base.OnModelCreating(modelBuilder);
         }

@@ -162,13 +162,14 @@ namespace SocialNetworkForPets.Migrations
                 name: "Favorite",
                 columns: table => new
                 {
-                    PostId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false),
                     FavId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PostId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Favorite", x => new { x.PostId, x.UserId });
+                    table.PrimaryKey("PK_Favorite", x => x.FavId);
                     table.ForeignKey(
                         name: "FK_Favorite_Post_PostId",
                         column: x => x.PostId,
@@ -243,6 +244,11 @@ namespace SocialNetworkForPets.Migrations
                 name: "IX_Comment_UserId",
                 table: "Comment",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Favorite_PostId",
+                table: "Favorite",
+                column: "PostId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Favorite_UserId",
