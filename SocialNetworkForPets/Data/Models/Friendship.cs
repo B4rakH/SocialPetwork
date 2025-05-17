@@ -5,9 +5,7 @@ namespace SocialNetworkForPets.Data.Models
 {
     public class Friendship
     {
-        [Key]
-        public int Id { get; set; }
-
+        //Keys
         [ForeignKey("User")]
         public int User1Id { get; set; }
 

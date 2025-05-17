@@ -53,9 +53,10 @@ namespace SocialNetworkForPets.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task RemoveFriendAsync(int friendshipId)
+        public async Task RemoveFriendAsync(int userId,int friendId)
         {
-            var friendship = await _context.Friendship.FirstOrDefaultAsync(f => f.Id == friendshipId);
+            var friendship = await _context.Friendship.FirstOrDefaultAsync
+                (f => (f.User1Id == userId && f.User2Id == friendId) || (f.User1Id == friendId && f.User2Id == userId));
 
             _context.Friendship.Remove(friendship);
 

@@ -104,6 +104,9 @@ namespace SocialNetworkForPets.Data
 
             //Friendship Relations
             modelBuilder.Entity<Friendship>()
+                 .HasKey(f => new { f.User1Id, f.User2Id });
+
+            modelBuilder.Entity<Friendship>()
                 .HasOne(f => f.User1)
                 .WithMany()
                 .HasForeignKey(f => f.User1Id)
@@ -113,9 +116,9 @@ namespace SocialNetworkForPets.Data
                 .HasOne(f => f.User2)
                 .WithMany()
                 .HasForeignKey(f => f.User2Id)
-                .OnDelete(DeleteBehavior.ClientNoAction);
+                .OnDelete(DeleteBehavior.Restrict);
 
-            //Friendship Request Relations
+            //FriendshipRequest Relations
             modelBuilder.Entity<FriendshipRequest>()
                 .HasOne(r => r.User1)
                 .WithMany()
@@ -128,7 +131,7 @@ namespace SocialNetworkForPets.Data
                 .HasForeignKey(r => r.User2Id)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            //Add Primary Key To Notification
+            //Notification Relations
             modelBuilder.Entity<Notification>()
                 .HasKey(o => o.Id);
 

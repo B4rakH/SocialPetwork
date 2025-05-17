@@ -79,9 +79,12 @@ namespace SocialNetworkForPets.Controllers
 
         [HttpPost]
 
-        public async Task<IActionResult> RemoveFriend(int friendshipId)
+        public async Task<IActionResult> RemoveFriend(int friendId)
         {
-            await _friendsService.RemoveFriendAsync(friendshipId);
+            var userId = GetUserId();
+            if (userId == null) return RedirectToLogin();
+
+            await _friendsService.RemoveFriendAsync(userId.Value ,friendId);
 
             return RedirectToAction("Index");
         }
