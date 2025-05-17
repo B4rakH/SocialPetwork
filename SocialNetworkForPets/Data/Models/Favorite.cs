@@ -5,10 +5,7 @@ namespace SocialNetworkForPets.Data.Models
 {
     public class Favorite
     {
-        [Key]
-        public int FavId { get; set; }
-
-        //Foreign Keys
+        //Keys
 
         [ForeignKey("Post")]
         public int PostId { get; set; }

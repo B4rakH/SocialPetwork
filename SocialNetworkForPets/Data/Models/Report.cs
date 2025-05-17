@@ -1,15 +1,18 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SocialNetworkForPets.Data.Models
 {
     public class Report
     {
-        [Key]
-        public int ReportId { get; set; }
-
+        //Keys
+        [ForeignKey("Post")]
         public int PostId { get; set; }
 
+        [ForeignKey("User")]
         public int UserId { get; set; }
+
+        // Navigation properties
 
         public Post Post { get; set; }
 

@@ -5,11 +5,7 @@ namespace SocialNetworkForPets.Data.Models
 {
     public class Like
     {
-        [Key]
-        public int LikeId { get; set; }
-
-        //Foreign Keys
-
+        //Keys
         [ForeignKey("Post")]
         public int PostId { get; set; }
 

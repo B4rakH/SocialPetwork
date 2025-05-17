@@ -117,7 +117,7 @@
             <form asp-controller="Home" asp-action="TogglePostFavorite">
                 <input type="hidden" name="PostId" value="@Model.PostId" />
                 <button type="submit" class="button-icon favorite-button ml-auto text-blue-500 bt-blue-100">
-                    <ion-icon class="text-lg" name="@(isFavorited ? "heart" : "heart-outline" )"></ion-icon>
+                    <ion-icon class="text-lg" name="@(isFavorited ? "bookmark" : "bookmark-outline" )"></ion-icon>
                 </button>
             </form>
             @if (Model.Favorites.Count > 0)

@@ -13,7 +13,7 @@ namespace SocialNetworkForPets.Helper
                 {
                     UserFullName = "Garfield",
                     UserName = "garfield_cat",
-                    UserPassword = "",
+                    UserPassword = "monday",
                 };
 
                 var newPost = new Post()
