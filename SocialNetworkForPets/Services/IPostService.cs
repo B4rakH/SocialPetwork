@@ -9,7 +9,7 @@ namespace SocialNetworkForPets.Services
 
         Task<List<Post>> GetAllFavoritePostsAsync(int UserId);
 
-        Task<Post> CreatePostAsync(Post post);
+        Task CreatePostAsync(Post post);
 
         Task AddPostCommentAsync(Comment comment);
 
@@ -17,7 +17,7 @@ namespace SocialNetworkForPets.Services
 
         Task RemovePostCommentAsync(int CommentId);
 
-        Task<Post> RemovePostAsync(int PostId);
+        Task RemovePostAsync(int PostId);
 
         Task<GetNotificationDto> TogglePostLikeAsync(int PostId,int UserId);
 

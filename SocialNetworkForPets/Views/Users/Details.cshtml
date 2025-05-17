@@ -1,5 +1,9 @@
 ﻿@model GetUserProfileVM
 
+@{
+    var isAdmin = User.IsInRole(UserRank.Admin);
+}
+
 <main id="site__main" class="2xl:ml-[--w-side]  xl:ml-[--w-side-sm] p-2.5 h-[calc(100vh-var(--m-top))] mt-[--m-top]">
 
     <div class="max-w-[1065px] mx-auto max-lg:-m-2.5">
@@ -31,6 +35,14 @@
                             <input type="hidden" name="receiverId" value="@Model.User.UserId" />
                             <button type="submit" class="button bg-primary-soft text-primary">Add Friend</button>
                         </form>
+                        <br />
+                        @if (isAdmin)
+                        {
+                                <form asp-controller="Authentication" asp-action="DeleteAccountAdmin" method="post">
+                                    <input type="hidden" name="userId" value="@Model.User.UserId" />
+                                <button type="submit" class="button text-red-400 bg-red-100">Delete Account</button>
+                                </form>
+                        }
                     </div>
                 }
             </div>

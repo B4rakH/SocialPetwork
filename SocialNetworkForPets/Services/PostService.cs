@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using SocialNetworkForPets.Data;
 using SocialNetworkForPets.Data.Models;
 using SocialNetworkForPets.Dtos;
@@ -9,10 +10,12 @@ namespace SocialNetworkForPets.Services
     {
         private readonly AppDbContext _context;
         private readonly INotificationService _notificationService;
-        public PostService(AppDbContext context, INotificationService notificationService) 
+        private readonly IHashtagService _hashtagService;
+        public PostService(AppDbContext context, INotificationService notificationService, IHashtagService hashtagService) 
         {
             _context = context;
             _notificationService = notificationService;
+            _hashtagService = hashtagService;
         }
         public async Task<List<Post>> GetAllPostsAsync(int UserId)
         {
@@ -51,28 +54,27 @@ namespace SocialNetworkForPets.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Post> CreatePostAsync(Post post)
+        public async Task CreatePostAsync(Post post)
         {
             await _context.Post.AddAsync(post);
+            await _hashtagService.HashtagsInNewPostAsync(post.PostText);
             await _context.SaveChangesAsync();
-
-            return post;
         }
 
 
-        public async Task<Post> RemovePostAsync(int PostId)
+        public async Task RemovePostAsync(int PostId)
         {
             var postDb = await _context.Post.FirstOrDefaultAsync(p => p.PostId == PostId);
 
             if (postDb != null)
             {
                 //If post has comments, delete one by one first
-                foreach (var comment in _context.Comment.Where(c => c.PostId == postDb.PostId)) _context.Comment.Remove(comment);
+                foreach (var comment in _context.Comment.Where(c => c.PostId == PostId)) _context.Comment.Remove(comment);
 
                 _context.Post.Remove(postDb);
+                await _hashtagService.HashtagsInRemovedPostAsync(postDb.PostText);
                 await _context.SaveChangesAsync();
             }
-            return postDb;
         }
 
         public async Task RemovePostCommentAsync(int CommentId)

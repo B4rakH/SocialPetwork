@@ -17,7 +17,6 @@ namespace SocialNetworkForPets.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly AppDbContext _context;
         private readonly IPostService _postService;
-        private readonly IHashtagService _hashtagService;
         private readonly IFileService _fileService;
         private readonly INotificationService _notificationService;
 
@@ -33,7 +32,6 @@ namespace SocialNetworkForPets.Controllers
             _logger = logger;
             _context = context;
             _postService = postService;
-            _hashtagService = hashtagService;
             _fileService = fileService;
             _notificationService = notificationService;
         }
@@ -76,7 +74,6 @@ namespace SocialNetworkForPets.Controllers
             };
 
             await _postService.CreatePostAsync(newPost);
-            await _hashtagService.HashtagsInNewPostAsync(post.PostText);
 
             return RedirectToAction("Index");
         }
@@ -180,10 +177,9 @@ namespace SocialNetworkForPets.Controllers
         [HttpPost]
         public async Task<IActionResult> RemovePost(PostRemoveVM postVM)
         {
-            var deletedPost = await _postService.RemovePostAsync(postVM.PostId);
-            await _hashtagService.HashtagsInRemovedPostAsync(deletedPost.PostText);
+            await _postService.RemovePostAsync(postVM.PostId);
+
             return RedirectToAction("Index");
         }
-
     }
 }

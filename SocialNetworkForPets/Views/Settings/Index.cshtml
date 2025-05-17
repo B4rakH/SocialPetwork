@@ -7,8 +7,8 @@
             @* profile picture place *@
             <div class="flex items-center justify-between p-6 pb-4">
 
-                <form id="FormUpdateProfilePicture" class="flex items-center gap-4 w-full" asp-controller="Settings" 
-                    asp-action="UpdateProfilePicture" enctype="multipart/form-data">
+                <form id="FormUpdateProfilePicture" class="flex items-center gap-4 w-full" asp-controller="Settings"
+                      asp-action="UpdateProfilePicture" enctype="multipart/form-data">
 
                     <div class="relative w-12 h-12 shrink-0">
                         <label for="imageUpload" class="cursor-pointer">
@@ -25,7 +25,7 @@
                                      class="object-cover w-full h-full rounded-full" alt="Profile Picture Placeholder" />
                             }
                             <input type="file" id="imageUpload" name="profilePicture" class="hidden"
-                                accept="image/png, image/jpeg"/>
+                                   accept="image/png, image/jpeg" />
 
                         </label>
                         <label for="imageUpload" class="p-0.5 rounded-full bg-slate-600 border-white absolute -bottom-2 -right-2 cursor-pointer">
@@ -44,7 +44,8 @@
                     <button type="submit" id="btnSave"
                             class="hidden button bg-blue-500 text-white px-4
                             py-1 rounded ml-auto">
-                        Save</button>
+                        Save
+                    </button>
 
                 </form>
             </div>
@@ -59,6 +60,8 @@
                             </a>
                         </li>
                         <li class="w-auto pr-2.5"><a href="#">Update password</a></li>
+
+                        <li class="w-auto pr-2.5"><a href="#">Delete Profile</a></li>
                     </ul>
                 </nav>
             </div>
@@ -68,7 +71,7 @@
                     <form asp-controller="Authentication" asp-action="UpdateProfile">
                         <div class="space-y-6">
 
-                            @if(TempData["UpdateError"] != null)
+                            @if (TempData["UpdateError"] != null)
                             {
                                 <div class="text-red-500 mb-4">@TempData["UpdateError"]</div>
                             }
@@ -82,13 +85,13 @@
                             <div class="flex items-center gap-10">
                                 <label class="w-32 text-right">Full Name</label>
                                 <div class="flex-1">
-                                    <input value="@Model.UserFullName" type="text" name="UserFullName" placeholder="Enter your full name" class="w-full" required/>
+                                    <input value="@Model.UserFullName" type="text" name="UserFullName" placeholder="Enter your full name" class="w-full" required />
                                 </div>
                             </div>
                             <div class="flex items-center gap-10">
                                 <label class="w-32 text-right">User Name</label>
                                 <div class="flex-1">
-                                    <input value="@Model.UserName" type="text" name="UserName" placeholder="Enter your username" class="w-full" required/>
+                                    <input value="@Model.UserName" type="text" name="UserName" placeholder="Enter your username" class="w-full" required />
                                 </div>
                             </div>
                             <div class="flex items-center gap-4 mt-16 pl-[10.5rem]">
@@ -107,7 +110,7 @@
                                 <div class="text-red-500 mb-4">@TempData["PasswordError"]</div>
                             }
 
-@*                             @if (TempData["PasswordSuccess"] != null)
+                            @*                             @if (TempData["PasswordSuccess"] != null)
                             {
                                 <div class="text-green-500 mb-4">@TempData["PasswordSuccess"]</div>
 
@@ -118,24 +121,47 @@
                             <div class="flex items-center gap-10">
                                 <label class="w-32 text-right">Current password</label>
                                 <div class="flex-1">
-                                    <input type="password" name="currentPassword" placeholder="Enter your current password" class="w-full" required/>
+                                    <input type="password" name="currentPassword" placeholder="Enter your current password" class="w-full" required />
                                 </div>
                             </div>
                             <div class="flex items-center gap-10">
                                 <label class="w-32 text-right">New password</label>
                                 <div class="flex-1">
-                                    <input type="password" name="newPassword" placeholder="Enter your new password" value="" class="w-full" required/>
+                                    <input type="password" name="newPassword" placeholder="Enter your new password" value="" class="w-full" required />
                                 </div>
                             </div>
                             <div class="flex items-center gap-10">
                                 <label class="w-32 text-right">Confirm password</label>
                                 <div class="flex-1">
-                                    <input type="password" name="confirmPassword" placeholder="Confirm your new password" value="" class="w-full" required/>
+                                    <input type="password" name="confirmPassword" placeholder="Confirm your new password" value="" class="w-full" required />
                                 </div>
                             </div>
                             <div class="flex items-center gap-4 mt-16 pl-[10.5rem]">
                                 <button class="button px-6 bg-secondary">Cancel</button>
                                 <button type="submit" class="button px-10 bg-primary text-white">Save</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div>
+                    <form asp-controller="Authentication" asp-action="DeleteAccount">
+                        <div class="space-y-6">
+
+                            @if (TempData["DeleteConfirmError"] != null)
+                            {
+                                <div class="text-red-500 mb-4">@TempData["DeleteConfirmError"]</div>
+                            }
+
+                            <input name="userId" value="@Model.UserId" class="hidden" />
+
+                            <div class="flex items-center gap-10">
+                                <label class="w-32 text-right">Confirm password</label>
+                                <div class="flex-1">
+                                    <input type="password" name="confirmCurrentPassword" placeholder="Confirm your password" value="" class="w-full" required />
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4 mt-16 pl-[10.5rem]">
+                                <button type="submit" class="button px-10 text-red-400 bg-red-100">Delete Profile</button>
                             </div>
                         </div>
                     </form>
@@ -167,15 +193,5 @@
             saveButton.classList.add('hidden');
         }
     });
-
-    // document.addEventListener('DOMContentLoaded', () => {
-    //     const switcher = UIkit.switcher(document.querySelector('[uk-switcher]'));
-
-    //     if ('@TempData["ActiveTab"]' === 'Password') {
-    //         switcher.show(1);
-    //     } else {
-    //         switcher.show(0);
-    //     }
-    // });
 
 </script>

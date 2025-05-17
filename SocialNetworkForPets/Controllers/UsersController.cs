@@ -12,7 +12,9 @@ namespace SocialNetworkForPets.Controllers
         private readonly IUsersService _usersService;
         private readonly IFriendsService _friendsService;
 
-        public UsersController(IUsersService usersService, AppDbContext context, IFriendsService friendsService)
+        public UsersController(IUsersService usersService,
+                AppDbContext context, IFriendsService friendsService,
+                    IHashtagService hashtagService)
         {
             _usersService = usersService;
             _context = context;

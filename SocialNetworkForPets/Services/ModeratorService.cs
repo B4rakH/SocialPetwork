@@ -8,25 +8,18 @@ namespace SocialNetworkForPets.Services
     {
          private readonly AppDbContext _context;
         private readonly IPostService _postService;
-        private readonly IHashtagService _hashtagService;
 
         public ModeratorService(AppDbContext context
-                    , IPostService postService
-                        , IHashtagService hashtagService)
+                    , IPostService postService)
         {
             _context = context;
             _postService = postService;
-            _hashtagService = hashtagService;
         }
 
         public async Task ApproveReport(int postId)
         {
             var post = await _context.Post.FirstOrDefaultAsync(p => p.PostId == postId);
-            if (post != null) 
-            {
-                var deletedPost = await _postService.RemovePostAsync(postId);
-                await _hashtagService.HashtagsInRemovedPostAsync(deletedPost.PostText);
-            }
+            if (post != null) await _postService.RemovePostAsync(postId);
         }
 
         public async Task RejectReport(int postId)

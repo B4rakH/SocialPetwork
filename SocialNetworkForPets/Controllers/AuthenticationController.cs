@@ -11,15 +11,19 @@ using SocialNetworkForPets.Helper.Constants;
 using SocialNetworkForPets.ViewModels.Settings;
 using System.Text.RegularExpressions;
 using SocialNetworkForPets.Controllers.Base;
+using SocialNetworkForPets.Services;
+using SocialNetworkForPets.ViewModels.Home;
 
 namespace SocialNetworkForPets.Controllers
 {
     public class AuthenticationController : BaseController
     {
         private readonly AppDbContext _context;
-        public AuthenticationController(AppDbContext context)
+        private readonly IPostService _postService;
+        public AuthenticationController(AppDbContext context, IPostService postService)
         {
             _context = context;
+            _postService = postService;
         }
         public async Task<IActionResult> Login()
         {
@@ -182,6 +186,62 @@ namespace SocialNetworkForPets.Controllers
             TempData["ActiveTab"] = "Profile";
 
             return RedirectToAction("Index", "Settings");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteAccount(int userId, string confirmCurrentPassword)
+        {
+            var user = await _context.User.FirstAsync(u => u.UserId == userId);
+
+            if(user.UserPassword != confirmCurrentPassword) 
+            {
+                TempData["DeleteConfirmError"] = "Current password has entered wrong";
+                TempData["ActiveTab"] = "Profile";
+
+                return RedirectToAction("Index", "Settings");
+            }
+
+            await DeleteAccountHelper(userId, user);
+
+            return await Logout();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteAccountAdmin(int userId)
+        {
+            var user = await _context.User.FirstAsync(u => u.UserId == userId);
+
+            await DeleteAccountHelper(userId, user);
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpPost]
+        private async Task DeleteAccountHelper(int userId, User user)
+        {
+
+            foreach (var like in _context.Like.Where(l => l.UserId == userId).ToList()) _context.Like.Remove(like);
+
+            foreach (var comment in _context.Comment.Where(c => c.UserId == userId).ToList()) _context.Comment.Remove(comment);
+
+            foreach (var favorite in _context.Favorite.Where(f => f.UserId == userId).ToList()) _context.Favorite.Remove(favorite);
+
+            foreach (var report in _context.Report.Where(r => r.UserId == userId).ToList()) _context.Report.Remove(report);
+
+            foreach (var post in _context.Post.Where(p => p.PosterId == userId).ToList()) await _postService.RemovePostAsync(post.PostId);
+
+            foreach (var notification in _context.Notification.Where(n => n.UserId == userId).ToList()) _context.Notification.Remove(notification);
+
+            foreach (var friendship in _context.Friendship.Where(f => (f.User1Id == userId) || (f.User2Id == userId)).ToList())
+                _context.Friendship.Remove(friendship);
+
+            foreach (var request in _context.FriendRequests.Where(f => (f.SenderId == userId) || (f.ReceiverId == userId)).ToList())
+                _context.FriendRequests.Remove(request);
+
+
+            _context.User.Remove(user);
+
+            await _context.SaveChangesAsync();
         }
 
         private string GetUserRank(string username)

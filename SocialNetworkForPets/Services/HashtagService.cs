@@ -58,7 +58,6 @@ namespace SocialNetworkForPets.Services
                         hashtagDb.TagCount--;
                         _context.Hashtag.Update(hashtagDb);
                     }
-
                 }
             }
             await _context.SaveChangesAsync();
