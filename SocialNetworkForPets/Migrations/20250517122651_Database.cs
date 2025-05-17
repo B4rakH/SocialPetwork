@@ -26,23 +26,6 @@ namespace SocialNetworkForPets.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Notification",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PostId = table.Column<int>(type: "int", nullable: true),
-                    Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Notification", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "User",
                 columns: table => new
                 {
@@ -204,6 +187,35 @@ namespace SocialNetworkForPets.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Notification",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PostId = table.Column<int>(type: "int", nullable: true),
+                    Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notification", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Notification_Post_PostId",
+                        column: x => x.PostId,
+                        principalTable: "Post",
+                        principalColumn: "PostId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Notification_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Report",
                 columns: table => new
                 {
@@ -255,6 +267,16 @@ namespace SocialNetworkForPets.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Like_UserId",
                 table: "Like",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notification_PostId",
+                table: "Notification",
+                column: "PostId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notification_UserId",
+                table: "Notification",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(

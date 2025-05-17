@@ -12,7 +12,7 @@ using SocialNetworkForPets.Data;
 namespace SocialNetworkForPets.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250517120546_Database")]
+    [Migration("20250517122651_Database")]
     partial class Database
     {
         /// <inheritdoc />
@@ -158,6 +158,10 @@ namespace SocialNetworkForPets.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PostId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Notification");
                 });
@@ -324,6 +328,24 @@ namespace SocialNetworkForPets.Migrations
 
                     b.HasOne("SocialNetworkForPets.Data.Models.User", "User")
                         .WithMany("Likes")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SocialNetworkForPets.Data.Models.Notification", b =>
+                {
+                    b.HasOne("SocialNetworkForPets.Data.Models.Post", "Post")
+                        .WithMany()
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("SocialNetworkForPets.Data.Models.User", "User")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();

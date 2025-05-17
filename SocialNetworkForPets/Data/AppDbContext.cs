@@ -139,6 +139,20 @@ namespace SocialNetworkForPets.Data
             modelBuilder.Entity<Notification>()
                 .HasKey(o => o.Id);
 
+            modelBuilder.Entity<Notification>()
+                .HasOne(p => p.User)
+                .WithMany()
+                .HasForeignKey(u => u.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Notification>()
+                .HasOne(p => p.Post)
+                .WithMany()
+                .HasForeignKey(u => u.PostId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
+
             base.OnModelCreating(modelBuilder);
         }
     }

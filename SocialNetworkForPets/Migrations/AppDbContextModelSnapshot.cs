@@ -156,6 +156,10 @@ namespace SocialNetworkForPets.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PostId");
+
+                    b.HasIndex("UserId");
+
                     b.ToTable("Notification");
                 });
 
@@ -321,6 +325,24 @@ namespace SocialNetworkForPets.Migrations
 
                     b.HasOne("SocialNetworkForPets.Data.Models.User", "User")
                         .WithMany("Likes")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SocialNetworkForPets.Data.Models.Notification", b =>
+                {
+                    b.HasOne("SocialNetworkForPets.Data.Models.Post", "Post")
+                        .WithMany()
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("SocialNetworkForPets.Data.Models.User", "User")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();

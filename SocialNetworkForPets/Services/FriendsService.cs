@@ -90,7 +90,7 @@ namespace SocialNetworkForPets.Services
             var friendRequestsSent = await _context.FriendRequests
                 .Include(u => u.Receiver)
                 .Include(u => u.Sender)
-                .Where(f => f.ReceiverId == userId).ToListAsync();
+                .Where(f => f.SenderId == userId).ToListAsync();
 
             return friendRequestsSent;
         }
