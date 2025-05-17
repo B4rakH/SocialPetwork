@@ -25,11 +25,14 @@ namespace SocialNetworkForPets.Controllers
 
         public async Task<IActionResult> Details(int userId)
         {
+            var loggedUserId = GetUserId();
+            if (loggedUserId == null) return RedirectToLogin();
+
             var user = await _context.User.FindAsync(userId);
             var userPosts = await _usersService.GetUserPostsAsync(userId);
             var friendships = await _friendsService.GetFriendsAsync(userId);
 
-            var IsRequestedOrAdded = IsFriend(userId);
+            var IsRequestedOrAdded = IsFriend(userId, loggedUserId.Value);
 
             var userProfileVM = new GetUserProfileVM()
             {
@@ -42,15 +45,14 @@ namespace SocialNetworkForPets.Controllers
             return View(userProfileVM);
         }
 
-        private bool IsFriend(int User1Id)
+        private bool IsFriend(int User1Id, int User2Id)
         {
-            var User2Id = GetUserId();
 
             return (User1Id == User2Id) || (_context.Friendship.Any(u => (u.User1Id == User1Id && u.User2Id == User2Id)
                                         || (u.User1Id == User2Id && u.User2Id == User1Id)))
                                         || (_context.FriendRequests
-                                    .Any(u => (u.User1Id == User1Id && u.User2Id == User2Id)
-                                        || (u.User1Id == User2Id && u.User2Id == User1Id)));
+                                    .Any(u => (u.SenderId == User1Id && u.ReceiverId == User2Id)
+                                        || (u.SenderId == User2Id && u.ReceiverId == User1Id)));
         }
     }
 }

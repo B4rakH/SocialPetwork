@@ -120,15 +120,19 @@ namespace SocialNetworkForPets.Data
 
             //FriendshipRequest Relations
             modelBuilder.Entity<FriendshipRequest>()
-                .HasOne(r => r.User1)
+                 .HasKey(r => new { r.SenderId, r.ReceiverId });
+
+
+            modelBuilder.Entity<FriendshipRequest>()
+                .HasOne(r => r.Sender)
                 .WithMany()
-                .HasForeignKey(r => r.User1Id)
+                .HasForeignKey(r => r.SenderId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<FriendshipRequest>()
-                .HasOne(r => r.User2)
+                .HasOne(r => r.Receiver)
                 .WithMany()
-                .HasForeignKey(r => r.User2Id)
+                .HasForeignKey(r => r.ReceiverId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             //Notification Relations

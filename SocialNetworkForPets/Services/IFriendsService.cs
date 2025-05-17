@@ -6,9 +6,9 @@ namespace SocialNetworkForPets.Services
     {
         Task SendRequestAsync(int senderId, int receiverId);
 
-        Task AcceptRequestAsync(int requestId);
+        Task AcceptRequestAsync(int senderId, int receiverId);
 
-        Task RejectRequestAsync(int requestId);
+        Task RejectRequestAsync(int senderId, int receiverId);
 
         Task RemoveFriendAsync(int userId,int friendId);
 

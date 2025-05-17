@@ -53,26 +53,41 @@ namespace SocialNetworkForPets.Controllers
         }
         [HttpPost]
 
-        public async Task<IActionResult> RejectFriendRequest(int requestId)
+        public async Task<IActionResult> RejectFriendRequest(int senderId)
         {
-            await _friendsService.RejectRequestAsync(requestId);
+            var receiverId = GetUserId();
+            if(receiverId == null) return RedirectToLogin();
+
+            await _friendsService.RejectRequestAsync(senderId, receiverId.Value);
 
             return RedirectToAction("Index");
         }
         [HttpPost]
 
-        public async Task<IActionResult> AcceptFriendRequest(int requestId)
+        public async Task<IActionResult> CancelFriendRequest(int receiverId)
         {
-            var userId = GetUserId();
-            var fullName = GetUserFullName();
-            if (userId == null) return RedirectToLogin();
+            var senderId = GetUserId();
+            if (senderId == null) return RedirectToLogin();
 
-            var request = await _context.FriendRequests.FirstOrDefaultAsync(r => r.RequestId == requestId);
+            await _friendsService.RejectRequestAsync(senderId.Value, receiverId);
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+
+        public async Task<IActionResult> AcceptFriendRequest(int senderId)
+        {
+            var receiverId = GetUserId();
+            var fullName = GetUserFullName();
+            if (receiverId == null) return RedirectToLogin();
+
+            var request = await _context.FriendRequests.FirstAsync(r => r.SenderId == senderId && r.ReceiverId == receiverId.Value);
 
             await _notificationService.AddNewNotificationAsync
-                (request.User1Id, NotificationType.FriendRequestApproved, fullName);
+                (senderId, NotificationType.FriendRequestApproved, fullName);
 
-            await _friendsService.AcceptRequestAsync(requestId);
+            await _friendsService.AcceptRequestAsync(senderId, receiverId.Value);
 
             return RedirectToAction("Index");
         }

@@ -16,23 +16,23 @@ namespace SocialNetworkForPets.Services
         {
             var request = new FriendshipRequest
             {
-                User1Id = senderId,
-                User2Id = receiverId
+                SenderId = senderId,
+                ReceiverId = receiverId
             };
             _context.FriendRequests.Add(request);
             await _context.SaveChangesAsync();
         }
 
-        public async Task AcceptRequestAsync(int requestId)
+        public async Task AcceptRequestAsync(int senderId, int receiverId)
         {
-            var request = await _context.FriendRequests.FirstOrDefaultAsync(r => r.RequestId == requestId);
+            var request = await _context.FriendRequests.FirstAsync(r => r.SenderId == senderId && r.ReceiverId == receiverId);
 
             if (request != null)
             {
                 var newFriendship = new Friendship
                 {
-                    User1Id = request.User1Id,
-                    User2Id = request.User2Id,
+                    User1Id = senderId,
+                    User2Id = receiverId,
                 };
 
                 _context.FriendRequests.Remove(request);
@@ -44,16 +44,16 @@ namespace SocialNetworkForPets.Services
 
         }
 
-        public async Task RejectRequestAsync(int requestId)
+        public async Task RejectRequestAsync(int senderId, int receiverId)
         {
-            var request = await _context.FriendRequests.FirstOrDefaultAsync(r => r.RequestId == requestId);
+            var request = await _context.FriendRequests.FirstAsync(r => r.SenderId == senderId && r.ReceiverId == receiverId);
 
             _context.FriendRequests.Remove(request);
 
             await _context.SaveChangesAsync();
         }
 
-        public async Task RemoveFriendAsync(int userId,int friendId)
+        public async Task RemoveFriendAsync(int userId, int friendId)
         {
             var friendship = await _context.Friendship.FirstOrDefaultAsync
                 (f => (f.User1Id == userId && f.User2Id == friendId) || (f.User1Id == friendId && f.User2Id == userId));
@@ -88,9 +88,9 @@ namespace SocialNetworkForPets.Services
         public async Task<List<FriendshipRequest>> GetSentFriendRequestAsync(int userId)
         {
             var friendRequestsSent = await _context.FriendRequests
-                .Include(u => u.User1)
-                .Include(u => u.User2)
-                .Where(f => f.User1Id == userId).ToListAsync();
+                .Include(u => u.Receiver)
+                .Include(u => u.Sender)
+                .Where(f => f.ReceiverId == userId).ToListAsync();
 
             return friendRequestsSent;
         }
@@ -98,9 +98,9 @@ namespace SocialNetworkForPets.Services
         public async Task<List<FriendshipRequest>> GetReceivedFriendRequestAsync(int userId)
         {
             var friendRequestsSent = await _context.FriendRequests
-                .Include(u => u.User1)
-                .Include(u => u.User2)
-                .Where(f => f.User2Id == userId).ToListAsync();
+                .Include(u => u.Sender)
+                .Include(u => u.Receiver)
+                .Where(f => f.ReceiverId == userId).ToListAsync();
 
             return friendRequestsSent;
         }
@@ -121,8 +121,8 @@ namespace SocialNetworkForPets.Services
             return (User1Id == User2Id) || (_context.Friendship.Any(u => (u.User1Id == User1Id && u.User2Id == User2Id)
                                         || (u.User1Id == User2Id && u.User2Id == User1Id)))
                                         || (_context.FriendRequests
-                                    .Any(u => (u.User1Id == User1Id && u.User2Id == User2Id)
-                                        || (u.User1Id == User2Id && u.User2Id == User1Id)));
+                                    .Any(u => (u.SenderId == User1Id && u.ReceiverId == User2Id)
+                                        || (u.SenderId == User2Id && u.ReceiverId == User1Id)));
 
         }
     }
