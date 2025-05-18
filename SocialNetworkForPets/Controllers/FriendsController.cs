@@ -28,6 +28,7 @@ namespace SocialNetworkForPets.Controllers
             var userId = GetUserId();
             if (userId == null) return RedirectToLogin();
 
+            //Collecting friendship and friend requests data for showing on friends tab
             var friendRequestData = new FriendshipVM()
             {
                 Friends = await _friendsService.GetFriendsAsync(userId.Value),
@@ -44,8 +45,10 @@ namespace SocialNetworkForPets.Controllers
             var fullName = GetUserFullName();
             if (userId == null) return RedirectToLogin();
 
+            //Creating request
             await _friendsService.SendRequestAsync(userId.Value, receiverId);
 
+            //Creating request notification
             await _notificationService.AddNewNotificationAsync
                 (receiverId, NotificationType.FriendRequest, fullName);
 
@@ -82,7 +85,9 @@ namespace SocialNetworkForPets.Controllers
             var fullName = GetUserFullName();
             if (receiverId == null) return RedirectToLogin();
 
-            var request = await _context.FriendRequests.FirstAsync(r => r.SenderId == senderId && r.ReceiverId == receiverId.Value);
+            //finding the request for delete
+            var request = await _context.FriendRequests.FirstAsync
+                (r => r.SenderId == senderId && r.ReceiverId == receiverId.Value);
 
             await _notificationService.AddNewNotificationAsync
                 (senderId, NotificationType.FriendRequestApproved, fullName);

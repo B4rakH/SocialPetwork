@@ -12,7 +12,6 @@ using SocialNetworkForPets.ViewModels.Settings;
 using System.Text.RegularExpressions;
 using SocialNetworkForPets.Controllers.Base;
 using SocialNetworkForPets.Services;
-using SocialNetworkForPets.ViewModels.Home;
 
 namespace SocialNetworkForPets.Controllers
 {
@@ -22,6 +21,7 @@ namespace SocialNetworkForPets.Controllers
         private readonly IPostService _postService;
         public AuthenticationController(AppDbContext context, IPostService postService)
         {
+            //Implementing services
             _context = context;
             _postService = postService;
         }
@@ -38,14 +38,18 @@ namespace SocialNetworkForPets.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterVM registerVM)
         {
+            //Checking name, username and password columns that fits patterns using Data Annotations in ViewModel
             if (!ModelState.IsValid) return View(registerVM);
 
-            var existingUser = await _context.User.FirstOrDefaultAsync(u => (u.UserName == registerVM.UserName));
 
             var userRank = GetUserRank(registerVM.UserName);
 
+            //System can have only one admin
             var existingAdmin = (userRank == UserRank.Admin) ?
                 await _context.User.FirstOrDefaultAsync(u => (u.UserRank == UserRank.Admin)) : null;
+            
+            //Checking is username has already taken or not
+            var existingUser = await _context.User.FirstOrDefaultAsync(u => (u.UserName == registerVM.UserName));
 
             if (existingUser != null)
             {
@@ -58,6 +62,7 @@ namespace SocialNetworkForPets.Controllers
                 return View(registerVM);
             }
 
+            //Register confirmed, creating User
             var newUser = new User()
             {
                 UserFullName = $"{registerVM.FirstName} {registerVM.LastName}",
@@ -75,20 +80,26 @@ namespace SocialNetworkForPets.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginVM loginVM)
         {
+            //Valid Pattern-check before user searchment on database
             if (!ModelState.IsValid) return View(loginVM);
 
             var existingUser = await _context.User.FirstOrDefaultAsync(u => (u.UserName == loginVM.UserName));
 
+            
             if (existingUser == null)
             {
+                //username is wrong or missing
                 ModelState.AddModelError("UserName", "Username cannot found");
                 return View(loginVM);
             }
             else if (existingUser.UserPassword != loginVM.Password)
             {
+                //password is wrong
                 ModelState.AddModelError("Password", "Incorrect password");
                 return View(loginVM);
             }
+            //Login confirmed, creating cookies of current login
+
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, existingUser.UserId.ToString()),
@@ -111,6 +122,7 @@ namespace SocialNetworkForPets.Controllers
         [Authorize]
         public async Task<IActionResult> Logout()
         {
+            //Secured logout based on cookies
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Login");
         }
@@ -150,6 +162,7 @@ namespace SocialNetworkForPets.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateProfile(UpdateProfileVM profileVM) 
         {
+            //Checking the new informations fit their patterns
             var validErrorCheck = await UpdateProfileHelper(profileVM);
 
             if(validErrorCheck != null)
@@ -162,6 +175,7 @@ namespace SocialNetworkForPets.Controllers
 
             var loggedUser = await _context.User.FirstAsync(u => u.UserId == profileVM.UserId);
 
+            //Username must contain its rank pattern if it has
             if ((loggedUser.UserRank == UserRank.Admin && !profileVM.UserName.Contains("@admin"))
                 ||(loggedUser.UserRank == UserRank.Moderator && profileVM.UserName.Contains("@moderator")))
             {
@@ -170,13 +184,14 @@ namespace SocialNetworkForPets.Controllers
 
                 return RedirectToAction("Index", "Settings");
             }
-
+            //Update confirmed
             loggedUser.UserFullName = profileVM.UserFullName;
             loggedUser.UserName = profileVM.UserName;
 
             _context.User.Update(loggedUser);
             await _context.SaveChangesAsync();
 
+            //Cookie update for preventing data anomalies depending old cookie
             var cookiesUpdated = await UpdateCookiesAsync();
 
             if (!cookiesUpdated) return RedirectToLogin();
@@ -189,6 +204,7 @@ namespace SocialNetworkForPets.Controllers
         }
 
         [HttpPost]
+        //Account delete by its User
         public async Task<IActionResult> DeleteAccount(int userId, string confirmCurrentPassword)
         {
             var user = await _context.User.FirstAsync(u => u.UserId == userId);
@@ -207,6 +223,7 @@ namespace SocialNetworkForPets.Controllers
         }
 
         [HttpPost]
+        //Account delete by Admin
         public async Task<IActionResult> DeleteAccountAdmin(int userId)
         {
             var user = await _context.User.FirstAsync(u => u.UserId == userId);
@@ -219,26 +236,36 @@ namespace SocialNetworkForPets.Controllers
         [HttpPost]
         private async Task DeleteAccountHelper(int userId, User user)
         {
+            //Due to the block of Restrict (Had to use due to one cascade per entity),
+            //all data of the user is deleted before user deletion, preventing anomalies and errors
 
+            //Likes
             foreach (var like in _context.Like.Where(l => l.UserId == userId).ToList()) _context.Like.Remove(like);
 
+            //Comments
             foreach (var comment in _context.Comment.Where(c => c.UserId == userId).ToList()) _context.Comment.Remove(comment);
 
+            //Favorites
             foreach (var favorite in _context.Favorite.Where(f => f.UserId == userId).ToList()) _context.Favorite.Remove(favorite);
 
+            //Reports
             foreach (var report in _context.Report.Where(r => r.UserId == userId).ToList()) _context.Report.Remove(report);
 
+            //Posts
             foreach (var post in _context.Post.Where(p => p.PosterId == userId).ToList()) await _postService.RemovePostAsync(post.PostId);
 
+            //Notifications
             foreach (var notification in _context.Notification.Where(n => n.UserId == userId).ToList()) _context.Notification.Remove(notification);
 
+            //Friendships
             foreach (var friendship in _context.Friendship.Where(f => (f.User1Id == userId) || (f.User2Id == userId)).ToList())
                 _context.Friendship.Remove(friendship);
 
+            //Friend Requests
             foreach (var request in _context.FriendRequests.Where(f => (f.SenderId == userId) || (f.ReceiverId == userId)).ToList())
                 _context.FriendRequests.Remove(request);
 
-
+            //User
             _context.User.Remove(user);
 
             await _context.SaveChangesAsync();
@@ -284,6 +311,7 @@ namespace SocialNetworkForPets.Controllers
             {
                 return "The username is already exists";
             }
+
             return null;
         }
 

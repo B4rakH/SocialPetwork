@@ -1,6 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.EntityFrameworkCore;
 using SocialNetworkForPets.Data;
 using SocialNetworkForPets.Data.Models;
+using SocialNetworkForPets.Helper.Constants;
+using System.Security.Claims;
 
 namespace SocialNetworkForPets.Services
 {

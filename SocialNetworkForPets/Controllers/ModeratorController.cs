@@ -6,6 +6,7 @@ using SocialNetworkForPets.Services;
 
 namespace SocialNetworkForPets.Controllers
 {
+    //Annotation for make page only accessible for Admin and Moderator
     [Authorize(Roles = $"{UserRank.Moderator},{UserRank.Admin}")]
     public class ModeratorController : BaseController
     {
@@ -24,6 +25,7 @@ namespace SocialNetworkForPets.Controllers
         [HttpPost]
         public async Task<IActionResult> ApproveReportAsync(int postId)
         {
+            //Deleting Post
             await _moderatorService.ApproveReport(postId);
 
             return RedirectToAction("Index");
@@ -32,6 +34,7 @@ namespace SocialNetworkForPets.Controllers
         [HttpPost]
         public async Task<IActionResult> RejectReportAsync(int postId)
         {
+            //Cleaning reports without deleting post
             await _moderatorService.RejectReport(postId);
 
             return RedirectToAction("Index");

@@ -16,9 +16,11 @@ namespace SocialNetworkForPets.Data.Models
 
         //Foreign Key
         [ForeignKey("User")]
-        public int PosterId { get; set; }
+        public int PosterId { get; set; } //Foreign Key
 
         public User Poster { get; set; }
+
+        // Navigation properties
 
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();
 

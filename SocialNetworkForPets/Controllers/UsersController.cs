@@ -25,6 +25,7 @@ namespace SocialNetworkForPets.Controllers
             return View();
         }
 
+        //Goes user profile details page
         public async Task<IActionResult> Details(int userId)
         {
             var loggedUserId = GetUserId();
@@ -49,6 +50,27 @@ namespace SocialNetworkForPets.Controllers
 
         private bool IsFriend(int User1Id, int User2Id)
         {
+            //Checks friendships, requests for deciding visibility of friend request button in profile page
+
+            //Query Code:
+
+            //        SELECT
+            //            CASE
+            //    WHEN @User1Id = @User2Id THEN 1
+            //    WHEN EXISTS(
+            //        SELECT 1
+            //        FROM Friendship
+            //        WHERE(User1Id = @User1Id AND User2Id = @User2Id)
+            //           OR(User1Id = @User2Id AND User2Id = @User1Id)
+            //    ) THEN 1
+            //    WHEN EXISTS(
+            //        SELECT 1
+            //        FROM FriendRequests
+            //        WHERE(SenderId = @User1Id AND ReceiverId = @User2Id)
+            //           OR(SenderId = @User2Id AND ReceiverId = @User1Id)
+            //    ) THEN 1
+            //    ELSE 0
+            //END AS IsFriendOrRequested;
 
             return (User1Id == User2Id) || (_context.Friendship.Any(u => (u.User1Id == User1Id && u.User2Id == User2Id)
                                         || (u.User1Id == User2Id && u.User2Id == User1Id)))

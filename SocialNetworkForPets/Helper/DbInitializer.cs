@@ -7,6 +7,7 @@ namespace SocialNetworkForPets.Helper
     {
         public static async Task SeedAsync(AppDbContext context) 
         {
+            //Creates post and user in the beginning of empty dataset
             if(!context.User.Any() && !context.Post.Any()) 
             {
                 var newUser = new User()

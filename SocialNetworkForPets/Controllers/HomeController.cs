@@ -42,6 +42,7 @@ namespace SocialNetworkForPets.Controllers
             var UserId = GetUserId();
             if (UserId == null) return RedirectToLogin();
             
+            //Collecting all posts for homepage
             var allPosts = await _postService.GetAllPostsAsync(UserId.Value);
 
             return View(allPosts);
@@ -63,7 +64,9 @@ namespace SocialNetworkForPets.Controllers
             var UserId = GetUserId();
             if (UserId == null) return RedirectToLogin();
 
+            //Storing image on uploaded folder (if it exists)
             var imageUploadPath = await _fileService.UploadImageAsync(post.Image, ImageFileType.PostImage);
+
             //Setting variables
             var newPost = new Post
             {
@@ -90,6 +93,7 @@ namespace SocialNetworkForPets.Controllers
 
             var post = await _postService.GetPostByIdAsync(postLikes.PostId);
             
+            //If like stored successfully and post is not user's post, send notification to the poster
             if (result.SendNotification && post.PosterId != UserId.Value)
                 await _notificationService.AddNewNotificationAsync
                     (post.PosterId, NotificationType.Like, fullname, postLikes.PostId);
@@ -102,7 +106,6 @@ namespace SocialNetworkForPets.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> TogglePostFavorite(PostFavoriteVM postFavorites)
         {
-
             var UserId = GetUserId();
             var fullname = GetUserFullName();
             if (UserId == null) return RedirectToLogin();
@@ -111,6 +114,7 @@ namespace SocialNetworkForPets.Controllers
 
             var post = await _postService.GetPostByIdAsync(postFavorites.PostId);
 
+            //If favorite stored successfully and post is not user's post, send notification to the poster
             if (result.SendNotification && post.PosterId != UserId.Value)
                 await _notificationService.AddNewNotificationAsync
                     (post.PosterId, NotificationType.Favorite, fullname, postFavorites.PostId);
@@ -137,6 +141,7 @@ namespace SocialNetworkForPets.Controllers
 
             var post = await _postService.GetPostByIdAsync(commentVM.PostId);
 
+            //sending new comment notification to the poster
             if(UserId != post.PosterId)
             await _notificationService.AddNewNotificationAsync
                     (post.PosterId, NotificationType.Comment, fullname, commentVM.PostId);
@@ -149,6 +154,7 @@ namespace SocialNetworkForPets.Controllers
             var UserId = GetUserId();
             if (UserId == null) return RedirectToLogin();
 
+            //Checking if its already reported, return without create again
             var isReported = await _context.Report
                 .AnyAsync(r => r.UserId == UserId && r.PostId == postReportVM.PostId);
 

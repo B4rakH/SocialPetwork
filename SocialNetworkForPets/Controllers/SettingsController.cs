@@ -39,7 +39,7 @@ namespace SocialNetworkForPets.Controllers
 
             var profilePicture = await _fileService.UploadImageAsync
                 (profilePictureVM.profilePicture, ImageFileType.ProfilePicture);
-            await _usersService.UpdateProfilePicture(UserId.Value, profilePicture);
+                    await _usersService.UpdateProfilePicture(UserId.Value, profilePicture);
 
             var cookiesUpdated = await UpdateCookiesAsync();
 

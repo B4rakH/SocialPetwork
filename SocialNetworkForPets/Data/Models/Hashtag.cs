@@ -8,7 +8,7 @@ namespace SocialNetworkForPets.Data.Models
         [Key]
         public int HashtagId { get; set; }
 
-        public string TagText { get; set; }
+        public string TagText { get; set; } //Foreign Key (Uses post text)
 
         public int TagCount { get; set; } = 0;
     }

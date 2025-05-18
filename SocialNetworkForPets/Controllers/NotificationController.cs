@@ -24,7 +24,7 @@ namespace SocialNetworkForPets.Controllers
 
             var count = await _notificationService.GetNotificationsCountAsync(UserId.Value);
 
-            //Will redirect count data to the JS of Home/Index for reviewing with signalR
+            //Will redirect notification count data to the script of Home/Index for reviewing with signalR, real-time retrievement
             return Json(count);
         }
         public async Task<IActionResult> GetNotifications()

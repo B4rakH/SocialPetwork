@@ -8,6 +8,7 @@ namespace SocialNetworkForPets.Helper
         {
             //Pattern for finding valid tags
             var hashTagPattern = new Regex(@"#\w+");
+
             //Getting tag values and prevent count multiple times (one per post)
             var hashTags = hashTagPattern.Matches(postText)
                 .Select(tag => tag.Value.TrimEnd('.', ',', '!', '?').ToLower())

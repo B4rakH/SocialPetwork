@@ -9,16 +9,18 @@ namespace SocialNetworkForPets.Data.Models
         public int Id { get; set; }
 
         [ForeignKey("User")]
-        public int UserId { get; set; }
+        public int UserId { get; set; } //Foreign Key
 
         public DateTime DateCreated { get; set; } = DateTime.Now;
 
         [ForeignKey("Post")]
-        public int? PostId { get; set; }
+        public int? PostId { get; set; } //Foreign Key
 
         public string Message { get; set; }
 
         public string Type { get; set; }
+
+        // Navigation properties
 
         public User? User { get; set; }
 
