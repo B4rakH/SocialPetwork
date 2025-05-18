@@ -64,7 +64,7 @@ namespace SocialNetworkForPets.Controllers
             var UserId = GetUserId();
             if (UserId == null) return RedirectToLogin();
 
-            //Storing image on uploaded folder (if it exists)
+            //Storing image on uploaded folder (if it exists) and getting stored path
             var imageUploadPath = await _fileService.UploadImageAsync(post.Image, ImageFileType.PostImage);
 
             //Setting variables

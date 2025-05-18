@@ -3,6 +3,8 @@ using Microsoft.Extensions.Hosting;
 using SocialNetworkForPets.Data;
 using SocialNetworkForPets.Data.Models;
 using SocialNetworkForPets.Dtos;
+using SocialNetworkForPets.ViewModels.Home;
+using System.ComponentModel.Design;
 
 namespace SocialNetworkForPets.Services
 {
@@ -19,6 +21,37 @@ namespace SocialNetworkForPets.Services
         }
         public async Task<List<Post>> GetAllPostsAsync(int UserId)
         {
+            //Get all shared post objects and their elements with Poster
+
+            //SQL Query Code
+            //    SELECT
+            //    p.Id AS PostId,
+            //    p.Content,
+            //    p.CreatedAt,
+    
+            //    poster.Id AS PosterId,
+            //    poster.Username AS PosterUsername,
+
+            //    c.Id AS CommentId,
+            //    c.Content AS CommentContent,
+            //    c.UserId AS CommentUserId,
+
+            //    cu.Id AS CommentUserId,
+            //    cu.Username AS CommentUsername,
+
+            //    r.Id AS ReportId,
+            //    r.Reason AS Report
+
+            //FROM Post p
+            //LEFT JOIN[User] poster ON p.PosterId = poster.Id
+            //LEFT JOIN[Like] l ON l.PostId = p.Id
+            //LEFT JOIN Favorite f ON f.PostId = p.Id
+            //LEFT JOIN Comment c ON c.PostId = p.Id
+            //LEFT JOIN[User] cu ON c.UserId = cu.Id
+            //LEFT JOIN Report r ON r.PostId = p.Id
+
+            //ORDER BY p.CreatedAt DESC;
+
             var allPosts = await _context.Post
                 .Include(p => p.Poster)
                 .Include(p => p.Likes)
@@ -33,6 +66,18 @@ namespace SocialNetworkForPets.Services
 
         public async Task<List<Post>> GetAllFavoritePostsAsync(int UserId)
         {
+
+                //SQL Query Code
+
+                //SELECT * FROM Post p
+                //LEFT JOIN[User] u ON p.PosterId = u.Id
+                //LEFT JOIN[Like] l ON l.PostId = p.Id
+                //LEFT JOIN Favorite f ON f.PostId = p.Id
+                //LEFT JOIN Comment c ON c.PostId = p.Id
+                //LEFT JOIN[User] cu ON c.UserId = cu.Id
+                //LEFT JOIN Report r ON r.PostId = p.Id
+                //ORDER BY p.CreatedAt DESC;
+
             var allFavoritedPosts = await _context.Favorite
                 .Include(f => f.Post.Poster)
                 .Include(f => f.Post.Comments)
@@ -64,13 +109,11 @@ namespace SocialNetworkForPets.Services
 
         public async Task RemovePostAsync(int PostId)
         {
+            //finding post objdect
             var postDb = await _context.Post.FirstOrDefaultAsync(p => p.PostId == PostId);
 
             if (postDb != null)
             {
-                //If post has comments, delete one by one first
-                foreach (var comment in _context.Comment.Where(c => c.PostId == PostId)) _context.Comment.Remove(comment);
-
                 _context.Post.Remove(postDb);
                 await _hashtagService.HashtagsInRemovedPostAsync(postDb.PostText);
                 await _context.SaveChangesAsync();

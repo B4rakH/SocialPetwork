@@ -27,6 +27,7 @@ namespace SocialNetworkForPets.Services
         {
             var request = await _context.FriendRequests.FirstAsync(r => r.SenderId == senderId && r.ReceiverId == receiverId);
 
+            //if request exists, create new friendship
             if (request != null)
             {
                 var newFriendship = new Friendship
@@ -35,8 +36,10 @@ namespace SocialNetworkForPets.Services
                     User2Id = receiverId,
                 };
 
+                //deleting request
                 _context.FriendRequests.Remove(request);
 
+                //adding friendship
                 await _context.Friendship.AddAsync(newFriendship);
 
                 await _context.SaveChangesAsync();
@@ -48,6 +51,7 @@ namespace SocialNetworkForPets.Services
         {
             var request = await _context.FriendRequests.FirstAsync(r => r.SenderId == senderId && r.ReceiverId == receiverId);
 
+            //deleting request
             _context.FriendRequests.Remove(request);
 
             await _context.SaveChangesAsync();
@@ -55,6 +59,7 @@ namespace SocialNetworkForPets.Services
 
         public async Task RemoveFriendAsync(int userId, int friendId)
         {
+            //Getting friendship by user Ids
             var friendship = await _context.Friendship.FirstOrDefaultAsync
                 (f => (f.User1Id == userId && f.User2Id == friendId) || (f.User1Id == friendId && f.User2Id == userId));
 
@@ -69,6 +74,7 @@ namespace SocialNetworkForPets.Services
 
             var suggestedPets = new List<(User, int ,bool)>();
 
+            //Finding Top Users having most Connection
             var top5Users = _context.User
                 .Select(u => new
                 {
@@ -79,6 +85,7 @@ namespace SocialNetworkForPets.Services
                 .Take(5)
                 .ToList();
 
+            //Getting user object, friends count and friend relation between loggedUser (for displaying add friend button)
             foreach (var element in top5Users)
                 suggestedPets.Add((element.User, element.FriendCount, IsFriend(UserId, element.User.UserId)));
 
@@ -118,6 +125,26 @@ namespace SocialNetworkForPets.Services
         }
         private bool IsFriend(int User1Id, int User2Id)
         {
+            //SQL Query code:
+
+            //        SELECT
+            //            CASE
+            //    WHEN @User1Id = @User2Id THEN 1
+            //    WHEN EXISTS(
+            //        SELECT 1
+            //        FROM Friendship
+            //        WHERE(User1Id = @User1Id AND User2Id = @User2Id)
+            //           OR(User1Id = @User2Id AND User2Id = @User1Id)
+            //    ) THEN 1
+            //    WHEN EXISTS(
+            //        SELECT 1
+            //        FROM FriendRequests
+            //        WHERE(SenderId = @User1Id AND ReceiverId = @User2Id)
+            //           OR(SenderId = @User2Id AND ReceiverId = @User1Id)
+            //    ) THEN 1
+            //    ELSE 0
+            //END AS AreFriendsOrRequested;
+
             return (User1Id == User2Id) || (_context.Friendship.Any(u => (u.User1Id == User1Id && u.User2Id == User2Id)
                                         || (u.User1Id == User2Id && u.User2Id == User1Id)))
                                         || (_context.FriendRequests

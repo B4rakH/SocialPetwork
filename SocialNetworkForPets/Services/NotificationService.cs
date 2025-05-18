@@ -43,6 +43,7 @@ namespace SocialNetworkForPets.Services
 
         public async Task<int> GetNotificationsCountAsync(int UserId)
         {
+            //Getting notification count with userId
             var count = await _context.Notification
                 .Where(n => n.UserId == UserId)
                 .CountAsync();
@@ -51,6 +52,7 @@ namespace SocialNetworkForPets.Services
 
         public async Task<List<Notification>> GetNotifications(int UserId)
         {
+            //getting notification elements using userId
             var allNotifications = await _context.Notification
                 .Where(n => n.UserId == UserId)
                 .OrderByDescending(n => n.DateCreated)
@@ -69,6 +71,7 @@ namespace SocialNetworkForPets.Services
 
         private string GetPostMessage(string notificationType, string userFullName)
         {
+            //Notification messages for notification type
             switch (notificationType)
             {
                 case NotificationType.Like:

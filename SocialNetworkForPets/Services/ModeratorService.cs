@@ -18,12 +18,14 @@ namespace SocialNetworkForPets.Services
 
         public async Task ApproveReport(int postId)
         {
+            //Allow reports and delete post (reports of post will delete by cascade)
             var post = await _context.Post.FirstOrDefaultAsync(p => p.PostId == postId);
             if (post != null) await _postService.RemovePostAsync(postId);
         }
 
         public async Task RejectReport(int postId)
         {
+            //reject and delete post reports
             var reports = await _context.Report.Where(r => r.PostId == postId).ToListAsync();
 
             if (reports.Any())
@@ -36,6 +38,8 @@ namespace SocialNetworkForPets.Services
         public async Task<List<Post>> GetReportedPostsAsync()
         {
             var repLimit = 0;
+            
+            //SQL Query Code:
 
             //SELECT p.*
             //FROM Posts p

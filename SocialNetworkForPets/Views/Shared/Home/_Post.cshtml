@@ -157,7 +157,7 @@
                                     @comment.CommentText
                                 </p>
 
-                                @if (Model.PosterId == UserId || isAdmin)
+                                @if (comment.UserId == UserId || Model.PosterId == UserId || isAdmin)
                                 {
                                     <form asp-controller="Home" asp-action="DeleteComment" class="remove-comment-form">
                                         @Html.AntiForgeryToken()

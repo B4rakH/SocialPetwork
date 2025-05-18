@@ -14,6 +14,7 @@ namespace SocialNetworkForPets.Services
 
         public async Task<string> UploadImageAsync(IFormFile image, ImageFileType imageFileType)
         {
+            //Checking file type for storing different locations
             string filePathUpload = imageFileType switch
             {
                 ImageFileType.PostImage => "post",
@@ -21,6 +22,7 @@ namespace SocialNetworkForPets.Services
                 ImageFileType.CoverImage => "cover",
                 _ => throw new ArgumentException("İnvalid file type")
             };
+
             if (image != null && image.Length > 0)
             {
                 string rootFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
