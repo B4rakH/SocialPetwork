@@ -13,15 +13,15 @@
 
             <form asp-controller="Authentication" asp-action="Login" method="post" class="space-y-7 text-sm text-black font-medium">
 
-                    @* <div class="col-span-2 text-red-500" asp-validation-summary="ModelOnly"></div> *@
-
+                @*Username textplace*@
                     <div>
-                        <label for="username">UserName</label>
+                        <label for="username">Username</label>
                         <div class="mt-2.5">
-                            <input asp-for="UserName" id="username" name="username" placeholder="username" required="" class="!w-full" />
+                            <input asp-for="UserName" id="username" name="username" placeholder="user_name" required="" class="!w-full" />
                             <span asp-validation-for="UserName" class="text-red-500 text-xs mt-1"></span>
                         </div>
                     </div>
+                @*password textplace*@
                     <div>
                         <label for="password">Password</label>
                         <div class="mt-2.5">
@@ -48,7 +48,7 @@
 
                     <div class="absolute bottom-0 w-full uk-transition-slide-bottom-small z-10">
                         <div class="max-w-xl w-full mx-auto pb-32 px-5 z-30 relative">
-                            <h4 class="!text-white text-2xl font-semibold mt-7" uk-slideshow-parallax="y: 600,0,0">Connect With Pet Friends</h4>
+                            <h4 class="!text-white text-2xl font-semibold mt-7" uk-slideshow-parallax="y: 600,0,0">Looking For New Friends?</h4>
                             <p class="!text-white text-lg mt-7 leading-8" uk-slideshow-parallax="y: 800,0,0;">Tired of playing with your owner? Enter and connect with other pets!</p>
                         </div>
                     </div>

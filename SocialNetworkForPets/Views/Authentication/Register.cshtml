@@ -2,6 +2,7 @@
 
 <div class="sm:flex">
     @*form section*@
+
     <div class="relative lg:w-[580px] md:w-96 w-full p-10 min-h-screen bg-white shadow-xl flex items-center pt-10 z-10">
 
         <div class="w-full lg:max-w-sm mx-auto space-y-10">
@@ -18,21 +19,21 @@
                     <div>
                         <label asp-for="FirstName">First name</label>
                         <div class="mt-2.5">
-                            <input id="firstName" asp-for="FirstName" name="firstName" type="text" placeholder="First name" required="" class="!w-full" />
+                            <input id="firstName" asp-for="FirstName" name="firstName" type="text" placeholder="First name" class="!w-full" required=""/>
                             <span asp-validation-for="FirstName" class="text-red-500 text-xs mt-1"></span>
                         </div>
                     </div>
                     <div>
-                        <label asp-for="LastName">Last name</label>
+                        <label asp-for="LastName">Last name [Optional]</label>
                         <div class="mt-2.5">
-                            <input asp-for="LastName" id="lastName" name="lastName" type="text" placeholder="Last name" required="" class="!w-full" />
+                            <input asp-for="LastName" id="lastName" name="lastName" type="text" placeholder="Last name" class="!w-full"/>
                             <span asp-validation-for="LastName" class="text-red-500 text-xs mt-1"></span>
                         </div>
                     </div>
                     <div class="col-span-2">
-                        <label asp-for="UserName">User Name (must be unique)</label>
+                        <label asp-for="UserName">Username (must be unique)</label>
                         <div class="mt-2.5">
-                            <input asp-for="UserName" id="username" name="username" placeholder="user_name" required="" class="!w-full" />
+                            <input asp-for="UserName" id="username" name="username" placeholder="user_name" required="" class="!w-full"/>
                             <span asp-validation-for="UserName" class="text-red-500 text-xs mt-1"></span>
                         </div>
                     </div>

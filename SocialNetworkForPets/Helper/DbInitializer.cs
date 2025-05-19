@@ -1,5 +1,6 @@
 ﻿using SocialNetworkForPets.Data;
 using SocialNetworkForPets.Data.Models;
+using SocialNetworkForPets.Helper.Constants;
 
 namespace SocialNetworkForPets.Helper
 {
@@ -13,8 +14,9 @@ namespace SocialNetworkForPets.Helper
                 var newUser = new User()
                 {
                     UserFullName = "Garfield",
-                    UserName = "garfield_cat",
+                    UserName = "garfield@admin",
                     UserPassword = "monday",
+                    UserRank = UserRank.Admin
                 };
 
                 var newPost = new Post()

@@ -9,10 +9,9 @@ namespace SocialNetworkForPets.ViewModels.Authentication
         [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "First Name must contain only letters")]
         public string FirstName { get; set; }
 
-        [Required(ErrorMessage = "Last Name is required")]
-        [StringLength(50, ErrorMessage = "Last Name must be between 1-50 characters")]
+        [StringLength(50, ErrorMessage = "Last Name length can contain max 50 characters")]
         [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Last Name must contain only letters")]
-        public string LastName { get; set; }
+        public string? LastName { get; set; }
 
         [Required(ErrorMessage = "Username is required")]
         [StringLength(50, MinimumLength = 2, ErrorMessage = "Username must be between 2-50 characters")]

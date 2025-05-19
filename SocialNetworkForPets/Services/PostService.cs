@@ -5,6 +5,7 @@ using SocialNetworkForPets.Data.Models;
 using SocialNetworkForPets.Dtos;
 using SocialNetworkForPets.ViewModels.Home;
 using System.ComponentModel.Design;
+using System.Xml.Linq;
 
 namespace SocialNetworkForPets.Services
 {
@@ -109,12 +110,14 @@ namespace SocialNetworkForPets.Services
 
         public async Task RemovePostAsync(int PostId)
         {
-            //finding post objdect
+            //finding post object
             var postDb = await _context.Post.FirstOrDefaultAsync(p => p.PostId == PostId);
 
             if (postDb != null)
             {
+                //removing post
                 _context.Post.Remove(postDb);
+                //updating hashtag (trend topics) data
                 await _hashtagService.HashtagsInRemovedPostAsync(postDb.PostText);
                 await _context.SaveChangesAsync();
             }
@@ -166,6 +169,8 @@ namespace SocialNetworkForPets.Services
 
         public async Task<GetNotificationDto> TogglePostLikeAsync(int PostId, int UserId)
         {
+            //creating notification for sending poster
+
             var response = new GetNotificationDto()
             {
                 IsSuccess = true,
@@ -176,6 +181,7 @@ namespace SocialNetworkForPets.Services
                 .Where(l => l.PostId == PostId && l.UserId == UserId)
                 .FirstOrDefaultAsync();
 
+            //if already liked, remove like when clicked
             if (like != null)
             {
                 _context.Like.Remove(like);
@@ -200,12 +206,30 @@ namespace SocialNetworkForPets.Services
 
         public async Task AddPostReportAsync(Report report)
         {
+
             await _context.Report.AddAsync(report);
             await _context.SaveChangesAsync();
         }
 
         public async Task<Post> GetPostByIdAsync(int postId)
         {
+            //SQL Query code:
+
+            //SELECT *
+            //FROM Post p
+
+            //LEFT JOIN[User] u_poster ON p.PosterId = u_poster.Id
+
+            //LEFT JOIN[Like] l ON l.PostId = p.Id
+
+            //LEFT JOIN Favorite f ON f.PostId = p.Id
+
+            //LEFT JOIN Comment c ON c.PostId = p.Id
+
+            //LEFT JOIN[User] u_comment ON c.UserId = u_comment.Id
+
+            //WHERE p.Id = @postId;
+
             var postDb = await _context.Post
                .Include(n => n.Poster)
                .Include(n => n.Likes)

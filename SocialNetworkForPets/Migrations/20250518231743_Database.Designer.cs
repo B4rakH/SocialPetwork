@@ -12,7 +12,7 @@ using SocialNetworkForPets.Data;
 namespace SocialNetworkForPets.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250517211814_Database")]
+    [Migration("20250518231743_Database")]
     partial class Database
     {
         /// <inheritdoc />

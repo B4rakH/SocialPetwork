@@ -65,7 +65,7 @@ namespace SocialNetworkForPets.Controllers
             //Register confirmed, creating User
             var newUser = new User()
             {
-                UserFullName = $"{registerVM.FirstName} {registerVM.LastName}",
+                UserFullName = $"{registerVM.FirstName} {registerVM.LastName}".Trim(),
                 UserName = registerVM.UserName,
                 UserPassword = registerVM.Password,
                 UserRank = userRank
@@ -73,6 +73,9 @@ namespace SocialNetworkForPets.Controllers
 
             await _context.User.AddAsync(newUser);
             await _context.SaveChangesAsync();
+
+            await CreateLoginCookiesAsync(newUser);
+
 
             return RedirectToAction("Index", "Home");
         }
@@ -100,20 +103,7 @@ namespace SocialNetworkForPets.Controllers
             }
             //Login confirmed, creating cookies of current login
 
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, existingUser.UserId.ToString()),
-                new Claim(CustomClaim.FullName, existingUser.UserFullName),
-                new Claim(ClaimTypes.Name, existingUser.UserName),
-                new Claim(CustomClaim.UserImgUrl, existingUser.UserImgUrl),
-                new Claim(ClaimTypes.Role, existingUser.UserRank)
-            };
-
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-            var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
+            await CreateLoginCookiesAsync(existingUser);
             
             return RedirectToAction("Index", "Home");
 
@@ -287,9 +277,9 @@ namespace SocialNetworkForPets.Controllers
                 return "Please fill the required areas";
             }
 
-            else if (profileVM.UserFullName.Count(c => c != ' ') < 3 || profileVM.UserFullName.Length > 100)
+            else if (profileVM.UserFullName.Count(c => c != ' ') < 2 || profileVM.UserFullName.Length > 100)
             {
-                return "Full name length must be between 3-100 characters";
+                return "Full name length must be between 2-100 characters";
 
             }
             else if (!Regex.IsMatch(profileVM.UserFullName, @"^[a-zA-Z\s]+$"))
@@ -340,6 +330,23 @@ namespace SocialNetworkForPets.Controllers
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
             return true;
+        }
+        private async Task CreateLoginCookiesAsync(User existingUser)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, existingUser.UserId.ToString()),
+                new Claim(CustomClaim.FullName, existingUser.UserFullName),
+                new Claim(ClaimTypes.Name, existingUser.UserName),
+                new Claim(CustomClaim.UserImgUrl, existingUser.UserImgUrl),
+                new Claim(ClaimTypes.Role, existingUser.UserRank)
+            };
+
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
         }
     }
 }
