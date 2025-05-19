@@ -38,10 +38,10 @@
                         <br />
                         @if (isAdmin)
                         {
-                                <form asp-controller="Authentication" asp-action="DeleteAccountAdmin" method="post">
-                                    <input type="hidden" name="userId" value="@Model.User.UserId" />
+                            <form asp-controller="Authentication" asp-action="DeleteAccountAdmin" method="post">
+                                <input type="hidden" name="userId" value="@Model.User.UserId" />
                                 <button type="submit" class="button text-red-400 bg-red-100">Delete Account</button>
-                                </form>
+                            </form>
                         }
                     </div>
                 }
@@ -52,7 +52,7 @@
                 @foreach (var post in Model.Posts)
                 {
                     <partial name="Home/_Post" model="post"
-                    view-data='new ViewDataDictionary(ViewData)
+                             view-data='new ViewDataDictionary(ViewData)
                             {
                                 { "ShowAllComment", false },
                                 {"ShowDetails", false }
@@ -61,7 +61,7 @@
             </div>
             <div class="lg:w-[400px]">
                 <div class="lg:space-y-4 lg:pb-8 max-lg:grid sm:grid-cols-2 max-lg:gap-6"
-                uk-sticky="media: 1024; end: #js-oversized; offset: 80">
+                     uk-sticky="media: 1024; end: #js-oversized; offset: 80">
                     <div class="box p-5 px-6">
                         <div class="flex items-ce justify-between text-black">
 
@@ -71,14 +71,14 @@
                             </h3>
                         </div>
 
-                        @foreach (var friendship in Model.Friendships)
-                        {
-                            var friend = (friendship.User1Id == Model.User.UserId) ? friendship.User2 : friendship.User1;
+                        <div class="grid grid-cols-4 gap-2 gap-y-5 text-center text-sm mt-4 mb-2">
+                            @foreach (var friendship in Model.Friendships)
+                            {
+                                var friend = (friendship.User1Id == Model.User.UserId) ? friendship.User2 : friendship.User1;
 
-                            <div class="grid grid-cols-3 gap-2 gap-y-5 text-center text-sm mt-4 mb-2">
                                 <div>
+                                    <a asp-controller="Users" asp-action="Details" asp-route-userId=@friend.UserId>
                                     <div class="relative w-full aspect-square rounded-lg overflow-hidden">
-
                                         @if (string.IsNullOrEmpty(friend.UserImgUrl))
                                         {
 
@@ -89,13 +89,13 @@
                                         {
                                             <img src="@Url.Content(friend.UserImgUrl)" class="object-cover w-full h-full inset-0" />
                                         }
-
                                     </div>
+                                    </a>
 
                                     <div class="mt-2 line-clamp-1">@friend.UserFullName</div>
                                 </div>
-                            </div>
-                        }
+                            }
+                        </div>
                     </div>
                 </div>
             </div>

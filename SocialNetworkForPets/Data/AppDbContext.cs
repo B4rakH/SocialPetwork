@@ -9,7 +9,7 @@ namespace SocialNetworkForPets.Data
         {
 
         }
-
+        //All Entities of the Database
         public DbSet<User> User { get; set; }
 
         public DbSet<Post> Post { get; set; }
