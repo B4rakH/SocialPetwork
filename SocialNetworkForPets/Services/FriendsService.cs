@@ -145,11 +145,11 @@ namespace SocialNetworkForPets.Services
             //    ELSE 0
             //END AS AreFriendsOrRequested;
 
-            return (User1Id == User2Id) || (_context.Friendship.Any(u => (u.User1Id == User1Id && u.User2Id == User2Id)
+            return ((User1Id == User2Id) || (_context.Friendship.Any(u => (u.User1Id == User1Id && u.User2Id == User2Id)
                                         || (u.User1Id == User2Id && u.User2Id == User1Id)))
                                         || (_context.FriendRequests
-                                    .Any(u => (u.SenderId == User1Id && u.ReceiverId == User2Id)
-                                        || (u.SenderId == User2Id && u.ReceiverId == User1Id)));
+                                        .Any(u => (u.SenderId == User1Id && u.ReceiverId == User2Id)
+                                        || (u.SenderId == User2Id && u.ReceiverId == User1Id))));
 
         }
     }

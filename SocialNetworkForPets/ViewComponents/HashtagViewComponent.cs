@@ -1,26 +1,22 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SocialNetworkForPets.Data;
+using SocialNetworkForPets.Services;
 
 namespace SocialNetworkForPets.ViewComponents
 {
     public class HashtagViewComponent: ViewComponent
     {
+        private readonly IHashtagService _hashtagService;
 
-        private readonly AppDbContext _context;
-
-        public HashtagViewComponent(AppDbContext context)
+        public HashtagViewComponent(IHashtagService hashtagService)
         {
-            _context = context;
+            _hashtagService = hashtagService;
         }
         public async Task <IViewComponentResult> InvokeAsync()
         {
-            var topHashtags = await _context.Hashtag
-                .OrderByDescending(tag => tag.TagCount)
-                .Take(3)
-                .ToListAsync();
-
-            return View(topHashtags);
+            var trendTopics = await _hashtagService.GetTrendTopics();
+            return View(trendTopics);
         }
     }
 }

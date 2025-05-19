@@ -62,5 +62,13 @@ namespace SocialNetworkForPets.Services
             }
             await _context.SaveChangesAsync();
         }
+        public async Task<List<Hashtag>> GetTrendTopics()
+        {
+            var topTopics = await _context.Hashtag
+                .OrderByDescending(tag => tag.TagCount)
+                .Take(3)
+                .ToListAsync();
+            return topTopics;
+        }
     }
 }

@@ -125,10 +125,12 @@ namespace SocialNetworkForPets.Services
 
         public async Task RemovePostCommentAsync(int CommentId)
         {
+            //Get comment object
             var commentDb = await _context.Comment
                 .FirstOrDefaultAsync(c => c.CommentId == CommentId);
             if (commentDb != null)
             {
+                //remove from database
                 _context.Comment.Remove(commentDb);
                 await _context.SaveChangesAsync();
             }

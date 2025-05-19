@@ -43,10 +43,6 @@ namespace SocialNetworkForPets.Controllers
 
 
             var userRank = GetUserRank(registerVM.UserName);
-
-            //System can have only one admin
-            var existingAdmin = (userRank == UserRank.Admin) ?
-                await _context.User.FirstOrDefaultAsync(u => (u.UserRank == UserRank.Admin)) : null;
             
             //Checking is username has already taken or not
             var existingUser = await _context.User.FirstOrDefaultAsync(u => (u.UserName == registerVM.UserName));
@@ -56,10 +52,15 @@ namespace SocialNetworkForPets.Controllers
                 ModelState.AddModelError("UserName", "Username already exists");
                 return View(registerVM);
             }
-            else if (existingAdmin != null)
+            //System can have only one admin
+            else if (userRank == UserRank.Admin)
             {
-                ModelState.AddModelError("UserName", "Admin has already exists");
-                return View(registerVM);
+                var isAdminExists = await _context.User.AnyAsync(u => u.UserRank == UserRank.Admin);
+                if (isAdminExists)
+                {
+                    ModelState.AddModelError("UserName", "Admin has already exists");
+                    return View(registerVM);
+                }
             }
 
             //Register confirmed, creating User

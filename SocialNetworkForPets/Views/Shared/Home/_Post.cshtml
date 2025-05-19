@@ -13,6 +13,8 @@
     };
     var UserId = int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int Id) ? Id : 0;
 
+    var UserImgUrl = User.FindFirstValue(CustomClaim.UserImgUrl);
+
     var isAdmin = User.IsInRole(UserRank.Admin);
 
     bool isLiked = Model.Likes.Any(u => u.UserId == UserId);
@@ -130,7 +132,7 @@
 
     @if (showDetails)
     {
-        @*Add Comment Sect*@
+        @*Comment Sect*@
         <div>
             <div class="p-2.5 border-t border-gray-100 font-normal space-y-3 relative">
                 @foreach (var comment in (showAllComments ? Model.Comments : Model.Comments.Take(3)))
@@ -187,13 +189,13 @@
                 <div class="sm:px-4 sm:py-3 p-2.5 border-t border-gray-100 flex items-center gap-1">
 
                     <a asp-controller="Users" asp-action="Details" asp-route-userId=@Model.PosterId>
-                        @if (string.IsNullOrEmpty(Model.Poster.UserImgUrl))
+                        @if (string.IsNullOrEmpty(UserImgUrl))
                         {
                             <img src="@Url.Content("~/images/avatar/avatar.png")" class="w-6 h-6 rounded-full" />
                         }
                         else
                         {
-                            <img src=@Model.Poster.UserImgUrl class="w-6 h-6 rounded-full" />
+                            <img src=@UserImgUrl class="w-6 h-6 rounded-full" />
                         }
                     </a>
 

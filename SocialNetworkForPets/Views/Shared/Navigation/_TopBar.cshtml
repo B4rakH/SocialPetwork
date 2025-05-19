@@ -1,6 +1,4 @@
 ﻿@{
-
-    //int userId = int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int result) ? result : 0;
     var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
     var userFullName = User.Claims.FirstOrDefault(u => u.Type == CustomClaim.FullName)?.Value;
     var username = User.Identity.Name;
@@ -17,7 +15,7 @@
                 <ion-icon name="menu-outline" class="text-2xl group-aria-expanded:hidden"></ion-icon>
                 <ion-icon name="close-outline" class="hidden text-2xl group-aria-expanded:block"></ion-icon>
             </button>
-            @*Logo*@
+            @*Logo And Name*@
             <div id="logo" class="flex items-center">
                 <a asp-controller="Home" asp-action="Index" class="flex items-center">
                     <img src="../images/ico.png" class="w-10 ml-2 md:block hidden" />
