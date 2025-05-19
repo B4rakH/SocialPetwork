@@ -3,37 +3,34 @@ using SocialNetworkForPets.Data;
 using SocialNetworkForPets.Data.Models;
 using SocialNetworkForPets.ViewModels.Home;
 using SocialNetworkForPets.Services;
-using SocialNetworkForPets.Helper.Enums;
 using Microsoft.AspNetCore.Authorization;
 using SocialNetworkForPets.Controllers.Base;
 using SocialNetworkForPets.Helper.Constants;
 using Microsoft.EntityFrameworkCore;
+using SocialNetworkForPets.Helper.Enums;
 
 namespace SocialNetworkForPets.Controllers
 {
     [Authorize]
     public class HomeController : BaseController
     {
-        private readonly ILogger<HomeController> _logger;
         private readonly AppDbContext _context;
-        private readonly IPostService _postService;
         private readonly IFileService _fileService;
+        private readonly IPostService _postService;
         private readonly INotificationService _notificationService;
 
         //HomeController is the main controller that contains and uses all services
         public HomeController
-            (ILogger<HomeController> logger,
-                AppDbContext context,
+            (AppDbContext context,
                     IPostService postService,
                         IHashtagService hashtagService,
-                            IFileService fileService,
-                                INotificationService notificationService)
+                                INotificationService notificationService,
+                                IFileService fileService)
         {
-            _logger = logger;
             _context = context;
             _postService = postService;
-            _fileService = fileService;
             _notificationService = notificationService;
+            _fileService = fileService;
         }
 
         //Listing All Posts 
@@ -64,8 +61,8 @@ namespace SocialNetworkForPets.Controllers
             var UserId = GetUserId();
             if (UserId == null) return RedirectToLogin();
 
-            //Storing image on uploaded folder (if it exists) and getting stored path
-            var imageUploadPath = await _fileService.UploadImageAsync(post.Image, ImageFileType.PostImage);
+            var imageUploadPath = await _fileService.UploadImageAsync
+                                        (post.Image, ImageFileType.PostImage);
 
             //Setting variables
             var newPost = new Post
@@ -75,7 +72,7 @@ namespace SocialNetworkForPets.Controllers
                 PosterId = UserId.Value,
                 PostImgUrl = imageUploadPath
             };
-
+            //Adding post to the database
             await _postService.CreatePostAsync(newPost);
 
             return RedirectToAction("Index");

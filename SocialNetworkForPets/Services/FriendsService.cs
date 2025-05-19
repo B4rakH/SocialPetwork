@@ -25,8 +25,8 @@ namespace SocialNetworkForPets.Services
 
         public async Task AcceptRequestAsync(int senderId, int receiverId)
         {
-            var request = await _context.FriendRequests.FirstAsync(r => r.SenderId == senderId && r.ReceiverId == receiverId);
-
+            var request = await _context.FriendRequests.FirstAsync
+                (r => r.SenderId == senderId && r.ReceiverId == receiverId);
             //if request exists, create new friendship
             if (request != null)
             {
@@ -35,13 +35,10 @@ namespace SocialNetworkForPets.Services
                     User1Id = senderId,
                     User2Id = receiverId,
                 };
-
                 //deleting request
                 _context.FriendRequests.Remove(request);
-
                 //adding friendship
                 await _context.Friendship.AddAsync(newFriendship);
-
                 await _context.SaveChangesAsync();
             }
 
@@ -49,11 +46,10 @@ namespace SocialNetworkForPets.Services
 
         public async Task RejectRequestAsync(int senderId, int receiverId)
         {
-            var request = await _context.FriendRequests.FirstAsync(r => r.SenderId == senderId && r.ReceiverId == receiverId);
-
-            //deleting request
+            var request = await _context.FriendRequests.FirstAsync
+                (r => r.SenderId == senderId && r.ReceiverId == receiverId);
+            //deleting request without creating friendship
             _context.FriendRequests.Remove(request);
-
             await _context.SaveChangesAsync();
         }
 
@@ -72,7 +68,7 @@ namespace SocialNetworkForPets.Services
         {
             var user = await _context.User.FindAsync(UserId);
 
-            var suggestedPets = new List<(User, int ,bool)>();
+            var popularPets = new List<(User, int ,bool)>();
 
             //Finding Top Users having most Connection
             var top5Users = _context.User
@@ -87,9 +83,9 @@ namespace SocialNetworkForPets.Services
 
             //Getting user object, friends count and friend relation between loggedUser (for displaying add friend button)
             foreach (var element in top5Users)
-                suggestedPets.Add((element.User, element.FriendCount, IsFriend(UserId, element.User.UserId)));
+                popularPets.Add((element.User, element.FriendCount, IsFriend(UserId, element.User.UserId)));
 
-            return suggestedPets;
+            return popularPets;
         }
 
         public async Task<List<FriendshipRequest>> GetSentFriendRequestAsync(int userId)

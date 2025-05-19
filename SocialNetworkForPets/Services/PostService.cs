@@ -3,6 +3,7 @@ using Microsoft.Extensions.Hosting;
 using SocialNetworkForPets.Data;
 using SocialNetworkForPets.Data.Models;
 using SocialNetworkForPets.Dtos;
+using SocialNetworkForPets.Helper.Enums;
 using SocialNetworkForPets.ViewModels.Home;
 using System.ComponentModel.Design;
 using System.Xml.Linq;
@@ -12,13 +13,15 @@ namespace SocialNetworkForPets.Services
     public class PostService: IPostService
     {
         private readonly AppDbContext _context;
-        private readonly INotificationService _notificationService;
         private readonly IHashtagService _hashtagService;
-        public PostService(AppDbContext context, INotificationService notificationService, IHashtagService hashtagService) 
+        private readonly IFileService _fileService;
+        public PostService(AppDbContext context,
+                    IHashtagService hashtagService,
+                        IFileService fileService) 
         {
             _context = context;
-            _notificationService = notificationService;
             _hashtagService = hashtagService;
+            _fileService = fileService;
         }
         public async Task<List<Post>> GetAllPostsAsync(int UserId)
         {
@@ -103,6 +106,7 @@ namespace SocialNetworkForPets.Services
         public async Task CreatePostAsync(Post post)
         {
             await _context.Post.AddAsync(post);
+            //Getting tags in text
             await _hashtagService.HashtagsInNewPostAsync(post.PostText);
             await _context.SaveChangesAsync();
         }
@@ -111,14 +115,14 @@ namespace SocialNetworkForPets.Services
         public async Task RemovePostAsync(int PostId)
         {
             //finding post object
-            var postDb = await _context.Post.FirstOrDefaultAsync(p => p.PostId == PostId);
+            var post = await _context.Post.FirstOrDefaultAsync(p => p.PostId == PostId);
 
-            if (postDb != null)
+            if (post != null)
             {
                 //removing post
-                _context.Post.Remove(postDb);
+                _context.Post.Remove(post);
                 //updating hashtag (trend topics) data
-                await _hashtagService.HashtagsInRemovedPostAsync(postDb.PostText);
+                await _hashtagService.HashtagsInRemovedPostAsync(post.PostText);
                 await _context.SaveChangesAsync();
             }
         }

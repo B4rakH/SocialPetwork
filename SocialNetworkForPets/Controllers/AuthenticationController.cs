@@ -150,6 +150,7 @@ namespace SocialNetworkForPets.Controllers
 
                 return RedirectToAction("Logout");
         }
+
         [HttpPost]
         public async Task<IActionResult> UpdateProfile(UpdateProfileVM profileVM) 
         {
@@ -163,19 +164,9 @@ namespace SocialNetworkForPets.Controllers
 
                 return RedirectToAction("Index", "Settings");
             }
-
-            var loggedUser = await _context.User.FirstAsync(u => u.UserId == profileVM.UserId);
-
-            //Username must contain its rank pattern if it has
-            if ((loggedUser.UserRank == UserRank.Admin && !profileVM.UserName.Contains("@admin"))
-                ||(loggedUser.UserRank == UserRank.Moderator && profileVM.UserName.Contains("@moderator")))
-            {
-                TempData["UpdateError"] = "Username must contain the tag of user rank (@rank)";
-                TempData["ActiveTab"] = "Profile";
-
-                return RedirectToAction("Index", "Settings");
-            }
             //Update confirmed
+            var loggedUser = await _context.User.FirstAsync(u => u.UserId == profileVM.UserId);
+            
             loggedUser.UserFullName = profileVM.UserFullName;
             loggedUser.UserName = profileVM.UserName;
 
@@ -184,9 +175,7 @@ namespace SocialNetworkForPets.Controllers
 
             //Cookie update for preventing data anomalies depending old cookie
             var cookiesUpdated = await UpdateCookiesAsync();
-
             if (!cookiesUpdated) return RedirectToLogin();
-            
 
             TempData["UpdateSuccess"] = "Informations Updated successfully";
             TempData["ActiveTab"] = "Profile";
@@ -301,6 +290,14 @@ namespace SocialNetworkForPets.Controllers
             if (isUserNameExist > 1)
             {
                 return "The username is already exists";
+            }
+            var loggedUser = await _context.User.FirstAsync(u => u.UserId == profileVM.UserId);
+
+            //Username must contain its rank pattern if it has
+            if ((loggedUser.UserRank == UserRank.Admin && !profileVM.UserName.Contains("@admin"))
+                || (loggedUser.UserRank == UserRank.Moderator && profileVM.UserName.Contains("@moderator")))
+            {
+                return "Username must contain the tag of user rank (@rank)";
             }
 
             return null;

@@ -45,6 +45,9 @@ namespace SocialNetworkForPets.Controllers
 
             if(!cookiesUpdated) return RedirectToLogin();
 
+            TempData["UpdateSuccess"] = "Informations Updated successfully";
+            TempData["ActiveTab"] = "Profile";
+
             return RedirectToAction("Index");
         }
 
