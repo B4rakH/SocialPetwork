@@ -23,7 +23,7 @@ namespace SocialNetworkForPets.Controllers
             return View(reportedPosts);
         }
         [HttpPost]
-        public async Task<IActionResult> ApproveReportAsync(int postId)
+        public async Task<IActionResult> ApproveReport(int postId)
         {
             //Deleting Post
             await _moderatorService.ApproveReport(postId);
@@ -32,7 +32,7 @@ namespace SocialNetworkForPets.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> RejectReportAsync(int postId)
+        public async Task<IActionResult> RejectReport(int postId)
         {
             //Cleaning reports without deleting post
             await _moderatorService.RejectReport(postId);

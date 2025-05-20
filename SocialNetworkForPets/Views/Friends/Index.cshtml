@@ -43,7 +43,7 @@
 
                         <form asp-controller="Friends" asp-action="RemoveFriend" method="post">
                             <input type="hidden" name="friendId" value="@friend.UserId" />
-                            <button type="submit" class="button bg-red-soft text-red gap-1 max-md:hidden">
+                            <button type="submit" class="button px-10 text-red-400 bg-red-100 gap-1 max-md:hidden">
                                 <ion-icon name="remove-circle-outline" class="text-xl -ml-1"></ion-icon> Remove
                             </button>
                         </form>
@@ -85,7 +85,7 @@
 
                         <form asp-controller="Friends" asp-action="RejectFriendRequest" method="post">
                             <input type="hidden" name="senderId" value="@request.SenderId" />
-                            <button type="submit" class="button bg-red-soft text-red gap-1 max-md:hidden">
+                            <button type="submit" class="button px-10 text-red-400 bg-red-100 gap-1 max-md:hidden">
                                 <ion-icon name="remove-circle-outline" class="text-xl -ml-1"></ion-icon> Reject
                             </button>
                         </form>
@@ -133,7 +133,7 @@
 
                         <form asp-controller="Friends" asp-action="CancelFriendRequest" method="post">
                             <input type="hidden" name="receiverId" value="@request.ReceiverId" />
-                            <button type="submit" class="button text-primary gap-1 max-md:hidden">
+                            <button type="submit" class="button px-10 text-red-400 bg-red-100 gap-1 max-md:hidden">
                                 <ion-icon name="remove-circle-outline" class="text-xl -ml-1"></ion-icon> Cancel
                             </button>
                         </form>

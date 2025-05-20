@@ -6,9 +6,13 @@
 
     string displayTime = timeSpanSincePosted switch
     {
+        //If CreatedAt >= 24 hour
         var t when t.TotalDays >= 1 => $"{(int)t.TotalDays} day ago",
+        //If CreatedAt >= 60 minute
         var t when t.TotalHours >= 1 => $"{(int)t.TotalHours} hour ago",
+        //If CreatedAt >= 60 seconds
         var t when t.TotalMinutes >= 1 => $"{(int)t.TotalMinutes} min ago",
+        //Else
         _ => "Just now"
     };
     var UserId = int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out int Id) ? Id : 0;
@@ -174,7 +178,7 @@
                         </div>
                     </div>
                 }
-                @if (Model.Comments.Count > 3)
+                @if (Model.Comments.Count > 3 && !showAllComments)
                 {
                     <div class="p-1.5">
                         <a asp-controller="Home" asp-action="Details" asp-route-postId="@Model.PostId">

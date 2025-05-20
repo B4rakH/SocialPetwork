@@ -58,6 +58,7 @@ namespace SocialNetworkForPets.Controllers
         //Creating New Post
         public async Task<IActionResult> CreatePost(PostVM post)
         {
+            //Checking current login is still valid with getting userId
             var UserId = GetUserId();
             if (UserId == null) return RedirectToLogin();
 
