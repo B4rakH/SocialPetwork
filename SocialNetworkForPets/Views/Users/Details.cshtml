@@ -28,23 +28,23 @@
                     <h3 class="md:text-3xl text-base font-bold text-black"> @Model.User.UserFullName</h3>
                     <p class="mt-2 text-gray-500">@Model.User.UserName</p>
                 </div>
-                @if (!Model.RequestedOrAdded)
-                {
-                    <div class="p-6">
+                <div class="p-6">
+                    @if (!Model.RequestedOrAdded)
+                    {
                         <form asp-controller="Friends" asp-action="SendFriendRequest" method="post">
                             <input type="hidden" name="receiverId" value="@Model.User.UserId" />
                             <button type="submit" class="button bg-primary-soft text-primary">Add Friend</button>
                         </form>
-                        <br />
-                        @if (isAdmin)
-                        {
-                            <form asp-controller="Authentication" asp-action="DeleteAccountAdmin" method="post">
-                                <input type="hidden" name="userId" value="@Model.User.UserId" />
-                                <button type="submit" class="button text-red-400 bg-red-100">Delete Account</button>
-                            </form>
-                        }
-                    </div>
-                }
+                    }
+                    <br />
+                    @if (isAdmin && Model.User.UserRank != UserRank.Admin)
+                    {
+                        <form asp-controller="Authentication" asp-action="DeleteAccountAdmin" method="post">
+                            <input type="hidden" name="userId" value="@Model.User.UserId" />
+                            <button type="submit" class="button text-red-400 bg-red-100">Delete Account</button>
+                        </form>
+                    }
+                </div>
             </div>
         </div>
         <div class="flex 2xl:gap-12 gap-10 mt-8 max-lg:flex-col" id="js-oversized">
@@ -78,18 +78,18 @@
 
                                 <div>
                                     <a asp-controller="Users" asp-action="Details" asp-route-userId=@friend.UserId>
-                                    <div class="relative w-full aspect-square rounded-lg overflow-hidden">
-                                        @if (string.IsNullOrEmpty(friend.UserImgUrl))
-                                        {
+                                        <div class="relative w-full aspect-square rounded-lg overflow-hidden">
+                                            @if (string.IsNullOrEmpty(friend.UserImgUrl))
+                                            {
 
-                                            <img src="@Url.Content("~/images/avatar/avatar.png")" class="object-cover w-full h-full inset-0" />
+                                                <img src="@Url.Content("~/images/avatar/avatar.png")" class="object-cover w-full h-full inset-0" />
 
-                                        }
-                                        else
-                                        {
-                                            <img src="@Url.Content(friend.UserImgUrl)" class="object-cover w-full h-full inset-0" />
-                                        }
-                                    </div>
+                                            }
+                                            else
+                                            {
+                                                <img src="@Url.Content(friend.UserImgUrl)" class="object-cover w-full h-full inset-0" />
+                                            }
+                                        </div>
                                     </a>
 
                                     <div class="mt-2 line-clamp-1">@friend.UserFullName</div>
