@@ -32,7 +32,7 @@ Social network application for pets and owners developed using ASP.NET MVC, Micr
 ### Installation
 1. **Clone the Repository**:
     ```bash
-    git clone https://github.com/B4rakH/SocialPetwork
+    git clone https://github.com/B4rakH/SocialPetwork.git
     ```
 2. **Navigate to the Project Directory**:
     ```bash
