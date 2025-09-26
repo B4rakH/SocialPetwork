@@ -35,23 +35,22 @@
                 </div>
                 <div id="posts-container" class="space-y-4">
 
-                    @if (Model.Count == 0)
+                    @if (Model.Count > 0)
                     {
-                        <div class="bg-white rounded-xl shadow-sm md:p-4 p-2 space-y-4 text-sm font-medium border1" style="width: 580px;">
-
-                            Currently, there are no posts available. Would you like to create the first one?
-
-                        </div>
-                    }
-                    else
-                    {
-
                         @foreach (var post in Model)
                         {
                             <partial name="Home/_Post"
                                      model="post"
                                      view-data='new ViewDataDictionary(ViewData) { { "ShowAllComment", false } }' />
                         }
+                    }
+                    else
+                    {
+                        <div class="bg-white rounded-xl shadow-sm md:p-4 p-2 space-y-4 text-sm font-medium border1" style="width: 580px;">
+
+                            Currently, there are no posts available. Would you like to create the first one?
+
+                        </div>
                     }
                 </div>
 
@@ -60,7 +59,7 @@
         </div>
         <div class="flex-1">
             <div class="lg:space-y-4 lg:pb-8 max-lg:grid sm:grid-cols-2 max-lg:gap-6">
-                @*Reccomended People*@
+                @*Recommended People*@
                 <div class="box p-5 px-6">
                     @await Component.InvokeAsync("SuggestedPets")
                 </div>
@@ -140,7 +139,6 @@
                         postContainer.innerHTML = html;
                     })
                     .catch(error => console.error('Error: ', error));
-
             }
         })
     })
